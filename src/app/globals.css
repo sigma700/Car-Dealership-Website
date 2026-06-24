@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Colors */
+    --color-obsidian: #0a0a0b;
+    --color-void: #111114;
+    --color-graphite: #1c1c21;
+    --color-smoke: #2a2a31;
+    --color-platinum: #c8cad0;
+    --color-silver: #e8e9ec;
+    --color-chrome: #f0f1f3;
+    --color-gold: #b8955a;
+    --color-gold-dim: #7a6038;
+    --color-gold-glow: rgba(184, 149, 90, 0.15);
+    --color-error: #c0392b;
+    --color-success: #27ae60;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(170deg,
+        rgba(10, 10, 11, 0) 0%,
+        rgba(10, 10, 11, 0.6) 55%,
+        rgba(10, 10, 11, 0.95) 100%);
+    --gradient-card: linear-gradient(180deg,
+        rgba(28, 28, 33, 0) 40%,
+        rgba(28, 28, 33, 0.98) 100%);
+
+    /* Type scale (optional, already in Tailwind config) */
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* background already set by body */
+  }
+
+  body {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Utility: hide scrollbar but keep scroll functionality */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  @layer components {
+    .btn-slide {
+      position: relative;
+      overflow: hidden;
+      border-radius: 0;
+      /* sharp corners */
+      transition: color 0.4s ease;
+    }
+
+    .btn-slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      transform: translateX(-101%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-slide:hover::before {
+      transform: translateX(0);
+    }
+
+    /* Variant: gold overlay */
+    .btn-slide-gold {
+      @apply bg-transparent border border-gold text-gold;
+    }
+
+    .btn-slide-gold::before {
+      @apply bg-gold;
+    }
+
+    .btn-slide-gold:hover {
+      @apply text-black;
+    }
+
+    /* Variant: black overlay for the gold-filled button */
+    .btn-slide-black {
+      @apply bg-gold text-black;
+    }
+
+    .btn-slide-black::before {
+      background: #111114;
+      /* void */
+    }
+
+    .btn-slide-black:hover {
+      @apply text-gold;
+    }
+
+    /* Ensure text sits above the overlay */
+    .btn-slide span {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  @layer components {
+    .card-slide {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-slide::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      transform: translateX(-101%);
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card-slide:hover::after {
+      transform: translateX(0);
+    }
+  }
+
+  @layer components {
+    .cover-card {
+      backdrop-filter: blur(24px);
+      background: rgba(17, 17, 20, 0.85);
+      border: 1px solid rgba(184, 149, 90, 0.15);
+    }
+  }
+
+  @layer components {
+    .cube-card {
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+
+    .cube-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 280px;
+      transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+      transform-style: preserve-3d;
+    }
+
+    /* hover: rotate full 180° + push forward 30px in Z */
+    .cube-card:hover .cube-card-inner {
+      transform: rotateY(180deg) translateZ(30px);
+    }
+
+    .cube-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 1rem;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cube-face.front {
+      background-color: var(--color-graphite, #1c1c21);
+    }
+
+    .cube-face.back {
+      background-color: #F5F0EB;
+      /* cream */
+      transform: rotateY(180deg);
+    }
+
+    /* subtle thickness effect: left/right sides (optional but make it feel cube-like) */
+    .cube-face.right,
+    .cube-face.left {
+      width: 30px;
+      /* card thickness */
+      background: #2a2a31;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: #c8cad0;
+    }
+
+    .cube-face.right {
+      transform: rotateY(90deg) translateZ(calc(50% - 15px));
+      right: 0;
+      left: auto;
+    }
+
+    .cube-face.left {
+      transform: rotateY(-90deg) translateZ(calc(50% - 15px));
+      left: 0;
+      right: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cube-card-inner {
+        transition: none;
+      }
+
+      .cube-card:hover .cube-card-inner {
+        transform: none;
+      }
+    }
+  }
+}
