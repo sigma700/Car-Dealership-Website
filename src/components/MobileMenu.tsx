@@ -15,7 +15,6 @@ export default function MobileMenu({open, onClose, models}: MobileMenuProps) {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
-      // Focus trap basic
       const firstFocusable = menuRef.current?.querySelector(
         "a, button",
       ) as HTMLElement;
@@ -70,7 +69,7 @@ export default function MobileMenu({open, onClose, models}: MobileMenuProps) {
               </svg>
             </button>
 
-            {/* Accordion for Models */}
+            {/* Models accordion */}
             <details className="mb-4">
               <summary className="text-md font-display text-silver cursor-pointer pb-2">
                 Models
@@ -110,6 +109,21 @@ export default function MobileMenu({open, onClose, models}: MobileMenuProps) {
             >
               Dealers
             </Link>
+            <Link
+              href="/about"
+              onClick={onClose}
+              className="text-md font-display text-silver mb-4"
+            >
+              About
+            </Link>
+            <Link
+              href="/contact"
+              onClick={onClose}
+              className="text-md font-display text-silver mb-4"
+            >
+              Contact
+            </Link>
+
             <div className="mt-auto">
               <Link
                 href="/contact"

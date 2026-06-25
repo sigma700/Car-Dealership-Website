@@ -17,14 +17,14 @@ export default function Footer() {
   return (
     <footer className="border-t border-smoke/20 bg-obsidian">
       <div className="max-w-[1440px] mx-auto px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-10">
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link
               href="/"
               className="inline-block font-display text-xl tracking-widest text-gold hover:text-gold/80 transition-colors mb-4"
             >
-              AUTOPEDIA
+              AL HUSNAIN
             </Link>
             <p className="text-sm text-platinum/50 leading-relaxed mt-3 max-w-xs">
               Curated luxury automobiles for the discerning driver. Experience
@@ -44,7 +44,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Models (from mega menu) */}
+          {/* Models */}
           <div>
             <h4 className="text-xs font-semibold tracking-widest text-silver/80 mb-4 uppercase">
               Models
@@ -146,7 +146,24 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact + Legal (combined) */}
+          {/* About */}
+          <div>
+            <h4 className="text-xs font-semibold tracking-widest text-silver/80 mb-4 uppercase">
+              About
+            </h4>
+            <ul className="space-y-2.5">
+              <li>
+                <Link
+                  href="/about"
+                  className="text-sm text-platinum/50 hover:text-gold transition-colors duration-300"
+                >
+                  Our Story
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact + Legal */}
           <div>
             <h4 className="text-xs font-semibold tracking-widest text-silver/80 mb-4 uppercase">
               Contact
@@ -183,7 +200,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-smoke/10">
         <div className="max-w-[1440px] mx-auto px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-platinum/40">
-          <p>© 2025 Autopedia Group. All rights reserved.</p>
+          <p>© 2025 Al Husnain Group. All rights reserved.</p>
           <p className="font-mono tracking-wider">
             AED prices shown. Taxes &amp; registration may apply.
           </p>

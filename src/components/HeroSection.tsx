@@ -15,99 +15,6 @@ const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 const EASE_IN_OUT = [0.87, 0, 0.13, 1] as const;
 
-// ─── MAGNETIC BUTTON (wrapper only – no visual styling) ──────────
-function MagneticButton({
-  href,
-  children,
-  className,
-}: {
-  href: string;
-  children: React.ReactNode;
-  className: string;
-}) {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, {stiffness: 300, damping: 28});
-  const sy = useSpring(y, {stiffness: 300, damping: 28});
-  const prefersReduced = usePrefersReducedMotion();
-
-  const handleMove = useCallback(
-    (e: React.MouseEvent) => {
-      if (prefersReduced || !ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      x.set((e.clientX - cx) * 0.38);
-      y.set((e.clientY - cy) * 0.38);
-    },
-    [x, y, prefersReduced],
-  );
-
-  const handleLeave = useCallback(() => {
-    x.set(0);
-    y.set(0);
-  }, [x, y]);
-
-  return (
-    <motion.a
-      ref={ref}
-      href={href}
-      style={prefersReduced ? {} : {x: sx, y: sy}}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
-      whileTap={{scale: 0.94}}
-      className={className}
-    >
-      {children}
-    </motion.a>
-  );
-}
-
-// ─── BUTTONS USING THE SAME btn-slide CLASSES ────────────────────
-function GoldFillButton({href, label}: {href: string; label: string}) {
-  return (
-    <MagneticButton
-      href={href}
-      className="btn-slide btn-slide-black px-8 py-3 text-base md:text-lg font-medium tracking-wide text-center select-none"
-    >
-      <span>{label}</span>
-    </MagneticButton>
-  );
-}
-
-function OutlineGoldButton({href, label}: {href: string; label: string}) {
-  return (
-    <MagneticButton
-      href={href}
-      className="btn-slide btn-slide-gold px-8 py-3 text-base md:text-lg font-medium tracking-wide text-center select-none"
-    >
-      <span>{label}</span>
-    </MagneticButton>
-  );
-}
-
-function GhostButton({href, label}: {href: string; label: string}) {
-  return (
-    <MagneticButton
-      href={href}
-      className="relative px-8 py-3 text-[#C8CAD0] hover:text-[#F0F1F3] text-base md:text-lg font-medium tracking-wide text-center select-none group"
-    >
-      <span className="relative">
-        {label}
-        <motion.span
-          className="absolute -bottom-px left-0 right-0 h-px bg-[#C8CAD0] origin-left"
-          initial={{scaleX: 0}}
-          whileHover={{
-            scaleX: 1,
-            transition: {duration: 0.35, ease: EASE_OUT_EXPO},
-          }}
-        />
-      </span>
-    </MagneticButton>
-  );
-}
-
 // ─── CAROUSEL ────────────────────────────────────────────────────
 interface HeroCarouselProps {
   images: string[];
@@ -329,7 +236,7 @@ export default function HeroSection() {
               variants={lineVariants}
               className="text-5xl md:text-7xl lg:text-8xl font-display text-[#F0F1F3] leading-[0.9] tracking-tight"
             >
-              Autopedia
+              Al Husnain
             </motion.h1>
           </div>
 
@@ -351,14 +258,29 @@ export default function HeroSection() {
             <StatItem value="5yr" label="Warranty included" />
           </motion.div>
 
-          {/* CTAs – now using the same btn-slide classes as the models section */}
+          {/* CTAs – standard btn-slide links, no magnetic effect */}
           <motion.div
             variants={fadeUp}
             className="mt-10 flex flex-col sm:flex-row gap-4"
           >
-            <GoldFillButton href="/inventory" label="Browse Inventory" />
-            <OutlineGoldButton href="/contact" label="Book a Test Drive" />
-            <GhostButton href="/sell" label="Value Your Trade" />
+            <a
+              href="/inventory"
+              className="btn-slide btn-slide-gold px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
+            >
+              <span>Browse Inventory</span>
+            </a>
+            <a
+              href="/contact"
+              className="btn-slide btn-slide-black px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
+            >
+              <span>Book a Test Drive</span>
+            </a>
+            <a
+              href="/sell"
+              className="btn-slide btn-slide-black px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
+            >
+              <span>Value Your Trade</span>
+            </a>
           </motion.div>
         </motion.div>
       </motion.div>

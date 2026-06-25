@@ -3,7 +3,6 @@ import {useState} from "react";
 import {useNavScroll} from "@/hooks/useNavScroll";
 import MegaMenu from "./MegaMenu";
 import MobileMenu from "./MobileMenu";
-import MagneticButton from "./MagneticButton";
 import Link from "next/link";
 
 // Sample model data for the mega menu (replace with real data later)
@@ -57,7 +56,7 @@ export default function Navigation() {
             isTransparent ? "text-chrome" : "text-gold"
           }`}
         >
-          Autopedia
+          Al Husnain
         </Link>
 
         {/* Desktop nav links */}
@@ -65,6 +64,7 @@ export default function Navigation() {
           className="hidden lg:flex items-center ml-16 space-x-10"
           aria-label="Main navigation"
         >
+          {/* Models with mega menu */}
           <div
             className="relative"
             onMouseEnter={() => setMegaMenuOpen("models")}
@@ -86,23 +86,40 @@ export default function Navigation() {
               />
             )}
           </div>
+
           <Link
             href="/bespoke"
             className={`text-sm tracking-wide ${isTransparent ? "text-chrome/80 hover:text-chrome" : "text-platinum hover:text-silver"} transition-colors`}
           >
             Bespoke
           </Link>
+
           <Link
             href="/ownership"
             className={`text-sm tracking-wide ${isTransparent ? "text-chrome/80 hover:text-chrome" : "text-platinum hover:text-silver"} transition-colors`}
           >
             Ownership
           </Link>
+
           <Link
             href="/dealers"
             className={`text-sm tracking-wide ${isTransparent ? "text-chrome/80 hover:text-chrome" : "text-platinum hover:text-silver"} transition-colors`}
           >
             Dealers
+          </Link>
+
+          <Link
+            href="/about"
+            className={`text-sm tracking-wide ${isTransparent ? "text-chrome/80 hover:text-chrome" : "text-platinum hover:text-silver"} transition-colors`}
+          >
+            About
+          </Link>
+
+          <Link
+            href="/contact"
+            className={`text-sm tracking-wide ${isTransparent ? "text-chrome/80 hover:text-chrome" : "text-platinum hover:text-silver"} transition-colors`}
+          >
+            Contact
           </Link>
         </nav>
 
@@ -113,13 +130,13 @@ export default function Navigation() {
             UAE
           </button>
 
-          {/* CTA */}
-          <MagneticButton
-            label="Book Test Drive"
+          {/* CTA – standard btn-slide */}
+          <a
             href="/contact"
-            variant="outline-gold"
-            size="sm"
-          />
+            className="btn-slide btn-slide-gold px-6 py-2 text-sm font-medium tracking-wide inline-flex items-center justify-center"
+          >
+            <span>Book Test Drive</span>
+          </a>
 
           {/* Hamburger (mobile) */}
           <button
