@@ -102,17 +102,10 @@ export default function Navigation() {
           </Link>
 
           <Link
-            href="/dealers"
+            href="/inventory"
             className={`text-sm tracking-wide ${isTransparent ? "text-chrome/80 hover:text-chrome" : "text-platinum hover:text-silver"} transition-colors`}
           >
-            Dealers
-          </Link>
-
-          <Link
-            href="/about"
-            className={`text-sm tracking-wide ${isTransparent ? "text-chrome/80 hover:text-chrome" : "text-platinum hover:text-silver"} transition-colors`}
-          >
-            About
+            Inventory
           </Link>
 
           <Link

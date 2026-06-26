@@ -38,14 +38,14 @@ export default function BespokeTeaserSection() {
       <motion.div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('pexels-masoodaslami-19429389.jpg')", // 👈  Place your image in public/images/
+          backgroundImage: "url('pexels-masoodaslami-19429389.jpg')",
           y: prefersReduced ? "0%" : springBgY,
           willChange: "transform",
         }}
       />
 
       {/* Gradient overlay — darker left side for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0B]/90 via-[#0A0A0B]/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
 
       {/* Content */}
       <motion.div
@@ -54,7 +54,7 @@ export default function BespokeTeaserSection() {
       >
         {/* Eyebrow */}
         <motion.p
-          className="text-xs md:text-sm tracking-widest text-gold mb-3"
+          className="text-xs md:text-sm tracking-widest text-[#BCBEC0] mb-3"
           initial={{opacity: 0, x: -16}}
           animate={inView ? {opacity: 1, x: 0} : {}}
           transition={{duration: 0.7, ease: EASE_OUT_EXPO}}
@@ -64,7 +64,7 @@ export default function BespokeTeaserSection() {
 
         {/* Heading */}
         <motion.h2
-          className="text-3xl md:text-5xl lg:text-6xl font-display text-chrome leading-[0.92] mb-4 max-w-xl"
+          className="text-3xl md:text-5xl lg:text-6xl font-display text-white leading-[0.92] mb-4 max-w-xl"
           initial={{opacity: 0, y: 30}}
           animate={inView ? {opacity: 1, y: 0} : {}}
           transition={{duration: 0.8, delay: 0.1, ease: EASE_OUT_EXPO}}
@@ -74,7 +74,7 @@ export default function BespokeTeaserSection() {
 
         {/* Subhead — sells the benefit */}
         <motion.p
-          className="text-md md:text-xl text-silver/80 max-w-md mb-8"
+          className="text-md md:text-xl text-[#BCBEC0]/80 max-w-md mb-8"
           initial={{opacity: 0, y: 20}}
           animate={inView ? {opacity: 1, y: 0} : {}}
           transition={{duration: 0.7, delay: 0.2, ease: EASE_OUT_EXPO}}
@@ -83,7 +83,7 @@ export default function BespokeTeaserSection() {
           bespoke atelier transforms your vision into reality.
         </motion.p>
 
-        {/* CTA — using the same sliding button style */}
+        {/* CTA — primary white button */}
         <motion.div
           initial={{opacity: 0, y: 16}}
           animate={inView ? {opacity: 1, y: 0} : {}}
@@ -91,15 +91,15 @@ export default function BespokeTeaserSection() {
         >
           <a
             href="/bespoke"
-            className="btn-slide btn-slide-gold px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
+            className="btn-slide btn-slide-white px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
           >
-            <span>Explore Bespoke</span>
+            <span className="text-black">Explore Bespoke</span>
           </a>
         </motion.div>
 
         {/* Optional: small stat line */}
         <motion.div
-          className="mt-6 flex flex-wrap gap-6 text-xs text-platinum/50 font-mono tracking-wider"
+          className="mt-6 flex flex-wrap gap-6 text-xs text-[#BCBEC0]/50 font-mono tracking-wider"
           initial={{opacity: 0}}
           animate={inView ? {opacity: 1} : {}}
           transition={{duration: 0.8, delay: 0.5}}

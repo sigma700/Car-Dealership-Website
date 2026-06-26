@@ -1231,107 +1231,112 @@ function FinalCTA() {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["-5%", "10%"]);
+  const springBgY = useSpring(bgY, {stiffness: 60, damping: 20, mass: 1});
 
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden min-h-[90vh] flex items-center"
+      className="relative overflow-hidden py-32 px-6 md:px-16"
+      style={{background: "#12100d"}}
     >
+      {/* Parallax background image */}
       <motion.div
-        className="absolute inset-[-10%] will-change-transform"
-        style={prefersReduced ? {} : {y: bgY}}
+        className="absolute inset-0"
+        style={prefersReduced ? {} : {y: springBgY}}
+        aria-hidden
       >
-        <img
-          src="https://res.cloudinary.com/dnadawobi/image/upload/v1782370812/pexels-ai25studioai-7144207_sv0es8.jpg"
-          alt=""
-          className="w-full h-full object-cover"
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-25"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80')",
+          }}
         />
       </motion.div>
 
-      <div className="absolute inset-0 bg-[#0A0A0B]/85" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0B] via-[#0A0A0B]/70 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B] via-transparent to-[#0A0A0B]/40" />
+      {/* Layered overlays */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#12100d]/80 via-[#12100d]/50 to-[#12100d]/90" />
+      <div
+        className="absolute inset-0 opacity-15"
+        style={{
+          background:
+            "radial-gradient(ellipse 50% 50% at 50% 100%, #C4A46B 0%, transparent 70%)",
+        }}
+      />
 
-      <div className="relative z-10 max-w-[1440px] mx-auto px-6 md:px-16 py-28 w-full">
-        <div className="max-w-2xl">
-          <motion.p
-            initial={{opacity: 0, x: -16}}
-            animate={inView ? {opacity: 1, x: 0} : {}}
-            transition={{duration: 0.7, ease: EASE_OUT_EXPO}}
-            className="text-[10px] tracking-[0.35em] text-[#B8955A] uppercase mb-8"
-          >
-            Begin Your Ownership Journey
-          </motion.p>
+      {/* Top separator line */}
+      <div className="absolute top-0 left-16 right-16 h-px bg-gradient-to-r from-transparent via-[#B8955A]/30 to-transparent" />
 
-          <div className="overflow-hidden mb-4">
-            <motion.h2
-              initial={{y: "105%"}}
-              animate={inView ? {y: "0%"} : {}}
-              transition={{duration: 1.1, ease: EASE_OUT_EXPO, delay: 0.1}}
-              className="font-display text-5xl md:text-7xl text-[#F0F1F3] leading-[0.88]"
-            >
-              Ready to experience
-            </motion.h2>
-          </div>
-          <div className="overflow-hidden mb-10">
-            <motion.h2
-              initial={{y: "105%"}}
-              animate={inView ? {y: "0%"} : {}}
-              transition={{duration: 1.1, ease: EASE_OUT_EXPO, delay: 0.18}}
-              className="font-display text-5xl md:text-7xl text-[#B8955A] italic leading-[0.88]"
-            >
-              the difference?
-            </motion.h2>
-          </div>
-
-          <motion.p
-            initial={{opacity: 0, y: 16}}
-            animate={inView ? {opacity: 1, y: 0} : {}}
-            transition={{duration: 0.8, delay: 0.3, ease: EASE_OUT_EXPO}}
-            className="text-sm text-[#C8CAD0]/50 leading-relaxed mb-12 max-w-md"
-          >
+      <div className="relative max-w-2xl mx-auto text-center">
+        <motion.div
+          initial={prefersReduced ? {} : {opacity: 0, y: 28}}
+          animate={inView ? {opacity: 1, y: 0} : {}}
+          transition={{duration: 0.8, ease: EASE_OUT_EXPO}}
+        >
+          <p className="text-[10px] tracking-[0.4em] text-[#B8955A] uppercase mb-6 font-mono">
+            Al Husnain Ownership
+          </p>
+          <h2 className="font-display text-4xl md:text-6xl text-[#F0F1F3] leading-[0.9] mb-6">
+            Ready to experience
+            <br />
+            <span className="text-[#B8955A] italic">the difference?</span>
+          </h2>
+          <p className="text-sm text-[#C8CAD0]/55 mb-12 max-w-sm mx-auto leading-relaxed">
             Our ownership specialists are standing by to craft a programme
-            tailored to your life. No obligation — just a conversation.
-          </motion.p>
+            tailored to your life. No obligation – just a conversation.
+          </p>
 
-          <motion.div
-            initial={{opacity: 0, y: 20}}
-            animate={inView ? {opacity: 1, y: 0} : {}}
-            transition={{duration: 0.8, delay: 0.4, ease: EASE_OUT_EXPO}}
-            className="flex flex-col sm:flex-row gap-4"
-          >
+          {/* CTA buttons – same design as Inventory page */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
             <a
               href="/contact?subject=ownership"
-              className="btn-slide btn-slide-gold px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
+              className="btn-slide btn-slide-gold px-8 py-3.5 text-sm font-medium"
             >
               <span>Schedule Consultation</span>
             </a>
             <a
               href="/contact?subject=test-drive"
-              className="btn-slide btn-slide-black px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
+              className="btn-slide btn-slide-black px-8 py-3.5 text-sm font-medium"
             >
               <span>Book Test Drive</span>
             </a>
-            <a
-              href="tel:+97100000000"
-              className="btn-slide btn-slide-black px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
-            >
-              <span>Speak to a Specialist</span>
-            </a>
-          </motion.div>
+          </div>
 
-          <motion.p
-            initial={{opacity: 0}}
-            animate={inView ? {opacity: 1} : {}}
-            transition={{duration: 0.7, delay: 0.6}}
-            className="mt-6 text-[10px] tracking-[0.15em] text-[#C8CAD0]/25 uppercase"
-          >
-            No obligation · Responds within 4 hours · Available 7 days
-          </motion.p>
-        </div>
+          {/* Contact row – adds trust and immediacy */}
+          <div className="flex flex-wrap justify-center gap-6">
+            <a
+              href="tel:+254700000000"
+              className="flex items-center gap-2 text-sm text-[#C8CAD0]/60 hover:text-[#B8955A] transition-colors duration-300 group"
+            >
+              <span className="w-8 h-8 rounded-full border border-[#2A2A31] group-hover:border-[#B8955A]/40 flex items-center justify-center text-xs transition-colors duration-300">
+                ☎
+              </span>
+              <span className="font-mono">+254 700 000 000</span>
+            </a>
+            <a
+              href="https://wa.me/254700000000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-[#C8CAD0]/60 hover:text-[#B8955A] transition-colors duration-300 group"
+            >
+              <span className="w-8 h-8 rounded-full border border-[#2A2A31] group-hover:border-[#B8955A]/40 flex items-center justify-center text-xs transition-colors duration-300">
+                ✉
+              </span>
+              <span className="font-mono">WhatsApp Us</span>
+            </a>
+            <span className="flex items-center gap-2 text-sm text-[#C8CAD0]/40">
+              <span className="w-8 h-8 rounded-full border border-[#1A1A1E] flex items-center justify-center text-xs">
+                ⌚
+              </span>
+              <span className="font-mono">Mon–Sat, 8am–6pm</span>
+            </span>
+          </div>
+        </motion.div>
       </div>
+
+      {/* Bottom separator line */}
+      <div className="absolute bottom-0 left-16 right-16 h-px bg-gradient-to-r from-transparent via-[#2A2A31] to-transparent" />
     </section>
   );
 }

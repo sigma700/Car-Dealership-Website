@@ -37,15 +37,15 @@ function PillarCard({
 
   return (
     <div
-      className={`group relative bg-graphite rounded-2xl p-8 flex flex-col items-start justify-start overflow-hidden transition-all duration-500 ${
+      className={`group relative bg-black rounded-2xl p-8 flex flex-col items-start justify-start overflow-hidden transition-all duration-500 ${
         prefersReduced
           ? ""
           : "hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/30"
       }`}
     >
-      {/* Sliding overlay – color #f0f1f3 */}
+      {/* Sliding overlay – white */}
       <div
-        className={`absolute inset-0 z-0 rounded-2xl bg-[#f0f1f3] transform translate-y-full group-hover:translate-y-0 ${
+        className={`absolute inset-0 z-0 rounded-2xl bg-white transform translate-y-full group-hover:translate-y-0 ${
           prefersReduced ? "" : "transition-transform duration-500 ease-out"
         }`}
       />
@@ -53,25 +53,25 @@ function PillarCard({
       {/* Content wrapper – above overlay */}
       <div className="relative z-10 flex flex-col items-start w-full">
         {/* Icon */}
-        <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center mb-5 group-hover:bg-gold/20 transition-colors duration-500">
-          <span className="text-gold text-base transition-transform duration-500 group-hover:scale-110">
+        <div className="w-10 h-10 rounded-full bg-[#BCBEC0]/10 flex items-center justify-center mb-5 group-hover:bg-[#BCBEC0]/20 transition-colors duration-500">
+          <span className="text-[#BCBEC0] text-base transition-transform duration-500 group-hover:scale-110">
             {icon}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-display text-silver mb-2 group-hover:text-gray-800 transition-colors duration-500">
+        <h3 className="text-xl font-display text-white mb-2 group-hover:text-black transition-colors duration-500">
           {title}
         </h3>
 
         {/* Body (always visible) */}
-        <p className="text-sm text-platinum/70 leading-relaxed mb-4 group-hover:text-gray-600 transition-colors duration-500">
+        <p className="text-sm text-[#BCBEC0]/70 leading-relaxed mb-4 group-hover:text-black transition-colors duration-500">
           {body}
         </p>
 
         {/* Detail text – fades in on hover */}
         <p
-          className={`text-xs text-gold/70 leading-relaxed transition-all duration-500 group-hover:text-amber-800 ${
+          className={`text-xs text-[#BCBEC0]/70 leading-relaxed transition-all duration-500 group-hover:text-black ${
             prefersReduced ? "" : "opacity-0 group-hover:opacity-100"
           }`}
         >

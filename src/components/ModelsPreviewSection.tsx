@@ -7,13 +7,85 @@ import Link from "next/link";
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 
+/* ─── Sliding Buttons (reusable inside this file) ─── */
+function SlidingWhiteButton({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  const prefersReduced = usePrefersReducedMotion();
+  return (
+    <motion.a
+      href={href}
+      className="relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide overflow-hidden rounded-lg group"
+      style={{backgroundColor: "#FFFFFF"}}
+      whileHover={prefersReduced ? {} : {scale: 1.02}}
+      whileTap={prefersReduced ? {} : {scale: 0.98}}
+    >
+      <motion.span
+        className="absolute inset-0 bg-black"
+        initial={{y: "100%"}}
+        whileHover={{y: "0%"}}
+        transition={{duration: 0.35, ease: [0.19, 1, 0.22, 1]}}
+      />
+      <span className="relative z-10 text-black group-hover:text-white transition-colors duration-300">
+        {children}
+      </span>
+      <motion.span
+        className="relative z-10 ml-2 text-black group-hover:text-white transition-colors duration-300"
+        whileHover={{x: 4}}
+        transition={{duration: 0.25}}
+      >
+        →
+      </motion.span>
+    </motion.a>
+  );
+}
+
+function SlidingOutlineButton({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  const prefersReduced = usePrefersReducedMotion();
+  return (
+    <motion.a
+      href={href}
+      className="relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide overflow-hidden rounded-lg group border border-white"
+      whileHover={prefersReduced ? {} : {scale: 1.02}}
+      whileTap={prefersReduced ? {} : {scale: 0.98}}
+    >
+      <motion.span
+        className="absolute inset-0 bg-white"
+        initial={{y: "100%"}}
+        whileHover={{y: "0%"}}
+        transition={{duration: 0.35, ease: [0.19, 1, 0.22, 1]}}
+      />
+      <span className="relative z-10 text-white group-hover:text-black transition-colors duration-300">
+        {children}
+      </span>
+      <motion.span
+        className="relative z-10 ml-2 text-white group-hover:text-black transition-colors duration-300"
+        whileHover={{x: 4}}
+        transition={{duration: 0.25}}
+      >
+        →
+      </motion.span>
+    </motion.a>
+  );
+}
+
 const models = [
   {
     name: "Aurelian S",
     tagline: "Performance.",
     price: 185000,
     slug: "aurelian-s",
-    accent: "#B8955A",
+    accent: "#BCBEC0",
     label: "01",
     spec: "4.2s · 612 hp · Saloon",
     image:
@@ -24,7 +96,7 @@ const models = [
     tagline: "Command.",
     price: 210000,
     slug: "aurelian-x",
-    accent: "#7A9B7A",
+    accent: "#BCBEC0",
     label: "02",
     spec: "5.1s · 503 hp · SUV",
     image:
@@ -35,7 +107,7 @@ const models = [
     tagline: "Distance.",
     price: 245000,
     slug: "grand-tourer",
-    accent: "#8A8AB8",
+    accent: "#BCBEC0",
     label: "03",
     spec: "3.8s · 680 hp · GT Coupé",
     image:
@@ -70,12 +142,12 @@ function ModelCard({
         delay: entryDelay,
         ease: EASE_OUT_EXPO,
       }}
-      style={{marginTop: index === 1 ? 64 : index === 2 ? 28 : 0}}
+      // No more margin-top offset – all cards align at the same level
       className="will-change-transform"
       itemScope
       itemType="https://schema.org/Car"
     >
-      <div className="group relative rounded-2xl overflow-hidden bg-white shadow-xl hover:shadow-[0_30px_60px_-15px_rgba(26,26,26,0.25)] transition-shadow duration-700 border border-gray-100 hover:border-gray-200/80">
+      <div className="group relative rounded-2xl overflow-hidden bg-white shadow-xl hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.25)] transition-shadow duration-700 border border-[#BCBEC0]/30 hover:border-[#BCBEC0]/60">
         <div className="relative overflow-hidden h-72">
           <img
             src={model.image}
@@ -108,30 +180,25 @@ function ModelCard({
         </div>
 
         <div className="p-5 flex flex-col gap-3">
-          <h3 className="font-display text-xl text-[#1A1A1A]" itemProp="name">
+          <h3 className="font-display text-xl text-black" itemProp="name">
             {model.name}
           </h3>
-          <p className="text-sm text-[#8A8278]" itemProp="vehicleConfiguration">
+          <p
+            className="text-sm text-[#BCBEC0]/70"
+            itemProp="vehicleConfiguration"
+          >
             {model.spec}
           </p>
-          <p className="text-lg font-mono text-gold" itemProp="offers">
+          <p className="text-lg font-mono text-[#BCBEC0]" itemProp="offers">
             AED {model.price.toLocaleString()}
           </p>
           <div className="flex gap-3 mt-2">
-            <Link
-              href={`/models/${model.slug}`}
-              className="btn-slide btn-slide-black px-4 py-2 text-sm font-medium tracking-wide inline-flex items-center justify-center"
-              aria-label={`View details for ${model.name}`}
-            >
-              <span>View Details</span>
-            </Link>
-            <Link
-              href={`/contact?model=${model.slug}`}
-              className="btn-slide btn-slide-gold px-4 py-2 text-sm font-medium tracking-wide inline-flex items-center justify-center"
-              aria-label={`Book a test drive for ${model.name}`}
-            >
-              <span>Book Test Drive</span>
-            </Link>
+            <SlidingWhiteButton href={`/models/${model.slug}`}>
+              View Details
+            </SlidingWhiteButton>
+            <SlidingOutlineButton href={`/contact?model=${model.slug}`}>
+              Book Test Drive
+            </SlidingOutlineButton>
           </div>
         </div>
       </div>
@@ -162,31 +229,28 @@ function ScrollCoverCard({
         opacity: prefersReduced ? 1 : opacity,
       }}
     >
-      <div className="cover-card relative rounded-2xl p-8 text-center shadow-2xl border border-gold/20 overflow-hidden">
+      <div className="cover-card relative rounded-2xl p-8 text-center shadow-2xl border border-[#BCBEC0]/20 overflow-hidden">
         <motion.div
           aria-hidden="true"
           className="absolute inset-0 pointer-events-none"
           style={{
             opacity: prefersReduced ? 0.3 : glow,
             background:
-              "radial-gradient(circle at 50% 0%, rgba(184,149,90,0.35), transparent 65%)",
+              "radial-gradient(circle at 50% 0%, rgba(188,190,192,0.35), transparent 65%)",
           }}
         />
-        <p className="relative text-xs tracking-widest text-gold mb-2">
+        <p className="relative text-xs tracking-widest text-[#BCBEC0] mb-2">
           JOIN 1,200+ UAE DRIVERS
         </p>
-        <h3 className="relative text-2xl font-display text-chrome mb-3">
+        <h3 className="relative text-2xl font-display text-white mb-3">
           Your perfect drive is waiting
         </h3>
-        <p className="relative text-sm text-platinum/70 mb-6">
+        <p className="relative text-sm text-[#BCBEC0]/70 mb-6">
           New inventory added weekly – these models move fast.
         </p>
-        <a
-          href="/models"
-          className="relative btn-slide btn-slide-black px-8 py-3 text-base font-medium tracking-wide inline-block"
-        >
-          <span>Browse Current Inventory</span>
-        </a>
+        <SlidingWhiteButton href="/models">
+          Browse Current Inventory
+        </SlidingWhiteButton>
       </div>
     </motion.div>
   );
@@ -261,32 +325,32 @@ export default function ModelsPreviewSection() {
   const headingColor = useTransform(
     scrollYProgress,
     [0, 0.2],
-    ["#E8E9EC", "#1A1A1A"],
+    ["#FFFFFF", "#000000"],
   );
   const subColor = useTransform(
     scrollYProgress,
     [0, 0.2],
-    ["#C8CAD0", "#5A4E3C"],
+    ["#BCBEC0", "#000000"],
   );
   const ruleColor = useTransform(
     scrollYProgress,
     [0, 0.2],
-    ["#2A2A31", "#D1CCC2"],
+    ["#BCBEC0", "#000000"],
   );
   const footerTextColor = useTransform(
     scrollYProgress,
     [0, 0.2],
-    ["#C8CAD0", "#8A8278"],
+    ["#BCBEC0", "#000000"],
   );
   const footerBorderColor = useTransform(
     scrollYProgress,
     [0, 0.2],
-    ["#2A2A31", "#D1CCC2"],
+    ["#BCBEC0", "#000000"],
   );
   const linkColor = useTransform(
     scrollYProgress,
     [0, 0.2],
-    ["#B8955A", "#7A6038"],
+    ["#BCBEC0", "#000000"],
   );
   const sweepX = useTransform(scrollYProgress, [0, 1], ["-30%", "130%"]);
 
@@ -326,7 +390,7 @@ export default function ModelsPreviewSection() {
       <motion.div
         className="absolute inset-0 z-0"
         style={{
-          backgroundColor: "#F5F0EB",
+          backgroundColor: "#FFFFFF",
           scale: prefersReduced ? 1 : scale,
           opacity: prefersReduced ? 1 : opacity,
           willChange: "transform, opacity",
@@ -340,7 +404,7 @@ export default function ModelsPreviewSection() {
           style={{
             translateX: sweepX,
             background:
-              "linear-gradient(100deg, transparent 0%, rgba(184,149,90,0.08) 45%, rgba(184,149,90,0.16) 50%, rgba(184,149,90,0.08) 55%, transparent 100%)",
+              "linear-gradient(100deg, transparent 0%, rgba(188,190,192,0.08) 45%, rgba(188,190,192,0.16) 50%, rgba(188,190,192,0.08) 55%, transparent 100%)",
             width: "60%",
             mixBlendMode: "multiply",
           }}
