@@ -8,6 +8,7 @@ import {
   useInView,
 } from "framer-motion";
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
+import Button from "@/components/Button";
 
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 
@@ -83,18 +84,16 @@ export default function BespokeTeaserSection() {
           bespoke atelier transforms your vision into reality.
         </motion.p>
 
-        {/* CTA — primary white button */}
+        {/* CTA – using the reusable Button */}
         <motion.div
           initial={{opacity: 0, y: 16}}
           animate={inView ? {opacity: 1, y: 0} : {}}
           transition={{duration: 0.6, delay: 0.35, ease: EASE_OUT_EXPO}}
         >
-          <a
-            href="/bespoke"
-            className="btn-slide btn-slide-white px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
-          >
-            <span className="text-black">Explore Bespoke</span>
-          </a>
+          <Button variant="secondary" size="md" href="/bespoke">
+            Explore Bespoke
+            <span className="ml-2">→</span>
+          </Button>
         </motion.div>
 
         {/* Optional: small stat line */}

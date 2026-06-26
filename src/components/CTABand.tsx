@@ -8,83 +8,11 @@ import {
   useSpring,
 } from "framer-motion";
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
+import Button from "@/components/Button";
 
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 const SPRING_SMOOTH = {stiffness: 50, damping: 20, mass: 1};
 
-/* ─── Sliding Buttons (same as before) ─── */
-function SlidingWhiteButton({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  const prefersReduced = usePrefersReducedMotion();
-  return (
-    <motion.a
-      href={href}
-      className="relative inline-flex items-center justify-center px-8 py-3 text-base md:text-lg font-medium tracking-wide overflow-hidden rounded-lg group"
-      style={{backgroundColor: "#FFFFFF"}}
-      whileHover={prefersReduced ? {} : {scale: 1.02}}
-      whileTap={prefersReduced ? {} : {scale: 0.98}}
-    >
-      <motion.span
-        className="absolute inset-0 bg-black"
-        initial={{y: "100%"}}
-        whileHover={{y: "0%"}}
-        transition={{duration: 0.35, ease: [0.19, 1, 0.22, 1]}}
-      />
-      <span className="relative z-10 text-black group-hover:text-white transition-colors duration-300">
-        {children}
-      </span>
-      <motion.span
-        className="relative z-10 ml-2 text-black group-hover:text-white transition-colors duration-300"
-        whileHover={{x: 4}}
-        transition={{duration: 0.25}}
-      >
-        →
-      </motion.span>
-    </motion.a>
-  );
-}
-
-function SlidingOutlineButton({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  const prefersReduced = usePrefersReducedMotion();
-  return (
-    <motion.a
-      href={href}
-      className="relative inline-flex items-center justify-center px-8 py-3 text-base md:text-lg font-medium tracking-wide overflow-hidden rounded-lg group border border-white"
-      whileHover={prefersReduced ? {} : {scale: 1.02}}
-      whileTap={prefersReduced ? {} : {scale: 0.98}}
-    >
-      <motion.span
-        className="absolute inset-0 bg-white"
-        initial={{y: "100%"}}
-        whileHover={{y: "0%"}}
-        transition={{duration: 0.35, ease: [0.19, 1, 0.22, 1]}}
-      />
-      <span className="relative z-10 text-white group-hover:text-black transition-colors duration-300">
-        {children}
-      </span>
-      <motion.span
-        className="relative z-10 ml-2 text-white group-hover:text-black transition-colors duration-300"
-        whileHover={{x: 4}}
-        transition={{duration: 0.25}}
-      >
-        →
-      </motion.span>
-    </motion.a>
-  );
-}
-
-/* ─── FinalCTA ─── */
 export default function CTABand() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, {once: true, amount: 0.3});
@@ -149,15 +77,15 @@ export default function CTABand() {
             Our specialists are ready to help you discover the perfect vehicle.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <SlidingWhiteButton href="tel:+254700000000">
-              Call Now
-            </SlidingWhiteButton>
-            <SlidingOutlineButton href="/contact">
-              Schedule Visit
-            </SlidingOutlineButton>
-            <SlidingOutlineButton href="/inventory">
-              View Inventory
-            </SlidingOutlineButton>
+            <Button variant="secondary" size="md" href="tel:+254700000000">
+              Call Now <span className="ml-2">→</span>
+            </Button>
+            <Button variant="outline" size="md" href="/contact">
+              Schedule Visit <span className="ml-2">→</span>
+            </Button>
+            <Button variant="outline" size="md" href="/inventory">
+              View Inventory <span className="ml-2">→</span>
+            </Button>
           </div>
         </motion.div>
       </div>

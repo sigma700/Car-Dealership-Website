@@ -3,81 +3,10 @@ import {useRef, useMemo} from "react";
 import {motion, useScroll, useTransform, useInView} from "framer-motion";
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
 import Link from "next/link";
+import Button from "@/components/Button"; // new reusable button
 
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
-
-/* ─── Sliding Buttons (reusable inside this file) ─── */
-function SlidingWhiteButton({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  const prefersReduced = usePrefersReducedMotion();
-  return (
-    <motion.a
-      href={href}
-      className="relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide overflow-hidden rounded-lg group"
-      style={{backgroundColor: "#FFFFFF"}}
-      whileHover={prefersReduced ? {} : {scale: 1.02}}
-      whileTap={prefersReduced ? {} : {scale: 0.98}}
-    >
-      <motion.span
-        className="absolute inset-0 bg-black"
-        initial={{y: "100%"}}
-        whileHover={{y: "0%"}}
-        transition={{duration: 0.35, ease: [0.19, 1, 0.22, 1]}}
-      />
-      <span className="relative z-10 text-black group-hover:text-white transition-colors duration-300">
-        {children}
-      </span>
-      <motion.span
-        className="relative z-10 ml-2 text-black group-hover:text-white transition-colors duration-300"
-        whileHover={{x: 4}}
-        transition={{duration: 0.25}}
-      >
-        →
-      </motion.span>
-    </motion.a>
-  );
-}
-
-function SlidingOutlineButton({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  const prefersReduced = usePrefersReducedMotion();
-  return (
-    <motion.a
-      href={href}
-      className="relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide overflow-hidden rounded-lg group border border-white"
-      whileHover={prefersReduced ? {} : {scale: 1.02}}
-      whileTap={prefersReduced ? {} : {scale: 0.98}}
-    >
-      <motion.span
-        className="absolute inset-0 bg-white"
-        initial={{y: "100%"}}
-        whileHover={{y: "0%"}}
-        transition={{duration: 0.35, ease: [0.19, 1, 0.22, 1]}}
-      />
-      <span className="relative z-10 text-white group-hover:text-black transition-colors duration-300">
-        {children}
-      </span>
-      <motion.span
-        className="relative z-10 ml-2 text-white group-hover:text-black transition-colors duration-300"
-        whileHover={{x: 4}}
-        transition={{duration: 0.25}}
-      >
-        →
-      </motion.span>
-    </motion.a>
-  );
-}
 
 const models = [
   {
@@ -142,7 +71,6 @@ function ModelCard({
         delay: entryDelay,
         ease: EASE_OUT_EXPO,
       }}
-      // No more margin-top offset – all cards align at the same level
       className="will-change-transform"
       itemScope
       itemType="https://schema.org/Car"
@@ -193,12 +121,22 @@ function ModelCard({
             AED {model.price.toLocaleString()}
           </p>
           <div className="flex gap-3 mt-2">
-            <SlidingWhiteButton href={`/models/${model.slug}`}>
+            <Button
+              variant="secondary"
+              size="sm"
+              href={`/models/${model.slug}`}
+            >
               View Details
-            </SlidingWhiteButton>
-            <SlidingOutlineButton href={`/contact?model=${model.slug}`}>
+              <span className="ml-2">→</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              href={`/contact?model=${model.slug}`}
+            >
               Book Test Drive
-            </SlidingOutlineButton>
+              <span className="ml-2">→</span>
+            </Button>
           </div>
         </div>
       </div>
@@ -248,9 +186,10 @@ function ScrollCoverCard({
         <p className="relative text-sm text-[#BCBEC0]/70 mb-6">
           New inventory added weekly – these models move fast.
         </p>
-        <SlidingWhiteButton href="/models">
+        <Button variant="secondary" size="sm" href="/models">
           Browse Current Inventory
-        </SlidingWhiteButton>
+          <span className="ml-2">→</span>
+        </Button>
       </div>
     </motion.div>
   );

@@ -1,380 +1,275 @@
 "use client";
-import {useState, useEffect, useRef, useCallback} from "react";
+
+import {useRef} from "react";
 import {
   motion,
-  AnimatePresence,
   useScroll,
   useTransform,
   useSpring,
   useMotionValue,
+  useAnimationFrame,
 } from "framer-motion";
+import Button from "@/components/Button";
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
 
-// ─── EASING CONSTANTS ────────────────────────────────────────────
-const EASE_OUT = [0.16, 1, 0.3, 1] as const;
-const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
-const EASE_IN_OUT = [0.87, 0, 0.13, 1] as const;
+const EXPO = [0.19, 1, 0.22, 1] as const;
+const OUT = [0.16, 1, 0.3, 1] as const;
 
-// ─── SLIDING BUTTONS ─────────────────────────────────────────────
-
-function SlidingWhiteButton({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  const prefersReduced = usePrefersReducedMotion();
-
-  return (
-    <motion.a
-      href={href}
-      className="relative inline-flex items-center justify-center px-8 py-3 text-base md:text-lg font-medium tracking-wide overflow-hidden rounded-lg group"
-      style={{backgroundColor: "#FFFFFF"}}
-      whileHover={prefersReduced ? {} : {scale: 1.02}}
-      whileTap={prefersReduced ? {} : {scale: 0.98}}
-    >
-      {/* Sliding overlay – dark slides up from bottom */}
-      <motion.span
-        className="absolute inset-0 bg-black"
-        initial={{y: "100%"}}
-        whileHover={{y: "0%"}}
-        transition={{duration: 0.35, ease: [0.19, 1, 0.22, 1]}}
-      />
-      {/* Text */}
-      <span className="relative z-10 text-black group-hover:text-white transition-colors duration-300">
-        {children}
-      </span>
-      {/* Arrow */}
-      <motion.span
-        className="relative z-10 ml-2 text-black group-hover:text-white transition-colors duration-300"
-        whileHover={{x: 4}}
-        transition={{duration: 0.25}}
-      >
-        →
-      </motion.span>
-    </motion.a>
-  );
-}
-
-function SlidingOutlineButton({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  const prefersReduced = usePrefersReducedMotion();
-
-  return (
-    <motion.a
-      href={href}
-      className="relative inline-flex items-center justify-center px-8 py-3 text-base md:text-lg font-medium tracking-wide overflow-hidden rounded-lg group border border-white"
-      whileHover={prefersReduced ? {} : {scale: 1.02}}
-      whileTap={prefersReduced ? {} : {scale: 0.98}}
-    >
-      {/* Sliding overlay – white slides up from bottom */}
-      <motion.span
-        className="absolute inset-0 bg-white"
-        initial={{y: "100%"}}
-        whileHover={{y: "0%"}}
-        transition={{duration: 0.35, ease: [0.19, 1, 0.22, 1]}}
-      />
-      {/* Text */}
-      <span className="relative z-10 text-white group-hover:text-black transition-colors duration-300">
-        {children}
-      </span>
-      {/* Arrow */}
-      <motion.span
-        className="relative z-10 ml-2 text-white group-hover:text-black transition-colors duration-300"
-        whileHover={{x: 4}}
-        transition={{duration: 0.25}}
-      >
-        →
-      </motion.span>
-    </motion.a>
-  );
-}
-
-// ─── CAROUSEL ────────────────────────────────────────────────────
-interface HeroCarouselProps {
-  images: string[];
-  scrollY: ReturnType<typeof useMotionValue<number>>;
-}
-
-function HeroCarousel({images, scrollY}: HeroCarouselProps) {
-  const [index, setIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const prefersReduced = usePrefersReducedMotion();
-
-  const imgY = useTransform(scrollY, [0, 600], ["0%", "22%"]);
-  const imgScale = useTransform(scrollY, [0, 600], [1, 1.08]);
-
-  const advance = useCallback(() => {
-    setIndex((p) => (p + 1) % images.length);
-  }, [images.length]);
-
-  useEffect(() => {
-    if (prefersReduced || isPaused) return;
-    timerRef.current = setInterval(advance, 5500);
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [advance, isPaused, prefersReduced]);
-
-  if (prefersReduced) {
-    return (
-      <div className="absolute inset-0 -z-10">
-        <img
-          src={images[0]}
-          alt=""
-          className="w-full h-full object-cover"
-          fetchPriority="high"
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div
-      className="absolute inset-0 -z-10 overflow-hidden"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={index}
-          className="absolute inset-0"
-          initial={{opacity: 0, scale: 1.06}}
-          animate={{opacity: 1, scale: 1}}
-          exit={{opacity: 0, scale: 0.98}}
-          transition={{
-            opacity: {duration: 1.4, ease: EASE_IN_OUT},
-            scale: {duration: 1.8, ease: EASE_OUT},
-          }}
-          style={{y: imgY, scale: imgScale}}
-        >
-          <img
-            src={images[index]}
-            alt=""
-            className="w-full h-full object-cover"
-            fetchPriority={index === 0 ? "high" : "auto"}
-            style={{willChange: "transform"}}
-          />
-        </motion.div>
-      </AnimatePresence>
-
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 60%, transparent 30%, rgba(0,0,0,0.55) 100%)",
-        }}
-      />
-
-      <ProgressBar
-        key={index}
-        duration={5500}
-        paused={isPaused}
-        reduced={prefersReduced}
-      />
-
-      <div className="absolute bottom-6 right-6 flex gap-2 z-10">
-        {images.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setIndex(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            className="relative w-6 h-px bg-white/20 overflow-hidden"
-          >
-            {i === index && (
-              <motion.span
-                className="absolute inset-0 bg-[#BCBEC0] origin-left"
-                initial={{scaleX: 0}}
-                animate={{scaleX: 1}}
-                transition={{duration: 5.5, ease: "linear"}}
-              />
-            )}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ProgressBar({
-  duration,
-  paused,
-  reduced,
-}: {
-  duration: number;
-  paused: boolean;
-  reduced: boolean;
-}) {
-  if (reduced) return null;
-  return (
-    <motion.div
-      className="absolute bottom-0 left-0 h-px bg-[#BCBEC0]/60 origin-left z-10"
-      initial={{scaleX: 0}}
-      animate={{scaleX: paused ? undefined : 1}}
-      transition={{duration: duration / 1000, ease: "linear"}}
-    />
-  );
-}
-
-// ─── CONTENT VARIANTS ─────────────────────────────────────────────
-const containerVariants = {
+const stagger = {
   hidden: {},
-  visible: {
-    transition: {staggerChildren: 0.1, delayChildren: 0.3},
-  },
+  visible: {transition: {staggerChildren: 0.12, delayChildren: 0.25}},
 };
 
-const lineVariants = {
-  hidden: {y: "110%", opacity: 0},
+const clipReveal = {
+  hidden: {clipPath: "inset(0 100% 0 0)", opacity: 0},
   visible: {
-    y: "0%",
+    clipPath: "inset(0 0% 0 0)",
     opacity: 1,
-    transition: {duration: 0.9, ease: EASE_OUT_EXPO},
+    transition: {duration: 1.1, ease: EXPO},
   },
 };
 
 const fadeUp = {
-  hidden: {y: 28, opacity: 0},
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {duration: 0.75, ease: EASE_OUT},
-  },
+  hidden: {y: 24, opacity: 0},
+  visible: {y: 0, opacity: 1, transition: {duration: 0.85, ease: OUT}},
 };
 
-// ─── STAT ITEM ────────────────────────────────────────────────────
-function StatItem({value, label}: {value: string; label: string}) {
-  return (
-    <motion.div variants={fadeUp} className="flex flex-col gap-0.5">
-      <span className="text-[#BCBEC0] font-mono text-xl md:text-2xl leading-none">
-        {value}
-      </span>
-      <span className="text-[#BCBEC0]/60 text-sm">{label}</span>
-    </motion.div>
-  );
-}
-
-// ─── HERO SECTION ─────────────────────────────────────────────────
-const dealershipImages = [
-  "https://res.cloudinary.com/dnadawobi/image/upload/v1782256076/pexels-introspectivedsgn-5864164_s1ocof.jpg",
-  "https://res.cloudinary.com/dnadawobi/image/upload/v1782256105/igor-constantino-Ba4Ym_aC01c-unsplash_vmcgig.jpg",
-  "https://res.cloudinary.com/dnadawobi/image/upload/v1782256105/igor-constantino-Ba4Ym_aC01c-unsplash_vmcgig.jpg",
+const TRUST_ITEMS = [
+  {value: "15+", label: "Years of Excellence"},
+  {value: "10,000+", label: "Satisfied Clients"},
 ];
 
-export default function HeroSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const prefersReduced = usePrefersReducedMotion();
+const TRUST_BADGES = [
+  "Certified Vehicles",
+  "Nationwide Delivery",
+  "Trusted Financing",
+];
 
-  const {scrollY} = useScroll();
+const INDICATORS = [
+  "15+ Years Experience",
+  "Certified Vehicles",
+  "Nationwide Delivery",
+];
 
-  const contentY = useTransform(scrollY, [0, 600], [0, -60]);
-  const contentOpacity = useTransform(scrollY, [0, 340], [1, 0]);
-  const overlayOpacity = useTransform(scrollY, [0, 500], [0.55, 0.82]);
+// Gentle perpetual float for the trust card
+function useFloat(amplitude = 6, period = 4000) {
+  const y = useMotionValue(0);
+  const reduced = usePrefersReducedMotion();
+  useAnimationFrame((t) => {
+    if (reduced) return;
+    y.set(Math.sin((t / period) * Math.PI * 2) * amplitude);
+  });
+  return y;
+}
 
-  const springContentY = useSpring(contentY, {stiffness: 80, damping: 20});
+export default function AboutHero() {
+  const ref = useRef<HTMLElement>(null);
+  const reduced = usePrefersReducedMotion();
+
+  const {scrollY} = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+
+  const imgY = useTransform(scrollY, [0, 700], ["0%", "18%"]);
+  const contentOpacity = useTransform(scrollY, [0, 350], [1, 0]);
+  const contentSpring = useSpring(contentOpacity, {stiffness: 80, damping: 20});
+
+  const cardFloat = useFloat(5, 4200);
 
   return (
     <section
-      ref={sectionRef}
-      className="relative h-screen w-full overflow-hidden"
+      ref={ref}
+      className="relative w-full overflow-hidden bg-black"
+      style={{height: "92vh", minHeight: 640}}
+      aria-label="About Al Husnain Motors"
     >
-      <HeroCarousel images={dealershipImages} scrollY={scrollY} />
+      {/* ── Background image ── */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <motion.div
+          className="absolute inset-0"
+          style={reduced ? {} : {y: imgY}}
+        >
+          <img
+            src="https://res.cloudinary.com/dnadawobi/image/upload/v1782261216/pexels-introspectivedsgn-5864155_czizzw.jpg"
+            alt=""
+            className="w-full h-full object-cover object-[40%_50%]"
+            fetchPriority="high"
+            style={{willChange: "transform"}}
+          />
+        </motion.div>
+      </div>
 
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-black via-black/40 to-black -z-10"
-        style={prefersReduced ? {} : {opacity: overlayOpacity}}
+      {/* ── Cinematic overlay — softer than before, preserves image detail ── */}
+      <div
+        className="absolute inset-0 z-10 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(105deg, rgba(0,0,0,0.84) 0%, rgba(0,0,0,0.52) 48%, rgba(0,0,0,0.12) 100%)",
+        }}
+        aria-hidden
+      />
+      {/* Bottom edge fade into page */}
+      <div
+        className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none"
+        style={{
+          height: 100,
+          background:
+            "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 100%)",
+        }}
+        aria-hidden
       />
 
+      {/* ── Main content ── */}
       <motion.div
-        className="absolute inset-0 z-10 flex flex-col justify-center px-6 md:px-16"
-        style={
-          prefersReduced ? {} : {y: springContentY, opacity: contentOpacity}
-        }
+        className="absolute inset-0 z-20 flex items-center"
+        style={reduced ? {} : {opacity: contentSpring}}
       >
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="flex flex-col"
-        >
-          {/* Badge */}
-          <motion.div variants={fadeUp} className="overflow-hidden mb-4">
-            <span className="inline-block text-xs md:text-sm tracking-widest text-[#BCBEC0] bg-black/80 backdrop-blur px-3 py-1 w-fit uppercase">
-              UAE'S PREMIER LUXURY DESTINATION
-            </span>
-          </motion.div>
+        <div className="w-full px-8 md:px-16 lg:px-24 xl:px-32">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12 lg:gap-20">
+            {/* Left: editorial text block */}
+            <div className="flex-1 max-w-[520px]">
+              <motion.div
+                variants={stagger}
+                initial="hidden"
+                animate="visible"
+                className="flex flex-col"
+              >
+                {/* Eyebrow */}
+                <motion.p
+                  variants={fadeUp}
+                  className="text-[10px] tracking-[0.28em] uppercase text-[#BCBEC0]/60 mb-8 font-medium"
+                >
+                  Since 2009 · Dubai, UAE
+                </motion.p>
 
-          {/* H1 */}
-          <div className="overflow-hidden">
-            <motion.h1
-              variants={lineVariants}
-              className="text-5xl md:text-7xl lg:text-8xl font-display text-white leading-[0.9] tracking-tight"
+                {/* Single H1 with two typographic weights */}
+                <h1 className="mb-10 leading-none tracking-tight">
+                  <div className="overflow-hidden mb-1">
+                    <motion.span
+                      variants={clipReveal}
+                      className="block text-[clamp(2rem,4.5vw,4rem)] font-display font-light text-white/70 tracking-[0.04em]"
+                      style={{letterSpacing: "0.05em"}}
+                    >
+                      Built on
+                    </motion.span>
+                  </div>
+                  <div className="overflow-hidden">
+                    <motion.span
+                      variants={clipReveal}
+                      className="block text-[clamp(3.2rem,7.5vw,7rem)] font-display font-bold text-white leading-[0.88] tracking-[-0.02em]"
+                    >
+                      INTEGRITY.
+                    </motion.span>
+                  </div>
+                </h1>
+
+                {/* Supporting paragraph */}
+                <motion.p
+                  variants={fadeUp}
+                  className="text-sm md:text-[15px] text-[#BCBEC0]/70 leading-[1.75] mb-10 max-w-[460px]"
+                >
+                  For fifteen years, Al Husnain Motors has set the standard for
+                  pre-owned luxury in the UAE. Every vehicle we present is
+                  hand-selected, rigorously inspected, and sold with complete
+                  transparency — because our reputation is the only guarantee
+                  that matters.
+                </motion.p>
+
+                {/* CTAs */}
+                <motion.div
+                  variants={fadeUp}
+                  className="flex flex-col sm:flex-row gap-3 mb-8"
+                >
+                  <Button variant="secondary" size="lg">
+                    Our Story
+                  </Button>
+                  <Button variant="outline" size="lg">
+                    Meet the Team
+                  </Button>
+                </motion.div>
+
+                {/* Trust indicators */}
+                <motion.div
+                  variants={fadeUp}
+                  className="flex flex-wrap gap-x-6 gap-y-2"
+                >
+                  {INDICATORS.map((item) => (
+                    <span
+                      key={item}
+                      className="flex items-center gap-1.5 text-[11px] tracking-[0.1em] text-[#BCBEC0]/45"
+                    >
+                      <span className="text-[#BCBEC0]/35">✓</span>
+                      {item}
+                    </span>
+                  ))}
+                </motion.div>
+              </motion.div>
+            </div>
+
+            {/* Right: floating trust card */}
+            <motion.div
+              className="flex-shrink-0 self-center lg:self-auto"
+              initial={{opacity: 0, x: 20}}
+              animate={{opacity: 1, x: 0}}
+              transition={{delay: 0.9, duration: 1.0, ease: OUT}}
+              style={reduced ? {} : {y: cardFloat}}
             >
-              Al Husnain
-            </motion.h1>
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  backdropFilter: "blur(18px)",
+                  WebkitBackdropFilter: "blur(18px)",
+                  border: "1px solid rgba(255,255,255,0.09)",
+                  borderRadius: 16,
+                  boxShadow:
+                    "0 24px 48px rgba(0,0,0,0.28), 0 1px 0 rgba(255,255,255,0.06) inset",
+                  minWidth: 220,
+                  maxWidth: 260,
+                }}
+              >
+                {/* Stats */}
+                {TRUST_ITEMS.map(({value, label}, i) => (
+                  <div
+                    key={label}
+                    className="px-7 py-5"
+                    style={
+                      i < TRUST_ITEMS.length - 1
+                        ? {borderBottom: "1px solid rgba(255,255,255,0.07)"}
+                        : {}
+                    }
+                  >
+                    <p className="font-display font-semibold text-white text-3xl leading-none mb-1 tracking-tight">
+                      {value}
+                    </p>
+                    <p className="text-[11px] text-[#BCBEC0]/50 tracking-[0.12em] uppercase">
+                      {label}
+                    </p>
+                  </div>
+                ))}
+
+                {/* Divider */}
+                <div
+                  className="mx-7"
+                  style={{height: 1, background: "rgba(255,255,255,0.07)"}}
+                />
+
+                {/* Badge list */}
+                <div className="px-7 py-5 flex flex-col gap-2.5">
+                  {TRUST_BADGES.map((badge) => (
+                    <p
+                      key={badge}
+                      className="flex items-center gap-2.5 text-[12px] text-[#BCBEC0]/60 tracking-wide"
+                    >
+                      <span className="text-[#BCBEC0]/35 text-[10px]">✓</span>
+                      {badge}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </div>
-
-          {/* Tagline */}
-          <motion.p
-            variants={fadeUp}
-            className="text-lg md:text-2xl text-[#BCBEC0] mt-4 max-w-xl leading-snug"
-          >
-            Curated pre‑owned vehicles. Transparent pricing. Concierge delivery.
-          </motion.p>
-
-          {/* Stats */}
-          <motion.div
-            variants={fadeUp}
-            className="flex flex-wrap gap-x-10 gap-y-4 mt-8 text-sm md:text-base"
-          >
-            <StatItem value="120+" label="Vehicles in stock" />
-            <StatItem value="48h" label="Test drive delivery" />
-            <StatItem value="5yr" label="Warranty included" />
-          </motion.div>
-
-          {/* CTAs – sliding vertical animation buttons */}
-          <motion.div
-            variants={fadeUp}
-            className="mt-10 flex flex-col sm:flex-row gap-4"
-          >
-            <SlidingWhiteButton href="/inventory">
-              Browse Inventory
-            </SlidingWhiteButton>
-            <SlidingOutlineButton href="/contact">
-              Book a Test Drive
-            </SlidingOutlineButton>
-            <SlidingOutlineButton href="/sell">
-              Value Your Trade
-            </SlidingOutlineButton>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center text-[#BCBEC0]/70 text-xs tracking-widest gap-1.5"
-        initial={{opacity: 0, y: 12}}
-        animate={{opacity: 1, y: 0}}
-        transition={{delay: 1.4, duration: 0.7, ease: EASE_OUT}}
-        style={
-          prefersReduced
-            ? {}
-            : {opacity: useTransform(scrollY, [0, 200], [1, 0])}
-        }
-      >
-        <span>EXPLORE</span>
-        <motion.div
-          className="w-px bg-[#BCBEC0]/40"
-          animate={{height: ["16px", "32px", "16px"]}}
-          transition={{duration: 2, repeat: Infinity, ease: "easeInOut"}}
-        />
+        </div>
       </motion.div>
     </section>
   );

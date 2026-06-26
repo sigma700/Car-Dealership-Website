@@ -1,5 +1,5 @@
 "use client";
-import {useRef, useEffect, useState, useCallback} from "react";
+import {useRef, useEffect, useState} from "react";
 import {
   motion,
   useScroll,
@@ -11,6 +11,8 @@ import {
   useSpring,
 } from "framer-motion";
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
+import CTABand from "@/components/CTABand";
+import Button from "@/components/Button";
 
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
@@ -20,7 +22,6 @@ function CountUp({end, duration = 2}: {end: number; duration?: number}) {
   const [value, setValue] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, {once: true, amount: 0.5});
-
   useEffect(() => {
     if (!inView) return;
     const controls = animate(0, end, {
@@ -30,7 +31,6 @@ function CountUp({end, duration = 2}: {end: number; duration?: number}) {
     });
     return () => controls.stop();
   }, [inView, end, duration]);
-
   return <span ref={ref}>{value.toLocaleString()}</span>;
 }
 
@@ -175,34 +175,30 @@ const commissions = [
 export default function BespokePage() {
   const pageRef = useRef<HTMLDivElement>(null);
   return (
-    <div ref={pageRef} className="bg-[#0A0A0B]">
+    <div ref={pageRef} className="bg-black">
       <HeroSection />
       <ExclusivitySignal />
       <MaterialImmersion />
       <BespokeProcess />
       <PastCommissions />
       <SocialProof />
-      <FinalCTA />
+      <CTABand />
     </div>
   );
 }
 
-// ─── HERO — CINEMATIC VEHICLE EMERGENCE ───────────────────────────
+// ─── HERO ───────────────────────────────────────────
 function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
-
   const {scrollYProgress} = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
   });
-
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const midY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "6%"]);
   const opacity = useTransform(scrollYProgress, [0.5, 0.8], [1, 0]);
   const vigY = useTransform(scrollYProgress, [0, 0.3], ["0%", "-8%"]);
-
   const bgX = useMotionValue(0);
   const bgScale = useMotionValue(1.06);
   useEffect(() => {
@@ -235,23 +231,19 @@ function HeroSection() {
           className="w-full h-full object-cover"
         />
       </motion.div>
-
       <motion.div
         className="absolute inset-0 z-10"
         style={prefersReduced ? {} : {y: vigY}}
         initial={{
-          background: "linear-gradient(to top, #0A0A0B 100%, #0A0A0B 100%)",
+          background: "linear-gradient(to top, black 100%, black 100%)",
         }}
         animate={{
-          background:
-            "linear-gradient(to top, #0A0A0B 0%, rgba(10,10,11,0) 60%)",
+          background: "linear-gradient(to top, black 0%, rgba(0,0,0,0) 60%)",
         }}
         transition={{duration: 2.4, ease: [0.16, 1, 0.3, 1], delay: 0.4}}
       />
-
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0B]/85 via-[#0A0A0B]/40 to-transparent z-20" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0B]/60 via-transparent to-transparent z-20" />
-
+      <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent z-20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent z-20" />
       <div
         className="absolute inset-0 z-20 opacity-[0.04] pointer-events-none"
         style={{
@@ -259,19 +251,16 @@ function HeroSection() {
             "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
         }}
       />
-
       <motion.div
         className="relative z-30 flex flex-col justify-end h-full max-w-[1440px] mx-auto px-6 md:px-16 pb-20 md:pb-28"
         style={prefersReduced ? {} : {y: textY, opacity}}
       >
-        {/* No eyebrow here – removed */}
-
         <div className="overflow-hidden mb-2">
           <motion.h1
             initial={{y: "110%"}}
             animate={{y: "0%"}}
             transition={{duration: 1.2, ease: EASE_OUT_EXPO, delay: 0.9}}
-            className="font-display text-5xl md:text-8xl lg:text-[7.5rem] text-[#F0F1F3] leading-[0.86] tracking-tight"
+            className="font-display text-5xl md:text-8xl lg:text-[7.5rem] text-white leading-[0.86] tracking-tight"
           >
             Your imagination.
           </motion.h1>
@@ -281,18 +270,17 @@ function HeroSection() {
             initial={{y: "110%"}}
             animate={{y: "0%"}}
             transition={{duration: 1.2, ease: EASE_OUT_EXPO, delay: 1.05}}
-            className="font-display text-5xl md:text-8xl lg:text-[7.5rem] text-[#B8955A] italic leading-[0.86] tracking-tight"
+            className="font-display text-5xl md:text-8xl lg:text-[7.5rem] text-[#BCBEC0] italic leading-[0.86] tracking-tight"
           >
             Our craft.
           </motion.h1>
         </div>
-
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8 max-w-5xl">
           <motion.p
             initial={{opacity: 0, y: 16}}
             animate={{opacity: 1, y: 0}}
             transition={{duration: 0.9, ease: EASE_OUT_EXPO, delay: 1.25}}
-            className="text-sm text-[#C8CAD0]/55 max-w-xs leading-relaxed"
+            className="text-sm md:text-base text-[#BCBEC0]/60 max-w-xs leading-relaxed"
           >
             No two Al Husnain Bespoke vehicles are ever the same. Yours will be
             the only one in existence.
@@ -303,29 +291,26 @@ function HeroSection() {
             transition={{duration: 0.9, ease: EASE_OUT_EXPO, delay: 1.4}}
             className="flex flex-col sm:flex-row gap-3"
           >
-            <a
+            <Button
+              variant="secondary"
+              size="md"
               href="/contact?subject=bespoke"
-              className="btn-slide btn-slide-gold px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
             >
-              <span>Begin Your Commission</span>
-            </a>
-            <a
-              href="#process"
-              className="btn-slide btn-slide-black px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
-            >
-              <span>Discover the Process</span>
-            </a>
+              Begin Your Commission <span className="ml-2">→</span>
+            </Button>
+            <Button variant="outline" size="md" href="#process">
+              Discover the Process <span className="ml-2">→</span>
+            </Button>
           </motion.div>
         </div>
-
         <motion.div
           initial={{opacity: 0}}
           animate={{opacity: 1}}
           transition={{delay: 2.0, duration: 0.8}}
-          className="absolute bottom-8 right-8 md:right-16 flex items-center gap-3 text-[#C8CAD0]/25"
+          className="absolute bottom-8 right-8 md:right-16 flex items-center gap-3 text-[#BCBEC0]/25"
         >
           <motion.div
-            className="w-8 h-px bg-[#C8CAD0]/25"
+            className="w-8 h-px bg-[#BCBEC0]/25"
             animate={{scaleX: [0, 1, 0]}}
             transition={{duration: 2.5, repeat: Infinity, ease: "easeInOut"}}
             style={{originX: 0}}
@@ -341,16 +326,15 @@ function HeroSection() {
 function ExclusivitySignal() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, {once: true, amount: 0.5});
-
   return (
-    <div ref={ref} className="bg-[#111114] border-t border-b border-[#2A2A31]">
+    <div ref={ref} className="bg-black border-t border-b border-[#BCBEC0]/20">
       <div className="max-w-[1440px] mx-auto px-6 md:px-16 py-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <motion.p
             initial={{opacity: 0, x: -16}}
             animate={inView ? {opacity: 1, x: 0} : {}}
             transition={{duration: 0.7, ease: EASE_OUT_EXPO}}
-            className="text-[10px] tracking-[0.3em] text-[#B8955A]/60 uppercase"
+            className="text-[10px] tracking-[0.3em] text-[#BCBEC0]/60 uppercase"
           >
             Strictly Limited
           </motion.p>
@@ -358,10 +342,10 @@ function ExclusivitySignal() {
             initial={{opacity: 0}}
             animate={inView ? {opacity: 1} : {}}
             transition={{duration: 0.8, delay: 0.1}}
-            className="text-sm text-[#C8CAD0]/50 text-center max-w-lg"
+            className="text-sm text-[#BCBEC0]/50 text-center max-w-lg"
           >
             We accept a maximum of{" "}
-            <span className="text-[#B8955A] font-mono">
+            <span className="text-[#BCBEC0] font-mono">
               24 bespoke commissions
             </span>{" "}
             per year. Each receives a dedicated advisor, atelier time, and a
@@ -374,7 +358,7 @@ function ExclusivitySignal() {
           >
             <a
               href="/contact?subject=bespoke-availability"
-              className="text-[10px] tracking-[0.25em] text-[#B8955A] uppercase border-b border-[#B8955A]/30 pb-px hover:border-[#B8955A] transition-colors whitespace-nowrap"
+              className="text-[10px] tracking-[0.25em] text-[#BCBEC0] uppercase border-b border-[#BCBEC0]/30 pb-px hover:border-[#BCBEC0] transition-colors whitespace-nowrap"
             >
               Check Availability →
             </a>
@@ -391,16 +375,14 @@ function MaterialImmersion() {
   const [activeSwatchIndex, setActiveSwatchIndex] = useState(2);
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, {once: true, amount: 0.15});
-
   const mat = materials[activeMat];
 
   return (
     <section
       ref={sectionRef}
-      className="relative bg-[#0A0A0B] py-28 md:py-40 overflow-hidden"
+      className="relative bg-black py-28 md:py-40 overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-16">
-        {/* Header – no eyebrow */}
         <div className="grid grid-cols-1 lg:grid-cols-2 items-end mb-16 gap-8">
           <div>
             <div className="overflow-hidden">
@@ -408,11 +390,11 @@ function MaterialImmersion() {
                 initial={{y: "105%"}}
                 animate={inView ? {y: "0%"} : {}}
                 transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-                className="font-display text-4xl md:text-6xl text-[#F0F1F3] leading-[0.9]"
+                className="font-display text-4xl md:text-6xl text-white leading-[0.9]"
               >
                 Curated for the
                 <br />
-                <span className="text-[#B8955A] italic">connoisseur.</span>
+                <span className="text-[#BCBEC0] italic">connoisseur.</span>
               </motion.h2>
             </div>
           </div>
@@ -420,16 +402,15 @@ function MaterialImmersion() {
             initial={{opacity: 0, y: 16}}
             animate={inView ? {opacity: 1, y: 0} : {}}
             transition={{duration: 0.8, delay: 0.2, ease: EASE_OUT_EXPO}}
-            className="text-sm text-[#C8CAD0]/40 leading-relaxed max-w-md lg:ml-auto"
+            className="text-sm text-[#BCBEC0]/40 leading-relaxed max-w-md lg:ml-auto"
           >
             Every material in our atelier is sourced from a single supplier,
             verified by our craftspeople, and held to the same standard as a
             bespoke suit.
           </motion.p>
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-3 space-y-0 border-t border-[#2A2A31]">
+          <div className="lg:col-span-3 space-y-0 border-t border-[#BCBEC0]/20">
             {materials.map((m, i) => (
               <button
                 key={m.id}
@@ -437,16 +418,16 @@ function MaterialImmersion() {
                   setActiveMat(i);
                   setActiveSwatchIndex(2);
                 }}
-                className="w-full flex items-center justify-between py-5 border-b border-[#2A2A31] text-left group"
+                className="w-full flex items-center justify-between py-5 border-b border-[#BCBEC0]/20 text-left group"
               >
                 <div>
                   <motion.span
                     animate={{opacity: i === activeMat ? 1 : 0.35}}
-                    className="block font-display text-base text-[#F0F1F3] mb-0.5 group-hover:text-[#B8955A] transition-colors duration-300"
+                    className="block font-display text-base text-white mb-0.5 group-hover:text-[#BCBEC0] transition-colors duration-300"
                   >
                     {m.name}
                   </motion.span>
-                  <span className="text-[10px] tracking-[0.2em] text-[#C8CAD0]/30 uppercase">
+                  <span className="text-[10px] tracking-[0.2em] text-[#BCBEC0]/30 uppercase">
                     {m.origin}
                   </span>
                 </div>
@@ -455,14 +436,13 @@ function MaterialImmersion() {
                     opacity: i === activeMat ? 1 : 0,
                     x: i === activeMat ? 0 : -8,
                   }}
-                  className="text-[#B8955A] text-sm"
+                  className="text-[#BCBEC0] text-sm"
                 >
                   →
                 </motion.span>
               </button>
             ))}
           </div>
-
           <div className="lg:col-span-5 relative" style={{minHeight: 520}}>
             <AnimatePresence mode="wait">
               <motion.div
@@ -480,26 +460,22 @@ function MaterialImmersion() {
                   className="w-full h-full object-cover"
                 />
                 <motion.div
-                  className="absolute inset-0 bg-[#0A0A0B] pointer-events-none"
+                  className="absolute inset-0 bg-black pointer-events-none"
                   initial={{scaleY: 1}}
                   animate={{scaleY: 0}}
                   style={{originY: "top"}}
                   transition={{duration: 0.8, ease: EASE_OUT_EXPO, delay: 0.1}}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0B]/60 via-transparent to-transparent" />
-
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6">
-                  <p className="font-mono text-[10px] tracking-[0.3em] text-[#B8955A] uppercase mb-1">
+                  <p className="font-mono text-[10px] tracking-[0.3em] text-[#BCBEC0] uppercase mb-1">
                     {mat.origin}
                   </p>
-                  <p className="font-display text-lg text-[#F0F1F3]">
-                    {mat.name}
-                  </p>
+                  <p className="font-display text-lg text-white">{mat.name}</p>
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
-
           <div
             className="lg:col-span-4 flex flex-col justify-between"
             style={{minHeight: 520}}
@@ -514,11 +490,11 @@ function MaterialImmersion() {
                 className="flex flex-col h-full justify-between"
               >
                 <div>
-                  <p className="text-sm text-[#C8CAD0]/55 leading-relaxed mb-8">
+                  <p className="text-sm text-[#BCBEC0]/55 leading-relaxed mb-8">
                     {mat.description}
                   </p>
                   <div className="mb-8">
-                    <p className="text-[10px] tracking-[0.25em] text-[#C8CAD0]/30 uppercase mb-4">
+                    <p className="text-[10px] tracking-[0.25em] text-[#BCBEC0]/30 uppercase mb-4">
                       Available Finishes
                     </p>
                     <div className="flex gap-3">
@@ -535,7 +511,7 @@ function MaterialImmersion() {
                             animate={{
                               borderColor:
                                 i === activeSwatchIndex
-                                  ? "#B8955A"
+                                  ? "#BCBEC0"
                                   : "transparent",
                               scale: i === activeSwatchIndex ? 1.2 : 1,
                             }}
@@ -546,15 +522,15 @@ function MaterialImmersion() {
                     </div>
                   </div>
                 </div>
-
-                <div className="space-y-3 border-t border-[#2A2A31] pt-6">
-                  <a
+                <div className="space-y-3 border-t border-[#BCBEC0]/20 pt-6">
+                  <Button
+                    variant="secondary"
+                    size="md"
                     href="/contact?subject=bespoke-materials"
-                    className="btn-slide btn-slide-black px-8 py-3 text-base font-medium tracking-wide inline-flex items-center justify-center"
                   >
-                    <span>Request Sample Portfolio</span>
-                  </a>
-                  <p className="text-[10px] tracking-[0.15em] text-[#C8CAD0]/20 uppercase">
+                    Request Sample Portfolio <span className="ml-2">→</span>
+                  </Button>
+                  <p className="text-[10px] tracking-[0.15em] text-[#BCBEC0]/20 uppercase">
                     Physical samples delivered within 48h
                   </p>
                 </div>
@@ -571,12 +547,10 @@ function MaterialImmersion() {
 function BespokeProcess() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeStage, setActiveStage] = useState(0);
-
   const {scrollYProgress} = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
-
   useEffect(() => {
     const unsub = scrollYProgress.on("change", (v) => {
       const idx = Math.min(
@@ -587,7 +561,6 @@ function BespokeProcess() {
     });
     return () => unsub();
   }, [scrollYProgress]);
-
   const stage = processStages[activeStage];
 
   return (
@@ -595,7 +568,7 @@ function BespokeProcess() {
       id="process"
       ref={sectionRef}
       style={{height: `${processStages.length * 100}vh`}}
-      className="relative bg-[#F0F1F3]"
+      className="relative bg-white"
     >
       <div className="sticky top-0 h-screen overflow-hidden flex flex-col lg:flex-row">
         <div className="relative w-full lg:w-[55%] h-[45vh] lg:h-full overflow-hidden">
@@ -613,27 +586,24 @@ function BespokeProcess() {
                 alt={stage.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#F0F1F3]/40" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#F0F1F3]/50 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-white/50 via-transparent to-transparent" />
             </motion.div>
           </AnimatePresence>
-
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-[#1A1A1A]/10">
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-black/10">
             <motion.div
-              className="h-full bg-[#B8955A] origin-left"
+              className="h-full bg-[#BCBEC0] origin-left"
               animate={{scaleX: (activeStage + 1) / processStages.length}}
               transition={{duration: 0.5, ease: EASE_OUT}}
             />
           </div>
-
           <div className="absolute top-8 left-8">
-            <span className="font-mono text-[10px] tracking-[0.3em] text-[#1A1A1A]/40 uppercase">
+            <span className="font-mono text-[10px] tracking-[0.3em] text-black/40 uppercase">
               Stage {stage.step} of {processStages.length}
             </span>
           </div>
         </div>
-
-        <div className="w-full lg:w-[45%] flex flex-col bg-[#F0F1F3] px-8 md:px-12 xl:px-16 py-12 lg:py-0 lg:justify-between lg:pt-16 lg:pb-12 border-l border-[#1A1A1A]/08">
+        <div className="w-full lg:w-[45%] flex flex-col bg-white px-8 md:px-12 xl:px-16 py-12 lg:py-0 lg:justify-between lg:pt-16 lg:pb-12 border-l border-black/8">
           <div>
             <div className="space-y-3 mb-12">
               {processStages.map((s, i) => (
@@ -654,7 +624,7 @@ function BespokeProcess() {
                 >
                   <motion.span
                     animate={{opacity: i === activeStage ? 1 : 0.25}}
-                    className="font-mono text-[10px] tracking-wider text-[#7A6038] w-6 flex-shrink-0"
+                    className="font-mono text-[10px] tracking-wider text-[#BCBEC0] w-6 flex-shrink-0"
                   >
                     {s.step}
                   </motion.span>
@@ -663,14 +633,14 @@ function BespokeProcess() {
                     animate={{
                       scaleX: i === activeStage ? 1 : 0.3,
                       backgroundColor:
-                        i === activeStage ? "#B8955A" : "#1A1A1A22",
+                        i === activeStage ? "#BCBEC0" : "#00000022",
                     }}
                     transition={{duration: 0.4}}
                   />
                   <motion.span
                     animate={{
                       opacity: i === activeStage ? 1 : 0.3,
-                      color: i === activeStage ? "#1A1A1A" : "#5A4E3C",
+                      color: i === activeStage ? "#000000" : "#BCBEC0",
                     }}
                     className="text-xs font-medium text-right"
                   >
@@ -680,7 +650,6 @@ function BespokeProcess() {
               ))}
             </div>
           </div>
-
           <AnimatePresence mode="wait">
             <motion.div
               key={activeStage}
@@ -690,40 +659,39 @@ function BespokeProcess() {
               transition={{duration: 0.5, ease: EASE_OUT_EXPO}}
               className="flex-1 flex flex-col justify-end"
             >
-              <p className="text-[10px] tracking-[0.25em] text-[#B8955A] uppercase mb-2">
+              <p className="text-[10px] tracking-[0.25em] text-[#BCBEC0] uppercase mb-2">
                 {stage.subtitle}
               </p>
-              <h2 className="font-display text-3xl md:text-4xl xl:text-5xl text-[#1A1A1A] leading-[0.92] mb-5">
+              <h2 className="font-display text-3xl md:text-4xl xl:text-5xl text-black leading-[0.92] mb-5">
                 {stage.title}
               </h2>
-              <p className="text-sm text-[#5A4E3C]/75 leading-relaxed mb-6 max-w-sm">
+              <p className="text-sm text-[#BCBEC0]/75 leading-relaxed mb-6 max-w-sm">
                 {stage.description}
               </p>
-              <p className="font-mono text-[10px] tracking-[0.2em] text-[#7A6038]/60 mb-8">
+              <p className="font-mono text-[10px] tracking-[0.2em] text-[#BCBEC0]/60 mb-8">
                 {stage.detail}
               </p>
-              <a
+              <Button
+                variant="secondary"
+                size="md"
                 href="/contact?subject=bespoke"
-                className="btn-slide btn-slide-black px-8 py-3 text-base font-medium tracking-wide inline-flex items-center justify-center"
               >
-                <span>Begin This Journey</span>
-              </a>
+                Begin This Journey <span className="ml-2">→</span>
+              </Button>
             </motion.div>
           </AnimatePresence>
-
-          <div className="mt-8 pt-6 border-t border-[#1A1A1A]/08">
-            <p className="text-[10px] tracking-[0.2em] text-[#5A4E3C]/35 uppercase mb-1">
+          <div className="mt-8 pt-6 border-t border-black/8">
+            <p className="text-[10px] tracking-[0.2em] text-[#BCBEC0]/35 uppercase mb-1">
               Speak directly with our atelier
             </p>
             <a
               href="tel:+97100000000"
-              className="font-mono text-sm text-[#B8955A] hover:text-[#D4B07A] transition-colors"
+              className="font-mono text-sm text-[#BCBEC0] hover:text-white transition-colors"
             >
               +971 00 000 0000
             </a>
           </div>
         </div>
-
         <div className="lg:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
           {processStages.map((_, i) => (
             <div
@@ -731,7 +699,7 @@ function BespokeProcess() {
               className="h-px transition-all duration-400"
               style={{
                 width: i === activeStage ? 24 : 12,
-                background: i === activeStage ? "#B8955A" : "#1A1A1A33",
+                background: i === activeStage ? "#BCBEC0" : "#00000033",
               }}
             />
           ))}
@@ -746,11 +714,10 @@ function PastCommissions() {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, {once: true, amount: 0.15});
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-
   return (
     <section
       ref={sectionRef}
-      className="relative bg-[#0A0A0B] py-28 md:py-40 overflow-hidden"
+      className="relative bg-black py-28 md:py-40 overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 items-end mb-16 gap-8">
@@ -760,11 +727,11 @@ function PastCommissions() {
                 initial={{y: "105%"}}
                 animate={inView ? {y: "0%"} : {}}
                 transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-                className="font-display text-4xl md:text-6xl text-[#F0F1F3] leading-[0.9]"
+                className="font-display text-4xl md:text-6xl text-white leading-[0.9]"
               >
                 A glimpse of
                 <br />
-                <span className="text-[#B8955A] italic">what's possible.</span>
+                <span className="text-[#BCBEC0] italic">what's possible.</span>
               </motion.h2>
             </div>
           </div>
@@ -772,14 +739,13 @@ function PastCommissions() {
             initial={{opacity: 0, y: 16}}
             animate={inView ? {opacity: 1, y: 0} : {}}
             transition={{duration: 0.8, delay: 0.2, ease: EASE_OUT_EXPO}}
-            className="text-sm text-[#C8CAD0]/35 leading-relaxed max-w-md lg:ml-auto"
+            className="text-sm text-[#BCBEC0]/35 leading-relaxed max-w-md lg:ml-auto"
           >
             Each commission is a private document. The vehicles shown here are
             displayed with the permission of their owners.
           </motion.p>
         </div>
-
-        <div className="border-t border-[#2A2A31]">
+        <div className="border-t border-[#BCBEC0]/20">
           {commissions.map((c, i) => (
             <motion.div
               key={i}
@@ -792,14 +758,13 @@ function PastCommissions() {
               }}
               onMouseEnter={() => setHoveredIdx(i)}
               onMouseLeave={() => setHoveredIdx(null)}
-              className="group grid grid-cols-12 items-center gap-4 py-8 border-b border-[#2A2A31] cursor-pointer"
+              className="group grid grid-cols-12 items-center gap-4 py-8 border-b border-[#BCBEC0]/20 cursor-pointer"
             >
               <div className="col-span-1 hidden lg:block">
-                <span className="font-mono text-[10px] tracking-[0.2em] text-[#B8955A]/40">
+                <span className="font-mono text-[10px] tracking-[0.2em] text-[#BCBEC0]/40">
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
-
               <motion.div
                 className="col-span-2 hidden lg:block overflow-hidden"
                 style={{height: 80}}
@@ -814,54 +779,48 @@ function PastCommissions() {
                   transition={{duration: 0.6, ease: EASE_OUT}}
                 />
               </motion.div>
-
               <div className="col-span-12 lg:col-span-4">
                 <motion.p
-                  animate={{color: hoveredIdx === i ? "#B8955A" : "#F0F1F3"}}
+                  animate={{color: hoveredIdx === i ? "#BCBEC0" : "#FFFFFF"}}
                   transition={{duration: 0.3}}
                   className="font-display text-xl mb-1"
                 >
                   {c.code}
                 </motion.p>
-                <p className="text-xs text-[#C8CAD0]/35">{c.name}</p>
+                <p className="text-xs text-[#BCBEC0]/35">{c.name}</p>
               </div>
-
               <motion.p
-                className="col-span-12 lg:col-span-4 text-xs text-[#C8CAD0]/40 leading-relaxed"
+                className="col-span-12 lg:col-span-4 text-xs text-[#BCBEC0]/40 leading-relaxed"
                 animate={{opacity: hoveredIdx === i ? 0.7 : 0.35}}
                 transition={{duration: 0.4}}
               >
                 {c.story}
               </motion.p>
-
               <motion.div
                 className="col-span-12 lg:col-span-1 text-right hidden lg:block"
                 animate={{opacity: hoveredIdx === i ? 1 : 0}}
               >
-                <span className="text-[#B8955A] text-sm">→</span>
+                <span className="text-[#BCBEC0] text-sm">→</span>
               </motion.div>
             </motion.div>
           ))}
         </div>
-
         <motion.div
           initial={{opacity: 0, y: 16}}
           animate={inView ? {opacity: 1, y: 0} : {}}
           transition={{duration: 0.7, delay: 0.5, ease: EASE_OUT_EXPO}}
           className="mt-12 flex flex-col sm:flex-row gap-4"
         >
-          <a
+          <Button
+            variant="outline"
+            size="md"
             href="/contact?subject=bespoke-portfolio"
-            className="btn-slide btn-slide-black px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
           >
-            <span>Request Full Portfolio</span>
-          </a>
-          <a
-            href="/contact?subject=bespoke"
-            className="btn-slide btn-slide-black px-8 py-3 text-base md:text-lg font-medium tracking-wide inline-flex items-center justify-center"
-          >
-            <span>Begin Your Commission</span>
-          </a>
+            Request Full Portfolio <span className="ml-2">→</span>
+          </Button>
+          <Button variant="outline" size="md" href="/contact?subject=bespoke">
+            Begin Your Commission <span className="ml-2">→</span>
+          </Button>
         </motion.div>
       </div>
     </section>
@@ -872,18 +831,16 @@ function PastCommissions() {
 function SocialProof() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, {once: true, amount: 0.2});
-
   const stats = [
     {value: 147, label: "Bespoke Commissions Completed", suffix: ""},
     {value: 6, label: "Average Build Duration", suffix: " months"},
     {value: 100, label: "Client Satisfaction Rate", suffix: "%"},
     {value: 12000, label: "Colour Options Available", suffix: "+"},
   ];
-
   const testimonials = [
     {
       quote:
-        "The advisor understood immediately what I wanted , something that didn't exist anywhere else. Six months later, it does.",
+        "The advisor understood immediately what I wanted, something that didn't exist anywhere else. Six months later, it does.",
       author: "F.A.R.",
       role: "Commission No. 61",
     },
@@ -898,10 +855,10 @@ function SocialProof() {
   return (
     <div
       ref={ref}
-      className="bg-[#F0F1F3] py-28 md:py-40 px-6 md:px-16 overflow-hidden"
+      className="bg-white py-28 md:py-40 px-6 md:px-16 overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 border-b border-[#1A1A1A]/10 pb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 border-b border-black/10 pb-16">
           {stats.map((s, i) => (
             <motion.div
               key={i}
@@ -909,33 +866,31 @@ function SocialProof() {
               animate={inView ? {opacity: 1, y: 0} : {}}
               transition={{duration: 0.7, delay: i * 0.08, ease: EASE_OUT_EXPO}}
             >
-              <div className="font-mono text-3xl md:text-4xl text-[#B8955A] leading-none mb-2">
+              <div className="font-mono text-3xl md:text-4xl text-[#BCBEC0] leading-none mb-2">
                 <CountUp end={s.value} />
                 <span className="text-xl">{s.suffix}</span>
               </div>
-              <div className="text-[10px] tracking-[0.2em] text-[#5A4E3C]/50 uppercase leading-tight">
+              <div className="text-[10px] tracking-[0.2em] text-black/50 uppercase leading-tight">
                 {s.label}
               </div>
             </motion.div>
           ))}
         </div>
-
         <div className="mb-16">
           <div className="overflow-hidden">
             <motion.h2
               initial={{y: "105%"}}
               animate={inView ? {y: "0%"} : {}}
               transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-              className="font-display text-4xl md:text-6xl text-[#1A1A1A] leading-[0.9]"
+              className="font-display text-4xl md:text-6xl text-black leading-[0.9]"
             >
               Words from
               <br />
-              <span className="text-[#B8955A] italic">our commissioners.</span>
+              <span className="text-[#BCBEC0] italic">our commissioners.</span>
             </motion.h2>
           </div>
         </div>
-
-        <div className="border-t border-[#1A1A1A]/10">
+        <div className="border-t border-black/10">
           {testimonials.map((t, i) => (
             <motion.blockquote
               key={i}
@@ -946,19 +901,19 @@ function SocialProof() {
                 delay: 0.15 + i * 0.12,
                 ease: EASE_OUT_EXPO,
               }}
-              className="grid grid-cols-12 items-start gap-6 py-10 border-b border-[#1A1A1A]/10"
+              className="grid grid-cols-12 items-start gap-6 py-10 border-b border-black/10"
             >
-              <span className="col-span-1 font-mono text-[10px] text-[#B8955A]/40 mt-1">
+              <span className="col-span-1 font-mono text-[10px] text-[#BCBEC0]/40 mt-1">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <p className="col-span-12 lg:col-span-8 font-display text-2xl md:text-3xl text-[#1A1A1A] italic leading-[1.25]">
+              <p className="col-span-12 lg:col-span-8 font-display text-2xl md:text-3xl text-black italic leading-[1.25]">
                 "{t.quote}"
               </p>
               <footer className="col-span-12 lg:col-span-3 lg:col-start-10 text-right">
-                <p className="text-xs text-[#1A1A1A] font-medium mb-0.5">
+                <p className="text-xs text-black font-medium mb-0.5">
                   {t.author}
                 </p>
-                <p className="text-[10px] tracking-[0.15em] text-[#5A4E3C]/40 uppercase">
+                <p className="text-[10px] tracking-[0.15em] text-[#BCBEC0]/40 uppercase">
                   {t.role}
                 </p>
               </footer>
@@ -967,125 +922,5 @@ function SocialProof() {
         </div>
       </div>
     </div>
-  );
-}
-
-// ─── FINAL CTA ─────────────────────────────────────────────────────
-function FinalCTA() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const inView = useInView(sectionRef, {once: true, amount: 0.25});
-  const prefersReduced = usePrefersReducedMotion();
-
-  const {scrollYProgress} = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-5%", "10%"]);
-  const springBgY = useSpring(bgY, {stiffness: 60, damping: 20, mass: 1});
-
-  return (
-    <section
-      ref={sectionRef}
-      className="relative overflow-hidden py-32 px-6 md:px-16"
-      style={{background: "#12100d"}}
-    >
-      {/* Parallax background image */}
-      <motion.div
-        className="absolute inset-0"
-        style={prefersReduced ? {} : {y: springBgY}}
-        aria-hidden
-      >
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-25"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80')",
-          }}
-        />
-      </motion.div>
-
-      {/* Layered overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#12100d]/80 via-[#12100d]/50 to-[#12100d]/90" />
-      <div
-        className="absolute inset-0 opacity-15"
-        style={{
-          background:
-            "radial-gradient(ellipse 50% 50% at 50% 100%, #C4A46B 0%, transparent 70%)",
-        }}
-      />
-
-      {/* Top separator line */}
-      <div className="absolute top-0 left-16 right-16 h-px bg-gradient-to-r from-transparent via-[#B8955A]/30 to-transparent" />
-
-      <div className="relative max-w-2xl mx-auto text-center">
-        <motion.div
-          initial={prefersReduced ? {} : {opacity: 0, y: 28}}
-          animate={inView ? {opacity: 1, y: 0} : {}}
-          transition={{duration: 0.8, ease: EASE_OUT_EXPO}}
-        >
-          <p className="text-[10px] tracking-[0.4em] text-[#B8955A] uppercase mb-6 font-mono">
-            Al Husnain Ownership
-          </p>
-          <h2 className="font-display text-4xl md:text-6xl text-[#F0F1F3] leading-[0.9] mb-6">
-            Ready to experience
-            <br />
-            <span className="text-[#B8955A] italic">the difference?</span>
-          </h2>
-          <p className="text-sm text-[#C8CAD0]/55 mb-12 max-w-sm mx-auto leading-relaxed">
-            Our ownership specialists are standing by to craft a programme
-            tailored to your life. No obligation – just a conversation.
-          </p>
-
-          {/* CTA buttons – same design as Inventory page */}
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-            <a
-              href="/contact?subject=ownership"
-              className="btn-slide btn-slide-gold px-8 py-3.5 text-sm font-medium"
-            >
-              <span>Schedule Consultation</span>
-            </a>
-            <a
-              href="/contact?subject=test-drive"
-              className="btn-slide btn-slide-black px-8 py-3.5 text-sm font-medium"
-            >
-              <span>Book Test Drive</span>
-            </a>
-          </div>
-
-          {/* Contact row – adds trust and immediacy */}
-          <div className="flex flex-wrap justify-center gap-6">
-            <a
-              href="tel:+254700000000"
-              className="flex items-center gap-2 text-sm text-[#C8CAD0]/60 hover:text-[#B8955A] transition-colors duration-300 group"
-            >
-              <span className="w-8 h-8 rounded-full border border-[#2A2A31] group-hover:border-[#B8955A]/40 flex items-center justify-center text-xs transition-colors duration-300">
-                ☎
-              </span>
-              <span className="font-mono">+254 700 000 000</span>
-            </a>
-            <a
-              href="https://wa.me/254700000000"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-[#C8CAD0]/60 hover:text-[#B8955A] transition-colors duration-300 group"
-            >
-              <span className="w-8 h-8 rounded-full border border-[#2A2A31] group-hover:border-[#B8955A]/40 flex items-center justify-center text-xs transition-colors duration-300">
-                ✉
-              </span>
-              <span className="font-mono">WhatsApp Us</span>
-            </a>
-            <span className="flex items-center gap-2 text-sm text-[#C8CAD0]/40">
-              <span className="w-8 h-8 rounded-full border border-[#1A1A1E] flex items-center justify-center text-xs">
-                ⌚
-              </span>
-              <span className="font-mono">Mon–Sat, 8am–6pm</span>
-            </span>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Bottom separator line */}
-      <div className="absolute bottom-0 left-16 right-16 h-px bg-gradient-to-r from-transparent via-[#2A2A31] to-transparent" />
-    </section>
   );
 }
