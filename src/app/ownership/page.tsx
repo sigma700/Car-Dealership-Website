@@ -18,7 +18,7 @@ const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 const EASE_IN_OUT = [0.87, 0, 0.13, 1] as const;
 
-// ─── DATA (unchanged) ─────────────────────────────────────────
+// ─── DATA ─────────────────────────────────────────────────────────
 const ownershipJourney = [
   {
     step: "01",
@@ -190,7 +190,7 @@ export default function OwnershipPage() {
               initial={{y: "110%"}}
               animate={{y: "0%"}}
               transition={{duration: 1.1, ease: EASE_OUT_EXPO, delay: 0.1}}
-              className="text-5xl md:text-8xl lg:text-[7rem] font-display text-white leading-[0.88] tracking-tight"
+              className="text-3xl md:text-7xl lg:text-8xl font-display text-white leading-[0.88] tracking-tight"
             >
               Beyond the
             </motion.h1>
@@ -200,7 +200,7 @@ export default function OwnershipPage() {
               initial={{y: "110%"}}
               animate={{y: "0%"}}
               transition={{duration: 1.1, ease: EASE_OUT_EXPO, delay: 0.18}}
-              className="text-5xl md:text-8xl lg:text-[7rem] font-display text-[#BCBEC0] leading-[0.88] tracking-tight italic"
+              className="text-3xl md:text-7xl lg:text-8xl font-display text-[#BCBEC0] leading-[0.88] tracking-tight italic"
             >
               drive.
             </motion.h1>
@@ -299,7 +299,7 @@ function TrustStrip() {
   );
 }
 
-// ─── OWNERSHIP JOURNEY ─────────────────────────────────────────
+// ─── OWNERSHIP JOURNEY (visible on mobile) ─────────────────────
 function OwnershipJourneySection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeStep, setActiveStep] = useState(0);
@@ -534,7 +534,7 @@ function WhiteGloveDelivery() {
                 initial={{y: "105%"}}
                 animate={inView ? {y: "0%"} : {}}
                 transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.25}}
-                className="font-display text-4xl md:text-6xl text-black leading-[0.9]"
+                className="font-display text-3xl md:text-5xl lg:text-6xl text-black leading-[0.9]"
               >
                 Arrives in
                 <br />
@@ -683,7 +683,7 @@ function ConciergeProgramme() {
                 initial={{y: "105%"}}
                 animate={inView ? {y: "0%"} : {}}
                 transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-                className="font-display text-4xl md:text-6xl text-white leading-[0.9]"
+                className="font-display text-3xl md:text-5xl lg:text-6xl text-white leading-[0.9]"
               >
                 Life,
                 <br />
@@ -698,8 +698,7 @@ function ConciergeProgramme() {
             className="text-sm text-[#BCBEC0]/50 leading-relaxed max-w-md lg:ml-auto"
           >
             From the moment you take ownership, a dedicated specialist becomes
-            an extension of your life. No request is too small. No detail goes
-            unnoticed.
+            an extension of your life.
           </motion.p>
         </div>
         <div className="border-t border-[#BCBEC0]/20">
@@ -748,7 +747,7 @@ function ConciergeProgramme() {
   );
 }
 
-// ─── MAINTENANCE & CARE ───────────────────────────────────────
+// ─── MAINTENANCE & CARE ──────────────────────────────────────
 function MaintenanceCare() {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, {once: true, amount: 0.2});
@@ -770,7 +769,7 @@ function MaintenanceCare() {
               initial={{y: "105%"}}
               animate={inView ? {y: "0%"} : {}}
               transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-              className="font-display text-4xl md:text-6xl text-black leading-[0.9]"
+              className="font-display text-3xl md:text-5xl lg:text-6xl text-black leading-[0.9]"
             >
               Five years of
               <br />
@@ -871,7 +870,7 @@ function ExclusiveEvents() {
                 initial={{y: "105%"}}
                 animate={inView ? {y: "0%"} : {}}
                 transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-                className="font-display text-4xl md:text-6xl text-white leading-[0.9]"
+                className="font-display text-3xl md:text-5xl lg:text-6xl text-white leading-[0.9]"
               >
                 More than
                 <br />
@@ -1001,7 +1000,7 @@ function Testimonials() {
                 initial={{y: "105%"}}
                 animate={inView ? {y: "0%"} : {}}
                 transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-                className="font-display text-4xl md:text-6xl text-black leading-[0.9]"
+                className="font-display text-3xl md:text-5xl lg:text-6xl text-black leading-[0.9]"
               >
                 Trusted by
                 <br />
@@ -1077,7 +1076,7 @@ function FAQSection() {
               initial={{y: "105%"}}
               animate={inView ? {y: "0%"} : {}}
               transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-              className="font-display text-4xl text-white leading-[0.9] mb-6"
+              className="font-display text-3xl md:text-4xl text-white leading-[0.9] mb-6"
             >
               You ask.
               <br />

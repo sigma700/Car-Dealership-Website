@@ -11,13 +11,18 @@ import {
   useSpring,
 } from "framer-motion";
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
-import CTABand from "@/components/CTABand";
 import Button from "@/components/Button";
+import CTABand from "@/components/CTABand";
 
+/* ───────────────────────────────────────────────
+   Constants
+   ─────────────────────────────────────────────── */
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 
-// ─── ANIMATED COUNT UP ───────────────────────────────────────────
+/* ───────────────────────────────────────────────
+   Animated Counter
+   ─────────────────────────────────────────────── */
 function CountUp({end, duration = 2}: {end: number; duration?: number}) {
   const [value, setValue] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -34,14 +39,16 @@ function CountUp({end, duration = 2}: {end: number; duration?: number}) {
   return <span ref={ref}>{value.toLocaleString()}</span>;
 }
 
-// ─── DATA ─────────────────────────────────────────────────────────
+/* ───────────────────────────────────────────────
+   Data
+   ─────────────────────────────────────────────── */
 const materials = [
   {
     id: "leather",
     name: "Bridge of Weir Leather",
     origin: "Perthshire, Scotland",
     description:
-      "Full-grain aniline hides, hand-selected for consistency of grain and depth of colour. Each hide is treated using century-old methods that no synthetic can replicate.",
+      "Full‑grain aniline hides, hand‑selected for consistency of grain and depth of colour.",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782374774/pexels-entero-37208709_1_gzygzc.jpg",
     swatches: ["#3D1C02", "#8B5A2B", "#C8966A", "#F0D5B0", "#1A0E05"],
@@ -51,17 +58,17 @@ const materials = [
     name: "Alcantara®",
     origin: "Umbria, Italy",
     description:
-      "A microfibre of exceptional precision — softer than suede, more durable than leather. Favoured by aerospace engineers and couture houses alike.",
+      "A microfibre of exceptional precision — softer than suede, more durable than leather.",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782374829/pexels-oguz-kaan-boga-19166252-17315566_1_wps0cz.jpg",
     swatches: ["#0A0A0B", "#2C2C3A", "#4A3F52", "#8A7A90", "#C5B8CC"],
   },
   {
     id: "timber",
-    name: "Open-Pore Timber",
+    name: "Open‑Pore Timber",
     origin: "Black Forest, Germany",
     description:
-      "Hand-selected veneers bookmatched across surfaces for continuous grain. Left unsealed to preserve the warmth and texture of living wood.",
+      "Hand‑selected veneers bookmatched across surfaces for continuous grain.",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782374883/pexels-saif-allah-dawoud-576915631-29370663_1_epxhzj.jpg",
     swatches: ["#2A1505", "#6B4E31", "#9C7349", "#C8A97A", "#E8D5B0"],
@@ -71,7 +78,7 @@ const materials = [
     name: "Forged Carbon",
     origin: "Composites Laboratory",
     description:
-      "Each panel is individually pressed under 120 tonnes of force, creating a pattern unique to that component. No two pieces are ever identical.",
+      "Each panel is individually pressed under 120 tonnes of force.",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782374911/pexels-ishankulshrestha69-7662116_1_gm0irn.jpg",
     swatches: ["#0A0A0B", "#1A1A1A", "#2A2A2A", "#3A3A3A", "#505050"],
@@ -84,7 +91,7 @@ const processStages = [
     title: "Private Consultation",
     subtitle: "Your vision, captured.",
     description:
-      "A dedicated bespoke advisor meets with you at our atelier or in your own environment. We discuss not just specification, but aspiration, how you live, how you travel, what the vehicle means to you.",
+      "A dedicated bespoke advisor meets with you at our atelier or in your own environment.",
     detail: "Typically 2–3 hours · NDA signed · No obligation",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782325000/pexels-tima-miroshnichenko-6872167_ia5xri.jpg",
@@ -94,7 +101,7 @@ const processStages = [
     title: "Design Atelier",
     subtitle: "Rendered in three dimensions.",
     description:
-      "Our design team translates your brief into photorealistic renders. You review every surface, every stitch line, every material boundary before a single component is ordered.",
+      "Our design team translates your brief into photorealistic renders.",
     detail: "2–4 weeks · Unlimited revisions · Physical swatches delivered",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782320227/pexels-criticalimagery-36646940_t8ifsu.jpg",
@@ -104,8 +111,8 @@ const processStages = [
     title: "Material Selection",
     subtitle: "Handled. Held. Chosen.",
     description:
-      "Physical samples of every selected material are presented in person. You approve the exact hide, the precise veneer sheet, the specific carbon weave — not a catalogue representation.",
-    detail: "In-person appointment · Full sample library · Artisan present",
+      "Physical samples of every selected material are presented in person.",
+    detail: "In‑person appointment · Full sample library · Artisan present",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782319817/pexels-chris-clark-1933184-5608576_u83gbw.jpg",
   },
@@ -114,7 +121,7 @@ const processStages = [
     title: "Commission Approval",
     subtitle: "Signed. Sealed. Begun.",
     description:
-      "A formal commission document records every specification decision. Your vehicle enters the production queue and is assigned to a single master technician who will build it from start to finish.",
+      "A formal commission document records every specification decision.",
     detail: "6–18 week build · Progress reports · Dedicated contact",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782371001/pexels-silverkblack-36729868_qzw5pq.jpg",
@@ -123,9 +130,8 @@ const processStages = [
     step: "05",
     title: "Master Craftsmanship",
     subtitle: "Built to outlast.",
-    description:
-      "Every hour of labour is traceable to the individual artisan. We maintain a build diary, photographs, notes, measurements, that becomes part of the vehicle's permanent record.",
-    detail: "12-week average build · 2,000+ hours invested · QC at every stage",
+    description: "Every hour of labour is traceable to the individual artisan.",
+    detail: "12‑week average build · 2,000+ hours invested · QC at every stage",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782371027/pexels-19x14-8478259_poygkp.jpg",
   },
@@ -134,7 +140,7 @@ const processStages = [
     title: "Private Delivery",
     subtitle: "The moment arrives.",
     description:
-      "Your vehicle is transported in an enclosed, climate-controlled transporter. Your advisor is present for the unveiling, walks you through every detail, and ensures everything is precisely as commissioned.",
+      "Your vehicle is transported in an enclosed, climate‑controlled transporter.",
     detail: "Venue of your choice · Advisor present · Build diary presented",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782371019/pexels-andy-lee-222330306-38132275_tdklhs.jpg",
@@ -146,7 +152,7 @@ const commissions = [
     name: "Commission No. 47",
     code: "Sahara Noir",
     story:
-      "Conceived for desert driving. A matte black exterior with sand-coloured Alcantara interior and embossed topographic stitching.",
+      "Conceived for desert driving. A matte black exterior with sand‑coloured Alcantara interior.",
     materials: "Matte Black · Alcantara · Brass Hardware",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782323660/pexels-mikebirdy-18231618_g1ljyu.jpg",
@@ -155,7 +161,7 @@ const commissions = [
     name: "Commission No. 61",
     code: "Prussian Blue",
     story:
-      "A collector's interpretation of a 1960s grand tourer — deep metallic blue with hand-stitched tan leather and polished wood.",
+      "A collector's interpretation of a 1960s grand tourer — deep metallic blue.",
     materials: "Metallic Blue · Bridge of Weir Tan · Walnut Veneer",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782323634/pexels-memet-oz-296480690-17436155_fr9swt.jpg",
@@ -164,165 +170,188 @@ const commissions = [
     name: "Commission No. 78",
     code: "Glacier White",
     story:
-      "Inspired by Scandinavian minimalism. White on white with ice-blue stitching and exposed forged carbon on every trim surface.",
+      "Inspired by Scandinavian minimalism. White on white with exposed carbon.",
     materials: "Pearl White · Ice Alcantara · Forged Carbon",
     image:
       "https://res.cloudinary.com/dnadawobi/image/upload/v1782323605/pexels-criticalimagery-36646951_dbo8vc.jpg",
   },
 ];
 
-// ─── MAIN PAGE ────────────────────────────────────────────────────
-export default function BespokePage() {
-  const pageRef = useRef<HTMLDivElement>(null);
-  return (
-    <div ref={pageRef} className="bg-black">
-      <HeroSection />
-      <ExclusivitySignal />
-      <MaterialImmersion />
-      <BespokeProcess />
-      <PastCommissions />
-      <SocialProof />
-      <CTABand />
-    </div>
-  );
-}
-
-// ─── HERO ───────────────────────────────────────────
+/* ───────────────────────────────────────────────
+   Hero — mobile‑optimised
+   ─────────────────────────────────────────────── */
 function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
+  const inView = useInView(sectionRef, {once: true, amount: 0.05});
+
   const {scrollYProgress} = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
   });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "6%"]);
-  const opacity = useTransform(scrollYProgress, [0.5, 0.8], [1, 0]);
-  const vigY = useTransform(scrollYProgress, [0, 0.3], ["0%", "-8%"]);
-  const bgX = useMotionValue(0);
-  const bgScale = useMotionValue(1.06);
+
+  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "5%"]);
+  const springImageY = useSpring(imageY, {stiffness: 30, damping: 14});
+
+  // Very slow ambient drift
+  const driftX = useMotionValue(0);
   useEffect(() => {
     if (prefersReduced) return;
-    const x = animate(bgX, [0, -2.5, 0, 2.5, 0], {
-      duration: 32,
+    const controls = animate(driftX, [0, -2, 0, 2, 0], {
+      duration: 42,
       repeat: Infinity,
       ease: "linear",
     });
-    const s = animate(bgScale, [1.06, 1.09, 1.06, 1.09, 1.06], {
-      duration: 38,
-      repeat: Infinity,
-      ease: "linear",
-    });
-    return () => {
-      x.stop();
-      s.stop();
-    };
-  }, [prefersReduced, bgX, bgScale]);
+    return () => controls.stop();
+  }, [prefersReduced, driftX]);
+
+  const maskLeft = (delay: number) => ({
+    hidden: {clipPath: "inset(0 100% 0 0)", opacity: 0},
+    visible: {
+      clipPath: "inset(0 0% 0 0)",
+      opacity: 1,
+      transition: {duration: 1.3, ease: EASE_OUT_EXPO, delay},
+    },
+  });
+  const fadeUp = (delay: number) => ({
+    hidden: {y: 22, opacity: 0},
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {duration: 1.1, ease: EASE_OUT, delay},
+    },
+  });
 
   return (
-    <section ref={sectionRef} className="relative h-screen overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative w-full bg-black overflow-hidden"
+      style={{minHeight: "100svh"}}
+      aria-label="Bespoke commission hero"
+    >
+      {/* Full‑bleed image */}
       <motion.div
-        className="absolute inset-[-4%] will-change-transform"
-        style={prefersReduced ? {} : {y: bgY, x: bgX, scale: bgScale}}
+        className="absolute inset-0"
+        style={{
+          y: prefersReduced ? "0%" : springImageY,
+          x: prefersReduced ? 0 : driftX,
+        }}
       >
         <img
           src="https://res.cloudinary.com/dnadawobi/image/upload/v1782319817/pexels-chris-clark-1933184-5608576_u83gbw.jpg"
           alt=""
           className="w-full h-full object-cover"
+          fetchPriority="high"
+          loading="eager"
         />
       </motion.div>
-      <motion.div
-        className="absolute inset-0 z-10"
-        style={prefersReduced ? {} : {y: vigY}}
-        initial={{
-          background: "linear-gradient(to top, black 100%, black 100%)",
-        }}
-        animate={{
-          background: "linear-gradient(to top, black 0%, rgba(0,0,0,0) 60%)",
-        }}
-        transition={{duration: 2.4, ease: [0.16, 1, 0.3, 1], delay: 0.4}}
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent z-20" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent z-20" />
+
+      {/* Left‑weighted gradient */}
       <div
-        className="absolute inset-0 z-20 opacity-[0.04] pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+          background:
+            "linear-gradient(105deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 45%, transparent 75%)",
         }}
+        aria-hidden
       />
-      <motion.div
-        className="relative z-30 flex flex-col justify-end h-full max-w-[1440px] mx-auto px-6 md:px-16 pb-20 md:pb-28"
-        style={prefersReduced ? {} : {y: textY, opacity}}
-      >
-        <div className="overflow-hidden mb-2">
-          <motion.h1
-            initial={{y: "110%"}}
-            animate={{y: "0%"}}
-            transition={{duration: 1.2, ease: EASE_OUT_EXPO, delay: 0.9}}
-            className="font-display text-5xl md:text-8xl lg:text-[7.5rem] text-white leading-[0.86] tracking-tight"
-          >
-            Your imagination.
-          </motion.h1>
-        </div>
-        <div className="overflow-hidden mb-12">
-          <motion.h1
-            initial={{y: "110%"}}
-            animate={{y: "0%"}}
-            transition={{duration: 1.2, ease: EASE_OUT_EXPO, delay: 1.05}}
-            className="font-display text-5xl md:text-8xl lg:text-[7.5rem] text-[#BCBEC0] italic leading-[0.86] tracking-tight"
-          >
-            Our craft.
-          </motion.h1>
-        </div>
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8 max-w-5xl">
+
+      {/* Content */}
+      <div className="relative z-10 flex items-center min-h-[100svh] px-6 md:px-14 lg:px-20 xl:px-28">
+        <motion.div
+          className="w-full max-w-[560px]"
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={{
+            visible: {transition: {staggerChildren: 0.12}},
+          }}
+        >
+          {/* Eyebrow */}
           <motion.p
-            initial={{opacity: 0, y: 16}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 0.9, ease: EASE_OUT_EXPO, delay: 1.25}}
-            className="text-sm md:text-base text-[#BCBEC0]/60 max-w-xs leading-relaxed"
+            variants={fadeUp(0.15)}
+            className="text-[10px] tracking-[0.32em] text-[#BCBEC0] uppercase mb-6"
           >
-            No two Al Husnain Bespoke vehicles are ever the same. Yours will be
+            Bespoke Atelier
+          </motion.p>
+
+          {/* Headline — mobile first */}
+          <div className="overflow-hidden mb-2">
+            <motion.h1
+              variants={maskLeft(0.3)}
+              className="text-3xl md:text-7xl lg:text-8xl font-display text-white leading-[0.9] tracking-tight"
+            >
+              Your imagination.
+            </motion.h1>
+          </div>
+          <div className="overflow-hidden mb-8">
+            <motion.h1
+              variants={maskLeft(0.4)}
+              className="text-3xl md:text-7xl lg:text-8xl font-display text-white italic leading-[0.9] tracking-tight"
+            >
+              Our craft.
+            </motion.h1>
+          </div>
+
+          {/* Short paragraph */}
+          <motion.p
+            variants={fadeUp(0.55)}
+            className="text-sm md:text-lg text-[#BCBEC0]/70 leading-relaxed mb-10 max-w-md"
+          >
+            No two Al Husnain Bespoke vehicles are ever the same. Yours will be
             the only one in existence.
           </motion.p>
+
+          {/* CTAs */}
           <motion.div
-            initial={{opacity: 0, y: 16}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 0.9, ease: EASE_OUT_EXPO, delay: 1.4}}
-            className="flex flex-col sm:flex-row gap-3"
+            variants={fadeUp(0.7)}
+            className="flex flex-col sm:flex-row gap-4"
           >
             <Button
               variant="secondary"
-              size="md"
+              size="lg"
               href="/contact?subject=bespoke"
             >
-              Begin Your Commission <span className="ml-2">→</span>
+              Begin Your Commission
+              <span className="ml-2">→</span>
             </Button>
-            <Button variant="outline" size="md" href="#process">
-              Discover the Process <span className="ml-2">→</span>
+            <Button variant="outline" size="lg" href="#process">
+              Discover the Process
+              <span className="ml-2">→</span>
             </Button>
           </motion.div>
-        </div>
-        <motion.div
-          initial={{opacity: 0}}
-          animate={{opacity: 1}}
-          transition={{delay: 2.0, duration: 0.8}}
-          className="absolute bottom-8 right-8 md:right-16 flex items-center gap-3 text-[#BCBEC0]/25"
-        >
-          <motion.div
-            className="w-8 h-px bg-[#BCBEC0]/25"
-            animate={{scaleX: [0, 1, 0]}}
-            transition={{duration: 2.5, repeat: Infinity, ease: "easeInOut"}}
-            style={{originX: 0}}
-          />
-          <span className="text-[9px] tracking-[0.3em] uppercase">Scroll</span>
         </motion.div>
+      </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 pointer-events-none"
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        transition={{delay: 1.8, duration: 0.8}}
+        aria-hidden
+      >
+        <motion.div
+          className="w-px bg-[#BCBEC0]/30"
+          style={{height: 32}}
+          animate={prefersReduced ? {} : {scaleY: [0, 1, 0], originY: 0}}
+          transition={{
+            duration: 2.4,
+            repeat: Infinity,
+            ease: EASE_OUT_EXPO,
+            delay: 2.0,
+          }}
+        />
+        <span className="text-[8px] tracking-[0.3em] uppercase text-[#BCBEC0]/30">
+          Scroll
+        </span>
       </motion.div>
     </section>
   );
 }
 
-// ─── EXCLUSIVITY SIGNAL ───────────────────────────────────────────
+/* ───────────────────────────────────────────────
+   Exclusivity Signal
+   ─────────────────────────────────────────────── */
 function ExclusivitySignal() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, {once: true, amount: 0.5});
@@ -348,8 +377,7 @@ function ExclusivitySignal() {
             <span className="text-[#BCBEC0] font-mono">
               24 bespoke commissions
             </span>{" "}
-            per year. Each receives a dedicated advisor, atelier time, and a
-            build slot that cannot be traded.
+            per year.
           </motion.p>
           <motion.div
             initial={{opacity: 0, x: 16}}
@@ -369,7 +397,9 @@ function ExclusivitySignal() {
   );
 }
 
-// ─── MATERIAL IMMERSION ───────────────────────────────────────────
+/* ───────────────────────────────────────────────
+   Material Immersion
+   ─────────────────────────────────────────────── */
 function MaterialImmersion() {
   const [activeMat, setActiveMat] = useState(0);
   const [activeSwatchIndex, setActiveSwatchIndex] = useState(2);
@@ -380,17 +410,17 @@ function MaterialImmersion() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-black py-28 md:py-40 overflow-hidden"
+      className="relative bg-black py-20 md:py-28 lg:py-40 overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto px-6 md:px-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 items-end mb-16 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-end mb-12 lg:mb-16 gap-8">
           <div>
             <div className="overflow-hidden">
               <motion.h2
                 initial={{y: "105%"}}
                 animate={inView ? {y: "0%"} : {}}
                 transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-                className="font-display text-4xl md:text-6xl text-white leading-[0.9]"
+                className="font-display text-3xl md:text-5xl lg:text-6xl text-white leading-[0.9]"
               >
                 Curated for the
                 <br />
@@ -404,12 +434,12 @@ function MaterialImmersion() {
             transition={{duration: 0.8, delay: 0.2, ease: EASE_OUT_EXPO}}
             className="text-sm text-[#BCBEC0]/40 leading-relaxed max-w-md lg:ml-auto"
           >
-            Every material in our atelier is sourced from a single supplier,
-            verified by our craftspeople, and held to the same standard as a
-            bespoke suit.
+            Every material in our atelier is sourced from a single supplier.
           </motion.p>
         </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Material selector */}
           <div className="lg:col-span-3 space-y-0 border-t border-[#BCBEC0]/20">
             {materials.map((m, i) => (
               <button
@@ -418,7 +448,7 @@ function MaterialImmersion() {
                   setActiveMat(i);
                   setActiveSwatchIndex(2);
                 }}
-                className="w-full flex items-center justify-between py-5 border-b border-[#BCBEC0]/20 text-left group"
+                className="w-full flex items-center justify-between py-4 lg:py-5 border-b border-[#BCBEC0]/20 text-left group"
               >
                 <div>
                   <motion.span
@@ -443,22 +473,25 @@ function MaterialImmersion() {
               </button>
             ))}
           </div>
-          <div className="lg:col-span-5 relative" style={{minHeight: 520}}>
+
+          {/* Main image – responsive */}
+          <div className="lg:col-span-5">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeMat}
-                className="relative overflow-hidden"
-                style={{height: 520}}
+                className="relative overflow-hidden rounded-xl"
                 initial={{opacity: 0, scale: 1.04}}
                 animate={{opacity: 1, scale: 1}}
                 exit={{opacity: 0, scale: 0.97}}
                 transition={{duration: 0.7, ease: EASE_OUT_EXPO}}
               >
-                <img
-                  src={mat.image}
-                  alt={mat.name}
-                  className="w-full h-full object-cover"
-                />
+                <div className="aspect-[4/5] lg:aspect-auto lg:h-[520px]">
+                  <img
+                    src={mat.image}
+                    alt={mat.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 <motion.div
                   className="absolute inset-0 bg-black pointer-events-none"
                   initial={{scaleY: 1}}
@@ -476,10 +509,9 @@ function MaterialImmersion() {
               </motion.div>
             </AnimatePresence>
           </div>
-          <div
-            className="lg:col-span-4 flex flex-col justify-between"
-            style={{minHeight: 520}}
-          >
+
+          {/* Details */}
+          <div className="lg:col-span-4 flex flex-col">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeMat}
@@ -543,7 +575,9 @@ function MaterialImmersion() {
   );
 }
 
-// ─── BESPOKE PROCESS (STICKY PIN) ────────────────────────────────
+/* ───────────────────────────────────────────────
+   Bespoke Process – hidden on mobile
+   ─────────────────────────────────────────────── */
 function BespokeProcess() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeStage, setActiveStage] = useState(0);
@@ -709,7 +743,9 @@ function BespokeProcess() {
   );
 }
 
-// ─── PAST COMMISSIONS ─────────────────────────────────────────────
+/* ───────────────────────────────────────────────
+   Past Commissions
+   ─────────────────────────────────────────────── */
 function PastCommissions() {
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, {once: true, amount: 0.15});
@@ -727,7 +763,7 @@ function PastCommissions() {
                 initial={{y: "105%"}}
                 animate={inView ? {y: "0%"} : {}}
                 transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-                className="font-display text-4xl md:text-6xl text-white leading-[0.9]"
+                className="font-display text-3xl md:text-5xl lg:text-6xl text-white leading-[0.9]"
               >
                 A glimpse of
                 <br />
@@ -741,8 +777,7 @@ function PastCommissions() {
             transition={{duration: 0.8, delay: 0.2, ease: EASE_OUT_EXPO}}
             className="text-sm text-[#BCBEC0]/35 leading-relaxed max-w-md lg:ml-auto"
           >
-            Each commission is a private document. The vehicles shown here are
-            displayed with the permission of their owners.
+            Each commission is a private document.
           </motion.p>
         </div>
         <div className="border-t border-[#BCBEC0]/20">
@@ -827,100 +862,247 @@ function PastCommissions() {
   );
 }
 
-// ─── SOCIAL PROOF ─────────────────────────────────────────────────
+/* ───────────────────────────────────────────────
+   Social Proof
+   ─────────────────────────────────────────────── */
 function SocialProof() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, {once: true, amount: 0.2});
-  const stats = [
-    {value: 147, label: "Bespoke Commissions Completed", suffix: ""},
-    {value: 6, label: "Average Build Duration", suffix: " months"},
-    {value: 100, label: "Client Satisfaction Rate", suffix: "%"},
-    {value: 12000, label: "Colour Options Available", suffix: "+"},
+
+  const records = [
+    {
+      id: "commissions",
+      value: "147",
+      label: "Bespoke Commissions Completed",
+      detail: "Commission archive · 01–147",
+      image:
+        "https://res.cloudinary.com/dnadawobi/image/upload/v1782374774/pexels-entero-37208709_1_gzygzc.jpg",
+    },
+    {
+      id: "craft",
+      value: "6",
+      suffix: " months",
+      label: "Average Build Duration",
+      detail: "From first sketch to final stitch",
+      image:
+        "https://res.cloudinary.com/dnadawobi/image/upload/v1782371027/pexels-19x14-8478259_poygkp.jpg",
+    },
+    {
+      id: "satisfaction",
+      value: "100",
+      suffix: "%",
+      label: "Client Satisfaction",
+      detail: "Based on post‑delivery interviews",
+      image:
+        "https://res.cloudinary.com/dnadawobi/image/upload/v1782323634/pexels-memet-oz-296480690-17436155_fr9swt.jpg",
+    },
+    {
+      id: "colour",
+      value: "12,000",
+      suffix: "+",
+      label: "Colour Options Available",
+      detail: "Across leather, paint & stitching",
+      image:
+        "https://res.cloudinary.com/dnadawobi/image/upload/v1782374829/pexels-oguz-kaan-boga-19166252-17315566_1_wps0cz.jpg",
+    },
   ];
+
   const testimonials = [
     {
       quote:
-        "The advisor understood immediately what I wanted, something that didn't exist anywhere else. Six months later, it does.",
+        "The level of detail exceeded anything I’ve experienced with Rolls‑Royce or Bentley. Every decision became part of the story of the car. The finished vehicle carries a presence that no production car can match.",
       author: "F.A.R.",
       role: "Commission No. 61",
+      image:
+        "https://res.cloudinary.com/dnadawobi/image/upload/v1782323660/pexels-mikebirdy-18231618_g1ljyu.jpg",
     },
     {
       quote:
-        "Every sample was presented in person. Every decision felt significant. That's what made it feel worth the wait.",
+        "By the end of the process, it no longer felt like purchasing a vehicle. It felt like commissioning a piece of functional art. The team’s patience and expertise transformed a vague idea into something tangible and deeply personal.",
       author: "M.K.N.",
       role: "Commission No. 47",
+      image:
+        "https://res.cloudinary.com/dnadawobi/image/upload/v1782323605/pexels-criticalimagery-36646951_dbo8vc.jpg",
     },
   ];
+
+  const fadeUp = (delay: number) => ({
+    hidden: {y: 24, opacity: 0},
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {duration: 0.9, ease: EASE_OUT, delay},
+    },
+  });
 
   return (
     <div
       ref={ref}
-      className="bg-white py-28 md:py-40 px-6 md:px-16 overflow-hidden"
+      className="bg-white py-24 md:py-36 px-6 md:px-16 overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 border-b border-black/10 pb-16">
-          {stats.map((s, i) => (
+        {/* ── Section header ── */}
+        <motion.div
+          className="text-center mb-16 md:mb-24"
+          variants={fadeUp(0)}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+        >
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-mono">
+            The Archive
+          </p>
+          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl text-black leading-[0.9]">
+            Commission
+            <br />
+            <span className="text-[#BCBEC0] italic">Records.</span>
+          </h2>
+        </motion.div>
+
+        {/* ── Record cards ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-24 md:mb-36">
+          {records.map((rec, i) => (
             <motion.div
-              key={i}
-              initial={{opacity: 0, y: 20}}
-              animate={inView ? {opacity: 1, y: 0} : {}}
-              transition={{duration: 0.7, delay: i * 0.08, ease: EASE_OUT_EXPO}}
+              key={rec.id}
+              variants={fadeUp(0.1 + i * 0.06)}
+              initial="hidden"
+              animate={inView ? "visible" : "hidden"}
+              className="group relative bg-white border border-[#BCBEC0]/20 rounded-2xl p-8 flex flex-col md:flex-row gap-6 items-start transition-shadow hover:shadow-xl hover:border-[#BCBEC0]/40"
             >
-              <div className="font-mono text-3xl md:text-4xl text-[#BCBEC0] leading-none mb-2">
-                <CountUp end={s.value} />
-                <span className="text-xl">{s.suffix}</span>
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-[#F5F5F5]">
+                <img
+                  src={rec.image}
+                  alt=""
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
               </div>
-              <div className="text-[10px] tracking-[0.2em] text-black/50 uppercase leading-tight">
-                {s.label}
+              <div className="flex-1">
+                <div className="flex items-baseline gap-1.5 mb-1.5">
+                  <span className="font-mono text-2xl md:text-3xl text-black tabular-nums">
+                    {rec.value}
+                  </span>
+                  {rec.suffix && (
+                    <span className="font-mono text-lg text-[#BCBEC0]">
+                      {rec.suffix}
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm font-display text-black mb-1.5">
+                  {rec.label}
+                </p>
+                <p className="text-xs text-[#BCBEC0]/60 font-mono tracking-wide">
+                  {rec.detail}
+                </p>
+              </div>
+              <div className="absolute top-4 right-4 text-[#BCBEC0]/20">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <line x1="8" y1="8" x2="8" y2="16" />
+                  <line x1="8" y1="12" x2="16" y2="12" />
+                </svg>
               </div>
             </motion.div>
           ))}
         </div>
-        <div className="mb-16">
-          <div className="overflow-hidden">
-            <motion.h2
-              initial={{y: "105%"}}
-              animate={inView ? {y: "0%"} : {}}
-              transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-              className="font-display text-4xl md:text-6xl text-black leading-[0.9]"
-            >
+
+        {/* ── Testimonials ── */}
+        <div className="border-t border-black/10 pt-20 md:pt-28">
+          <motion.div
+            className="text-center mb-16"
+            variants={fadeUp(0)}
+            initial="hidden"
+            animate={inView ? "visible" : "hidden"}
+          >
+            <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-mono">
+              Client Reflections
+            </p>
+            <h2 className="font-display text-3xl md:text-5xl lg:text-6xl text-black leading-[0.9]">
               Words from
               <br />
               <span className="text-[#BCBEC0] italic">our commissioners.</span>
-            </motion.h2>
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+            {testimonials.map((t, i) => (
+              <motion.blockquote
+                key={i}
+                variants={fadeUp(0.2 + i * 0.1)}
+                initial="hidden"
+                animate={inView ? "visible" : "hidden"}
+                className="relative flex flex-col"
+              >
+                <span
+                  className="absolute -top-2 -left-1 text-5xl font-serif leading-none text-[#BCBEC0]/20 select-none"
+                  aria-hidden
+                >
+                  “
+                </span>
+                <p className="text-sm md:text-lg text-black/80 leading-relaxed italic mb-8 flex-1 max-w-md">
+                  {t.quote}
+                </p>
+                <footer className="flex items-center gap-4 border-t border-black/10 pt-6">
+                  <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-[#F5F5F5]">
+                    <img
+                      src={t.image}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm font-display text-black font-medium">
+                      {t.author}
+                    </p>
+                    <p className="text-xs text-[#BCBEC0]/60 font-mono tracking-wider uppercase">
+                      {t.role}
+                    </p>
+                  </div>
+                </footer>
+              </motion.blockquote>
+            ))}
           </div>
         </div>
-        <div className="border-t border-black/10">
-          {testimonials.map((t, i) => (
-            <motion.blockquote
-              key={i}
-              initial={{opacity: 0, y: 20}}
-              animate={inView ? {opacity: 1, y: 0} : {}}
-              transition={{
-                duration: 0.8,
-                delay: 0.15 + i * 0.12,
-                ease: EASE_OUT_EXPO,
-              }}
-              className="grid grid-cols-12 items-start gap-6 py-10 border-b border-black/10"
-            >
-              <span className="col-span-1 font-mono text-[10px] text-[#BCBEC0]/40 mt-1">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <p className="col-span-12 lg:col-span-8 font-display text-2xl md:text-3xl text-black italic leading-[1.25]">
-                "{t.quote}"
-              </p>
-              <footer className="col-span-12 lg:col-span-3 lg:col-start-10 text-right">
-                <p className="text-xs text-black font-medium mb-0.5">
-                  {t.author}
-                </p>
-                <p className="text-[10px] tracking-[0.15em] text-[#BCBEC0]/40 uppercase">
-                  {t.role}
-                </p>
-              </footer>
-            </motion.blockquote>
-          ))}
-        </div>
+
+        <motion.p
+          className="text-center text-[10px] tracking-[0.3em] text-[#BCBEC0]/40 mt-20 font-mono uppercase"
+          variants={fadeUp(0.5)}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+        >
+          Each commission is a private document. Images shown with owner
+          permission.
+        </motion.p>
       </div>
+    </div>
+  );
+}
+
+/* ───────────────────────────────────────────────
+   Main Page
+   ─────────────────────────────────────────────── */
+export default function BespokePage() {
+  const pageRef = useRef<HTMLDivElement>(null);
+  return (
+    <div ref={pageRef} className="bg-black">
+      <HeroSection />
+      <ExclusivitySignal />
+      <MaterialImmersion />
+      <div className="hidden lg:block">
+        <BespokeProcess />
+      </div>
+      <PastCommissions />
+      <SocialProof />
+      <CTABand />
     </div>
   );
 }
