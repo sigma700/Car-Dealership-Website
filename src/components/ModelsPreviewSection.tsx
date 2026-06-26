@@ -215,7 +215,7 @@ function SectionHeading({
         animate={inView ? {opacity: 1, x: 0} : {}}
         transition={{duration: 0.7, ease: EASE_OUT_EXPO}}
       >
-        THE COLLECTION
+        BEST SELLING
       </motion.p>
       <div className="overflow-hidden">
         <motion.h2
