@@ -1,6 +1,6 @@
 "use client";
 
-import {useRef, useState, useEffect} from "react";
+import {useRef, useState, useEffect, useCallback} from "react";
 import {
   motion,
   useScroll,
@@ -18,80 +18,113 @@ const EXPO = [0.19, 1, 0.22, 1] as const;
 const OUT = [0.16, 1, 0.3, 1] as const;
 
 // ─── Data ───────────────────────────────────────────────────────────
+// ─── Journey ───────────────────────────────────────────────────────────
+
 const JOURNEY = [
   {
     step: "01",
-    title: "Selection",
+    title: "Vehicle Verification",
+    subtitle: "Buy with complete confidence.",
     description:
-      "Choose from our hand-curated collection of certified vehicles. Every acquisition is supported by transparent documentation, a full inspection report, and a personal handover schedule built around you.",
+      "We verify every vehicle's ownership through NTSA records, inspect the chassis and engine numbers, and ensure there are no outstanding loans or legal restrictions.",
+    detail:
+      "NTSA verification · Chassis & engine inspection · Ownership confirmed",
     image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782371001/pexels-silverkblack-36729868_qzw5pq.jpg",
-    stat: "48h",
-    statLabel: "Average acquisition time",
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782719892/ChatGPT_Image_Jun_29_2026_10_57_45_AM_w6d8ch.png",
   },
   {
     step: "02",
-    title: "Delivery",
+    title: "Professional Inspection",
+    subtitle: "Every detail examined.",
     description:
-      "Your vehicle is delivered to your home, office, or any location across Kenya. A dedicated specialist arrives with it, walks you through every feature, and ensures everything is precisely to your standard.",
+      "Our experienced technicians perform a comprehensive mechanical and cosmetic inspection to ensure the vehicle meets our quality standards before any transaction.",
+    detail:
+      "Mechanical assessment · Road test · Exterior & interior inspection",
     image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782371019/pexels-andy-lee-222330306-38132275_tdklhs.jpg",
-    stat: "100%",
-    statLabel: "Doorstep delivery rate",
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782720341/ChatGPT_Image_Jun_29_2026_11_05_28_AM_gp9pbz.png",
   },
   {
     step: "03",
-    title: "Dedicated Support",
+    title: "Documentation",
+    subtitle: "Everything prepared correctly.",
     description:
-      "A personal advisor remains available throughout your ownership — for service scheduling, documentation, insurance liaison, or simply answering questions. One number. Always answered.",
+      "We guide both buyer and seller through all required documentation, including identification, KRA PIN verification, insurance requirements, and the sale agreement.",
+    detail: "Sale agreement · KRA PIN verification · Insurance guidance",
     image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782325000/pexels-tima-miroshnichenko-6872167_ia5xri.jpg",
-    stat: "24/7",
-    statLabel: "Advisor availability",
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782720870/ChatGPT_Image_Jun_29_2026_11_14_18_AM_bvlxlj.png",
   },
   {
     step: "04",
-    title: "Maintenance",
+    title: "NTSA Transfer",
+    subtitle: "Handled digitally.",
     description:
-      "Our service plan covers all scheduled maintenance using genuine parts and factory-trained technicians. We collect your vehicle and return it to you — your schedule is never interrupted.",
+      "The ownership transfer is initiated through the NTSA eCitizen portal, where seller and buyer securely complete the digital transfer process.",
+    detail: "Seller initiation · Buyer acceptance · Secure online transfer",
     image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782371027/pexels-19x14-8478259_poygkp.jpg",
-    stat: "3yr",
-    statLabel: "Comprehensive coverage",
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782719132/ChatGPT_Image_Jun_29_2026_10_45_12_AM_ezr0ex.png",
   },
   {
     step: "05",
-    title: "Community",
+    title: "Secure Payment",
+    subtitle: "Safe for both parties.",
     description:
-      "Ownership brings access to a private community of like-minded collectors and executives. Driving events, private previews, and curated experiences — designed for those who appreciate the finer things.",
+      "Payment is completed using secure and traceable methods such as bank transfers, bankers' cheques, financing, or approved trade-in arrangements.",
+    detail:
+      "Bank transfer · Bank finance · Trade-in support · No cash required",
     image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782371036/pexels-giona-mason-1751396-19200994_grsc8g.jpg",
-    stat: "8+",
-    statLabel: "Owner events per year",
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782719512/ChatGPT_Image_Jun_29_2026_10_51_36_AM_yvjcwd.png",
+  },
+  {
+    step: "06",
+    title: "Logbook Collection",
+    subtitle: "Ownership officially yours.",
+    description:
+      "Once NTSA approves the transfer, the new logbook is collected from your selected NTSA office, completing your ownership journey.",
+    detail: "Typically 3 working days · SMS notification · Collect new logbook",
+    image:
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782719266/ChatGPT_Image_Jun_29_2026_10_47_33_AM_fh0rej.png",
   },
 ];
 
 const TESTIMONIALS = [
   {
     quote:
-      "The level of attention after purchase was something I had never experienced at a dealership before. They genuinely treat you as a long-term client, not a transaction.",
-    author: "James K.",
-    role: "CEO, Nairobi",
+      "AL Ahsen Motors: A Beacon of Excellence in Automotive Excellence in Nairobi Kenya 🇰🇪",
+    author: "Bilal Fish Hachery",
+    role: "Google Reviewer",
+    initial: "B",
+  },
+  {
+    quote:
+      "They have great selection of whips🚗💯There's something for everyone 😉 👌🏾",
+    author: "Joel Ndoho",
+    role: "Local Guide · 17 reviews",
     initial: "J",
   },
   {
     quote:
-      "I've bought cars from dealers in London and Dubai. Al Husnain gave me the same standard of experience here in Kenya. That is rare and genuinely impressive.",
-    author: "Amina W.",
-    role: "Managing Director",
+      "Their gentleness and customer service can make you want to buy more than one car",
+    author: "Esther Kavee",
+    role: "Google Reviewer",
+    initial: "E",
+  },
+  {
+    quote: "Superb",
+    author: "Owuor Otieno",
+    role: "Local Guide · 21 reviews",
+    initial: "O",
+  },
+  {
+    quote: "It's amazing",
+    author: "Ahsan Mehmood",
+    role: "Google Reviewer",
     initial: "A",
   },
   {
-    quote:
-      "They collected my car for service, left a courtesy vehicle, and returned it detailed and on time. I didn't lift a finger. That is what premium ownership should feel like.",
-    author: "David M.",
-    role: "Entrepreneur",
-    initial: "D",
+    quote: "Good atmosphere",
+    author: "Akram Ak",
+    role: "Local Guide · 114 reviews",
+    initial: "A",
   },
 ];
 
@@ -1008,21 +1041,56 @@ function EventsSection() {
   );
 }
 
-// ─── Testimonials ────────────────────────────────────────────────────
+// ─── Testimonials Carousel (Punchy, high‑contrast version) ──────────
 function TestimonialsSection() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, {once: true, amount: 0.18});
+  const [current, setCurrent] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const next = useCallback(() => {
+    setCurrent((prev) => (prev + 1) % TESTIMONIALS.length);
+  }, []);
+
+  const prev = useCallback(() => {
+    setCurrent(
+      (prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length,
+    );
+  }, []);
+
+  // Auto‑advance every 6 seconds
+  useEffect(() => {
+    intervalRef.current = setInterval(next, 6000);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [next]);
+
+  const pauseAuto = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  };
+
+  const resumeAuto = () => {
+    pauseAuto();
+    intervalRef.current = setInterval(next, 6000);
+  };
 
   return (
     <SectionShell>
-      <section ref={ref} className="py-28 md:py-40 px-6 md:px-16">
+      <section
+        ref={ref}
+        className="py-28 md:py-40 px-6 md:px-16"
+        onMouseEnter={pauseAuto}
+        onMouseLeave={resumeAuto}
+      >
         <div className="max-w-[1440px] mx-auto">
+          {/* Header */}
           <div className="mb-18 md:mb-24">
             <motion.p
               initial={{opacity: 0, x: -14}}
               animate={inView ? {opacity: 1, x: 0} : {}}
               transition={{duration: 0.7, ease: EXPO}}
-              className="text-[10px] tracking-[0.32em] text-[#BCBEC0] uppercase mb-4 font-medium"
+              className="text-[10px] tracking-[0.32em] text-[#555] uppercase mb-4 font-medium"
             >
               Client Voices
             </motion.p>
@@ -1035,40 +1103,108 @@ function TestimonialsSection() {
               >
                 Trusted by those
                 <br />
-                <span className="text-[#BCBEC0] italic">who know quality.</span>
+                <span className="text-[#4B4B4B] italic">who know quality.</span>
               </motion.h2>
             </div>
           </div>
 
-          <div className="border-t border-black/10">
-            {TESTIMONIALS.map((t, i) => (
-              <motion.blockquote
-                key={t.author}
-                initial={{opacity: 0, y: 20}}
-                animate={inView ? {opacity: 1, y: 0} : {}}
-                transition={{duration: 0.8, delay: 0.1 + i * 0.12, ease: EXPO}}
-                className="group grid grid-cols-12 items-start gap-5 py-10 border-b border-black/10 hover:border-[#BCBEC0]/22 transition-colors duration-500"
-              >
-                <div className="col-span-1 hidden lg:flex">
-                  <div className="w-8 h-8 rounded-full bg-[#BCBEC0]/10 border border-[#BCBEC0]/18 flex items-center justify-center">
-                    <span className="text-xs text-[#BCBEC0] font-medium">
-                      {t.initial}
-                    </span>
+          {/* Carousel */}
+          <div className="relative border-t border-gray-300 pt-12">
+            <div className="min-h-[280px] md:min-h-[240px]">
+              <AnimatePresence mode="wait">
+                <motion.blockquote
+                  key={current}
+                  initial={{opacity: 0, y: 24}}
+                  animate={{opacity: 1, y: 0}}
+                  exit={{opacity: 0, y: -16}}
+                  transition={{duration: 0.5, ease: EXPO}}
+                  className="grid grid-cols-12 items-start gap-5 pb-10"
+                >
+                  <div className="col-span-1 hidden lg:flex">
+                    <div className="w-10 h-10 rounded-full bg-gray-200 border border-gray-400 flex items-center justify-center">
+                      <span className="text-xs text-gray-700 font-medium">
+                        {TESTIMONIALS[current].initial}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <p className="col-span-12 lg:col-span-8 text-xl md:text-2xl text-black leading-[1.32] italic group-hover:text-[#BCBEC0] transition-colors duration-350 font-semibold font-display">
-                  "{t.quote}"
-                </p>
-                <footer className="col-span-12 lg:col-span-3 lg:col-start-10 text-right">
-                  <p className="text-xs text-black font-semibold tracking-wide mb-0.5">
-                    {t.author}
+                  <p className="col-span-12 lg:col-span-8 text-xl md:text-2xl text-black leading-[1.32] italic font-semibold font-display">
+                    "{TESTIMONIALS[current].quote}"
                   </p>
-                  <p className="text-[10px] tracking-[0.14em] text-[#BCBEC0]/45 uppercase">
-                    {t.role}
-                  </p>
-                </footer>
-              </motion.blockquote>
-            ))}
+                  <footer className="col-span-12 lg:col-span-3 lg:col-start-10 text-right">
+                    <p className="text-xs text-black font-semibold tracking-wide mb-0.5">
+                      {TESTIMONIALS[current].author}
+                    </p>
+                    <p className="text-[10px] tracking-[0.14em] text-[#4B4B4B] uppercase">
+                      {TESTIMONIALS[current].role}
+                    </p>
+                  </footer>
+                </motion.blockquote>
+              </AnimatePresence>
+            </div>
+
+            {/* Controls – dark, highly visible */}
+            <div className="flex items-center justify-between mt-6">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={prev}
+                  className="w-9 h-9 rounded-full border-2 border-gray-400 flex items-center justify-center text-gray-700 hover:border-gray-600 hover:text-black transition-colors duration-300"
+                  aria-label="Previous testimonial"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 4L6 8L10 12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={next}
+                  className="w-9 h-9 rounded-full border-2 border-gray-400 flex items-center justify-center text-gray-700 hover:border-gray-600 hover:text-black transition-colors duration-300"
+                  aria-label="Next testimonial"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6 4L10 8L6 12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Dots */}
+              <div className="flex items-center gap-2">
+                {TESTIMONIALS.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrent(i)}
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                      i === current
+                        ? "bg-gray-700 scale-100"
+                        : "bg-gray-400 scale-75 hover:bg-gray-500"
+                    }`}
+                    aria-label={`Go to testimonial ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

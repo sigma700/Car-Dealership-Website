@@ -89,7 +89,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* About */}
+          {/* Ownership */}
           <div>
             <h4 className="text-xs font-semibold tracking-widest text-white/80 mb-4 uppercase">
               Ownership
@@ -105,6 +105,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+
           {/* Inventory */}
           <div>
             <h4 className="text-xs font-semibold tracking-widest text-white/80 mb-4 uppercase">
@@ -122,7 +123,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact + Legal + Email CTA */}
+          {/* Contact + Legal + Contact details */}
           <div>
             <h4 className="text-xs font-semibold tracking-widest text-white/80 mb-4 uppercase">
               Contact
@@ -136,11 +137,67 @@ export default function Footer() {
                   Get in Touch
                 </Link>
               </li>
-              {/* Email CTA */}
+
+              {/* Phone numbers */}
               <li>
                 <a
-                  href="mailto:info@alhusnain.ae"
-                  className="inline-flex items-center gap-2 text-sm text-[#BCBEC0]/70 hover:text-white transition-colors duration-300"
+                  href="tel:+254743155777"
+                  className="flex items-center gap-2 text-sm text-[#BCBEC0]/70 hover:text-white transition-colors duration-300"
+                >
+                  <svg
+                    className="w-4 h-4 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
+                  </svg>
+                  <span>
+                    <span className="text-[10px] text-white/40 uppercase tracking-wider block leading-none mb-0.5">
+                      Sales
+                    </span>
+                    +254 743 155777
+                  </span>
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href="tel:+254740567858"
+                  className="flex items-center gap-2 text-sm text-[#BCBEC0]/70 hover:text-white transition-colors duration-300"
+                >
+                  <svg
+                    className="w-4 h-4 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
+                  </svg>
+                  <span>
+                    <span className="text-[10px] text-white/40 uppercase tracking-wider block leading-none mb-0.5">
+                      Service
+                    </span>
+                    +254 740 567858
+                  </span>
+                </a>
+              </li>
+
+              {/* Email */}
+              <li>
+                <a
+                  href="mailto:alahsanmotors@gmail.com"
+                  className="flex items-center gap-2 text-sm text-[#BCBEC0]/70 hover:text-white transition-colors duration-300"
                 >
                   <svg
                     className="w-4 h-4 flex-shrink-0"
@@ -155,10 +212,11 @@ export default function Footer() {
                       d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     />
                   </svg>
-                  info@alhusnain.ae
+                  alahsanmotors@gmail.com
                 </a>
               </li>
             </ul>
+
             <h4 className="text-xs font-semibold tracking-widest text-white/80 mb-4 uppercase">
               Legal
             </h4>
@@ -181,9 +239,9 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-[#BCBEC0]/20">
         <div className="max-w-[1440px] mx-auto px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#BCBEC0]/40">
-          <p>© 2025 Al Husnain Group. All rights reserved.</p>
+          <p>© 2025 Al Husnain Motors. All rights reserved.</p>
           <p className="font-mono tracking-wider">
-            AED prices shown. Taxes &amp; registration may apply.
+            KSh prices shown. Taxes &amp; registration may apply.
           </p>
         </div>
       </div>

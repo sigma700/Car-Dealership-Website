@@ -22,22 +22,22 @@ const contactCards = [
   {
     title: "Sales",
     desc: "From test drives to vehicle sourcing – our sales team is ready to help.",
-    phone: "+254 700 000 001",
-    email: "sales@husein.co.ke",
+    phone: "+254 743 155777",
+    email: "alahsanmotors@gmail.com",
     button: "Speak to Sales",
   },
   {
     title: "Service & Maintenance",
     desc: "Schedule a service, request a pick‑up, or enquire about your 5‑year plan.",
-    phone: "+254 700 000 002",
-    email: "service@husein.co.ke",
+    phone: "+254 740 567858",
+    email: "alahsanmotors@gmail.com",
     button: "Book Service",
   },
   {
     title: "General Enquiries",
     desc: "For any other questions – we'll respond within 15 minutes.",
-    phone: "+254 700 000 000",
-    email: "info@husein.co.ke",
+    phone: "+254 743 155777",
+    email: "alahsanmotors@gmail.com",
     button: "Get in Touch",
   },
 ];
@@ -566,7 +566,7 @@ function MapSection() {
                 available
               </p>
             </div>
-            <Button variant="secondary" size="sm" href="tel:+254700000000">
+            <Button variant="secondary" size="sm" href="tel:+254743155777">
               Call for Directions <span className="ml-2">→</span>
             </Button>
           </motion.div>
@@ -699,7 +699,7 @@ function FinalCTA() {
             Our specialists are ready to help you discover the perfect vehicle.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button variant="secondary" size="lg" href="tel:+254700000000">
+            <Button variant="secondary" size="lg" href="tel:+254743155777">
               Call Now <span className="ml-2">→</span>
             </Button>
             <Button variant="outline" size="lg" href="/contact">
