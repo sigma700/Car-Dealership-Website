@@ -40,7 +40,7 @@ function CountUp({end, duration = 2}: {end: number; duration?: number}) {
 }
 
 /* ───────────────────────────────────────────────
-   Data
+   Data (unchanged)
    ─────────────────────────────────────────────── */
 const materials = [
   {
@@ -94,7 +94,7 @@ const processStages = [
       "A dedicated bespoke advisor meets with you at our atelier or in your own environment.",
     detail: "Typically 2–3 hours · NDA signed · No obligation",
     image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782325000/pexels-tima-miroshnichenko-6872167_ia5xri.jpg",
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782523047/23221754319967420_ymvzr0.jpg",
   },
   {
     step: "02",
@@ -104,7 +104,7 @@ const processStages = [
       "Our design team translates your brief into photorealistic renders.",
     detail: "2–4 weeks · Unlimited revisions · Physical swatches delivered",
     image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782320227/pexels-criticalimagery-36646940_t8ifsu.jpg",
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782523344/3377768468886339_oxtqkl.jpg",
   },
   {
     step: "03",
@@ -114,7 +114,7 @@ const processStages = [
       "Physical samples of every selected material are presented in person.",
     detail: "In‑person appointment · Full sample library · Artisan present",
     image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782319817/pexels-chris-clark-1933184-5608576_u83gbw.jpg",
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782523117/105342078781774240_gcy7uj.jpg",
   },
   {
     step: "04",
@@ -124,7 +124,7 @@ const processStages = [
       "A formal commission document records every specification decision.",
     detail: "6–18 week build · Progress reports · Dedicated contact",
     image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782371001/pexels-silverkblack-36729868_qzw5pq.jpg",
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782523159/Agreement_on_important_issues_uasmnt.jpg",
   },
   {
     step: "05",
@@ -143,7 +143,7 @@ const processStages = [
       "Your vehicle is transported in an enclosed, climate‑controlled transporter.",
     detail: "Venue of your choice · Advisor present · Build diary presented",
     image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782371019/pexels-andy-lee-222330306-38132275_tdklhs.jpg",
+      "https://res.cloudinary.com/dnadawobi/image/upload/v1782523237/440156563603415946_a1kweq.jpg",
   },
 ];
 
@@ -178,7 +178,7 @@ const commissions = [
 ];
 
 /* ───────────────────────────────────────────────
-   Hero — mobile‑optimised
+   🚗 HERO – with reusable Button component
    ─────────────────────────────────────────────── */
 function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -193,7 +193,6 @@ function HeroSection() {
   const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "5%"]);
   const springImageY = useSpring(imageY, {stiffness: 30, damping: 14});
 
-  // Very slow ambient drift
   const driftX = useMotionValue(0);
   useEffect(() => {
     if (prefersReduced) return;
@@ -227,9 +226,9 @@ function HeroSection() {
       ref={sectionRef}
       className="relative w-full bg-black overflow-hidden"
       style={{minHeight: "100svh"}}
-      aria-label="Bespoke commission hero"
+      aria-label="LuxeDrive – Discover the world on wheels"
     >
-      {/* Full‑bleed image */}
+      {/* Full‑bleed image with parallax */}
       <motion.div
         className="absolute inset-0"
         style={{
@@ -238,20 +237,20 @@ function HeroSection() {
         }}
       >
         <img
-          src="https://res.cloudinary.com/dnadawobi/image/upload/v1782319817/pexels-chris-clark-1933184-5608576_u83gbw.jpg"
-          alt=""
-          className="w-full h-full object-cover"
+          src="https://res.cloudinary.com/dnadawobi/image/upload/v1782522730/samuele-errico-piccarini-FMbWFDiVRPs-unsplash_1_zqwplw.jpg"
+          alt="Luxury car for rent"
+          className="w-full h-full object-cover object-[65%_50%]"
           fetchPriority="high"
           loading="eager"
         />
       </motion.div>
 
-      {/* Left‑weighted gradient */}
+      {/* Left‑weighted gradient overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(105deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 45%, transparent 75%)",
+            "linear-gradient(110deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.10) 100%)",
         }}
         aria-hidden
       />
@@ -259,92 +258,48 @@ function HeroSection() {
       {/* Content */}
       <div className="relative z-10 flex items-center min-h-[100svh] px-6 md:px-14 lg:px-20 xl:px-28">
         <motion.div
-          className="w-full max-w-[560px]"
+          className="w-full"
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={{
             visible: {transition: {staggerChildren: 0.12}},
           }}
         >
-          {/* Eyebrow */}
+          {/* Brand name */}
           <motion.p
             variants={fadeUp(0.15)}
-            className="text-[10px] tracking-[0.32em] text-[#BCBEC0] uppercase mb-6"
+            className="text-[13px] tracking-[0.3em] uppercase text-white/60 mb-8 font-semibold"
           >
-            Bespoke Atelier
+            AL AHASAN
           </motion.p>
 
-          {/* Headline — mobile first */}
-          <div className="overflow-hidden mb-2">
+          {/* Main headline – now full width */}
+          <div className="overflow-hidden mb-3 w-full">
             <motion.h1
               variants={maskLeft(0.3)}
-              className="text-3xl md:text-7xl lg:text-8xl font-display text-white leading-[0.9] tracking-tight"
+              className="text-[clamp(2.6rem,6vw,6rem)] font-bold text-white leading-[1.05] tracking-[-0.02em]"
             >
-              Your imagination.
-            </motion.h1>
-          </div>
-          <div className="overflow-hidden mb-8">
-            <motion.h1
-              variants={maskLeft(0.4)}
-              className="text-3xl md:text-7xl lg:text-8xl font-display text-white italic leading-[0.9] tracking-tight"
-            >
-              Our craft.
+              DISCOVER A VARIETY OF MODS
+              <br />
             </motion.h1>
           </div>
 
-          {/* Short paragraph */}
+          {/* Subheading – constrained for readability */}
           <motion.p
             variants={fadeUp(0.55)}
-            className="text-sm md:text-lg text-[#BCBEC0]/70 leading-relaxed mb-10 max-w-md"
+            className="text-base md:text-lg text-white/70 leading-relaxed mb-10 max-w-lg"
           >
-            No two Al Husnain Bespoke vehicles are ever the same. Yours will be
-            the only one in existence.
+            with our car rental service
           </motion.p>
 
-          {/* CTAs */}
-          <motion.div
-            variants={fadeUp(0.7)}
-            className="flex flex-col sm:flex-row gap-4"
-          >
-            <Button
-              variant="secondary"
-              size="lg"
-              href="/contact?subject=bespoke"
-            >
-              Begin Your Commission
-              <span className="ml-2">→</span>
-            </Button>
-            <Button variant="outline" size="lg" href="#process">
-              Discover the Process
-              <span className="ml-2">→</span>
+          {/* CTA – replaced static <a> with reusable <Button /> */}
+          <motion.div variants={fadeUp(0.7)}>
+            <Button variant="primary" size="lg" href="/vehicles">
+              Rent Now
             </Button>
           </motion.div>
         </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 pointer-events-none"
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        transition={{delay: 1.8, duration: 0.8}}
-        aria-hidden
-      >
-        <motion.div
-          className="w-px bg-[#BCBEC0]/30"
-          style={{height: 32}}
-          animate={prefersReduced ? {} : {scaleY: [0, 1, 0], originY: 0}}
-          transition={{
-            duration: 2.4,
-            repeat: Infinity,
-            ease: EASE_OUT_EXPO,
-            delay: 2.0,
-          }}
-        />
-        <span className="text-[8px] tracking-[0.3em] uppercase text-[#BCBEC0]/30">
-          Scroll
-        </span>
-      </motion.div>
     </section>
   );
 }
@@ -363,7 +318,7 @@ function ExclusivitySignal() {
             initial={{opacity: 0, x: -16}}
             animate={inView ? {opacity: 1, x: 0} : {}}
             transition={{duration: 0.7, ease: EASE_OUT_EXPO}}
-            className="text-[10px] tracking-[0.3em] text-[#BCBEC0]/60 uppercase"
+            className="text-[10px] tracking-[0.3em] text-[#BCBEC0]/60 uppercase font-medium"
           >
             Strictly Limited
           </motion.p>
@@ -374,7 +329,7 @@ function ExclusivitySignal() {
             className="text-sm text-[#BCBEC0]/50 text-center max-w-lg"
           >
             We accept a maximum of{" "}
-            <span className="text-[#BCBEC0] font-mono">
+            <span className="text-[#BCBEC0] font-bold">
               24 bespoke commissions
             </span>{" "}
             per year.
@@ -386,7 +341,7 @@ function ExclusivitySignal() {
           >
             <a
               href="/contact?subject=bespoke-availability"
-              className="text-[10px] tracking-[0.25em] text-[#BCBEC0] uppercase border-b border-[#BCBEC0]/30 pb-px hover:border-[#BCBEC0] transition-colors whitespace-nowrap"
+              className="text-[10px] tracking-[0.25em] text-[#BCBEC0] uppercase border-b border-[#BCBEC0]/30 pb-px hover:border-[#BCBEC0] transition-colors whitespace-nowrap font-medium"
             >
               Check Availability →
             </a>
@@ -398,7 +353,7 @@ function ExclusivitySignal() {
 }
 
 /* ───────────────────────────────────────────────
-   Material Immersion
+   Material Immersion (unchanged)
    ─────────────────────────────────────────────── */
 function MaterialImmersion() {
   const [activeMat, setActiveMat] = useState(0);
@@ -420,7 +375,7 @@ function MaterialImmersion() {
                 initial={{y: "105%"}}
                 animate={inView ? {y: "0%"} : {}}
                 transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-                className="font-display text-3xl md:text-5xl lg:text-6xl text-white leading-[0.9]"
+                className="font-bold text-3xl md:text-5xl lg:text-6xl text-white leading-[0.9]"
               >
                 Curated for the
                 <br />
@@ -439,7 +394,6 @@ function MaterialImmersion() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Material selector */}
           <div className="lg:col-span-3 space-y-0 border-t border-[#BCBEC0]/20">
             {materials.map((m, i) => (
               <button
@@ -453,7 +407,7 @@ function MaterialImmersion() {
                 <div>
                   <motion.span
                     animate={{opacity: i === activeMat ? 1 : 0.35}}
-                    className="block font-display text-base text-white mb-0.5 group-hover:text-[#BCBEC0] transition-colors duration-300"
+                    className="block font-bold text-base text-white mb-0.5 group-hover:text-[#BCBEC0] transition-colors duration-300"
                   >
                     {m.name}
                   </motion.span>
@@ -474,7 +428,6 @@ function MaterialImmersion() {
             ))}
           </div>
 
-          {/* Main image – responsive */}
           <div className="lg:col-span-5">
             <AnimatePresence mode="wait">
               <motion.div
@@ -501,16 +454,15 @@ function MaterialImmersion() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6">
-                  <p className="font-mono text-[10px] tracking-[0.3em] text-[#BCBEC0] uppercase mb-1">
+                  <p className="text-[10px] tracking-[0.3em] text-[#BCBEC0] uppercase mb-1 font-medium">
                     {mat.origin}
                   </p>
-                  <p className="font-display text-lg text-white">{mat.name}</p>
+                  <p className="font-bold text-lg text-white">{mat.name}</p>
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Details */}
           <div className="lg:col-span-4 flex flex-col">
             <AnimatePresence mode="wait">
               <motion.div
@@ -526,7 +478,7 @@ function MaterialImmersion() {
                     {mat.description}
                   </p>
                   <div className="mb-8">
-                    <p className="text-[10px] tracking-[0.25em] text-[#BCBEC0]/30 uppercase mb-4">
+                    <p className="text-[10px] tracking-[0.25em] text-[#BCBEC0]/30 uppercase mb-4 font-medium">
                       Available Finishes
                     </p>
                     <div className="flex gap-3">
@@ -576,7 +528,7 @@ function MaterialImmersion() {
 }
 
 /* ───────────────────────────────────────────────
-   Bespoke Process – hidden on mobile
+   Bespoke Process (unchanged)
    ─────────────────────────────────────────────── */
 function BespokeProcess() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -632,7 +584,7 @@ function BespokeProcess() {
             />
           </div>
           <div className="absolute top-8 left-8">
-            <span className="font-mono text-[10px] tracking-[0.3em] text-black/40 uppercase">
+            <span className="text-[10px] tracking-[0.3em] text-black/40 uppercase font-medium">
               Stage {stage.step} of {processStages.length}
             </span>
           </div>
@@ -658,7 +610,7 @@ function BespokeProcess() {
                 >
                   <motion.span
                     animate={{opacity: i === activeStage ? 1 : 0.25}}
-                    className="font-mono text-[10px] tracking-wider text-[#BCBEC0] w-6 flex-shrink-0"
+                    className="text-[10px] tracking-wider text-[#BCBEC0] w-6 flex-shrink-0 font-medium"
                   >
                     {s.step}
                   </motion.span>
@@ -693,16 +645,16 @@ function BespokeProcess() {
               transition={{duration: 0.5, ease: EASE_OUT_EXPO}}
               className="flex-1 flex flex-col justify-end"
             >
-              <p className="text-[10px] tracking-[0.25em] text-[#BCBEC0] uppercase mb-2">
+              <p className="text-[10px] tracking-[0.25em] text-[#BCBEC0] uppercase mb-2 font-medium">
                 {stage.subtitle}
               </p>
-              <h2 className="font-display text-3xl md:text-4xl xl:text-5xl text-black leading-[0.92] mb-5">
+              <h2 className="font-bold text-3xl md:text-4xl xl:text-5xl text-black leading-[0.92] mb-5">
                 {stage.title}
               </h2>
               <p className="text-sm text-[#BCBEC0]/75 leading-relaxed mb-6 max-w-sm">
                 {stage.description}
               </p>
-              <p className="font-mono text-[10px] tracking-[0.2em] text-[#BCBEC0]/60 mb-8">
+              <p className="text-[10px] tracking-[0.2em] text-[#BCBEC0]/60 mb-8 font-medium">
                 {stage.detail}
               </p>
               <Button
@@ -715,12 +667,12 @@ function BespokeProcess() {
             </motion.div>
           </AnimatePresence>
           <div className="mt-8 pt-6 border-t border-black/8">
-            <p className="text-[10px] tracking-[0.2em] text-[#BCBEC0]/35 uppercase mb-1">
+            <p className="text-[10px] tracking-[0.2em] text-[#BCBEC0]/35 uppercase mb-1 font-medium">
               Speak directly with our atelier
             </p>
             <a
               href="tel:+97100000000"
-              className="font-mono text-sm text-[#BCBEC0] hover:text-white transition-colors"
+              className="font-medium text-sm text-[#BCBEC0] hover:text-white transition-colors"
             >
               +971 00 000 0000
             </a>
@@ -744,7 +696,7 @@ function BespokeProcess() {
 }
 
 /* ───────────────────────────────────────────────
-   Past Commissions
+   Past Commissions (unchanged)
    ─────────────────────────────────────────────── */
 function PastCommissions() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -763,7 +715,7 @@ function PastCommissions() {
                 initial={{y: "105%"}}
                 animate={inView ? {y: "0%"} : {}}
                 transition={{duration: 1.0, ease: EASE_OUT_EXPO, delay: 0.1}}
-                className="font-display text-3xl md:text-5xl lg:text-6xl text-white leading-[0.9]"
+                className="font-bold text-3xl md:text-5xl lg:text-6xl text-white leading-[0.9]"
               >
                 A glimpse of
                 <br />
@@ -796,7 +748,7 @@ function PastCommissions() {
               className="group grid grid-cols-12 items-center gap-4 py-8 border-b border-[#BCBEC0]/20 cursor-pointer"
             >
               <div className="col-span-1 hidden lg:block">
-                <span className="font-mono text-[10px] tracking-[0.2em] text-[#BCBEC0]/40">
+                <span className="text-[10px] tracking-[0.2em] text-[#BCBEC0]/40 font-medium">
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
@@ -818,7 +770,7 @@ function PastCommissions() {
                 <motion.p
                   animate={{color: hoveredIdx === i ? "#BCBEC0" : "#FFFFFF"}}
                   transition={{duration: 0.3}}
-                  className="font-display text-xl mb-1"
+                  className="font-bold text-xl mb-1"
                 >
                   {c.code}
                 </motion.p>
@@ -863,7 +815,7 @@ function PastCommissions() {
 }
 
 /* ───────────────────────────────────────────────
-   Social Proof
+   Social Proof (unchanged)
    ─────────────────────────────────────────────── */
 function SocialProof() {
   const ref = useRef<HTMLDivElement>(null);
@@ -941,24 +893,22 @@ function SocialProof() {
       className="bg-white py-24 md:py-36 px-6 md:px-16 overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto">
-        {/* ── Section header ── */}
         <motion.div
           className="text-center mb-16 md:mb-24"
           variants={fadeUp(0)}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
         >
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-mono">
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-medium">
             The Archive
           </p>
-          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl text-black leading-[0.9]">
+          <h2 className="font-bold text-3xl md:text-5xl lg:text-6xl text-black leading-[0.9]">
             Commission
             <br />
             <span className="text-[#BCBEC0] italic">Records.</span>
           </h2>
         </motion.div>
 
-        {/* ── Record cards ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-24 md:mb-36">
           {records.map((rec, i) => (
             <motion.div
@@ -978,19 +928,19 @@ function SocialProof() {
               </div>
               <div className="flex-1">
                 <div className="flex items-baseline gap-1.5 mb-1.5">
-                  <span className="font-mono text-2xl md:text-3xl text-black tabular-nums">
+                  <span className="font-bold text-2xl md:text-3xl text-black tabular-nums">
                     {rec.value}
                   </span>
                   {rec.suffix && (
-                    <span className="font-mono text-lg text-[#BCBEC0]">
+                    <span className="font-medium text-lg text-[#BCBEC0]">
                       {rec.suffix}
                     </span>
                   )}
                 </div>
-                <p className="text-sm font-display text-black mb-1.5">
+                <p className="text-sm font-bold text-black mb-1.5">
                   {rec.label}
                 </p>
-                <p className="text-xs text-[#BCBEC0]/60 font-mono tracking-wide">
+                <p className="text-xs text-[#BCBEC0]/60 font-medium tracking-wide">
                   {rec.detail}
                 </p>
               </div>
@@ -1014,7 +964,6 @@ function SocialProof() {
           ))}
         </div>
 
-        {/* ── Testimonials ── */}
         <div className="border-t border-black/10 pt-20 md:pt-28">
           <motion.div
             className="text-center mb-16"
@@ -1022,10 +971,10 @@ function SocialProof() {
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
           >
-            <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-mono">
+            <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-medium">
               Client Reflections
             </p>
-            <h2 className="font-display text-3xl md:text-5xl lg:text-6xl text-black leading-[0.9]">
+            <h2 className="font-bold text-3xl md:text-5xl lg:text-6xl text-black leading-[0.9]">
               Words from
               <br />
               <span className="text-[#BCBEC0] italic">our commissioners.</span>
@@ -1060,10 +1009,8 @@ function SocialProof() {
                     />
                   </div>
                   <div>
-                    <p className="text-sm font-display text-black font-medium">
-                      {t.author}
-                    </p>
-                    <p className="text-xs text-[#BCBEC0]/60 font-mono tracking-wider uppercase">
+                    <p className="text-sm font-bold text-black">{t.author}</p>
+                    <p className="text-xs text-[#BCBEC0]/60 font-medium tracking-wider uppercase">
                       {t.role}
                     </p>
                   </div>
@@ -1074,7 +1021,7 @@ function SocialProof() {
         </div>
 
         <motion.p
-          className="text-center text-[10px] tracking-[0.3em] text-[#BCBEC0]/40 mt-20 font-mono uppercase"
+          className="text-center text-[10px] tracking-[0.3em] text-[#BCBEC0]/40 mt-20 font-medium uppercase"
           variants={fadeUp(0.5)}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}

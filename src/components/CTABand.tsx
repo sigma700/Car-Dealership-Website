@@ -67,10 +67,12 @@ export default function CTABand() {
           animate={inView ? {opacity: 1, y: 0} : {}}
           transition={{duration: 0.8, ease: EASE_OUT_EXPO}}
         >
+          {/* Badge – now uses monospace font (font-mono) as originally intended */}
           <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-6 font-mono">
             Al Husnain Motors
           </p>
-          <h2 className="font-display text-4xl md:text-6xl text-white leading-[0.9] mb-6">
+          {/* Heading – stays in default sans‑serif (bold) */}
+          <h2 className="font-bold text-4xl md:text-6xl text-white leading-[0.9] mb-6">
             Your next vehicle is waiting
           </h2>
           <p className="text-sm text-[#BCBEC0]/70 mb-12 max-w-sm mx-auto leading-relaxed">

@@ -1,17 +1,17 @@
 "use client";
 
-import {useRef} from "react";
+import {useRef, useState, useEffect, useCallback} from "react";
 import {
   motion,
   useScroll,
   useTransform,
   useSpring,
-  useMotionValue,
-  useAnimationFrame,
+  AnimatePresence,
 } from "framer-motion";
 import Button from "@/components/Button";
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
 
+// ─── Motion easing ───────────────────────────────────────────
 const EXPO = [0.19, 1, 0.22, 1] as const;
 const OUT = [0.16, 1, 0.3, 1] as const;
 
@@ -34,73 +34,112 @@ const fadeUp = {
   visible: {y: 0, opacity: 1, transition: {duration: 0.85, ease: OUT}},
 };
 
-const TRUST_ITEMS = [
-  {value: "15+", label: "Years of Excellence"},
-  {value: "10,000+", label: "Satisfied Clients"},
-];
-
 const TRUST_BADGES = [
   "Certified Vehicles",
   "Nationwide Delivery",
   "Trusted Financing",
 ];
 
-const INDICATORS = [
-  "15+ Years Experience",
-  "Certified Vehicles",
-  "Nationwide Delivery",
+// ─── Carousel images ──────────────────────────────────────────
+const CAROUSEL_IMAGES = [
+  "https://res.cloudinary.com/dnadawobi/image/upload/v1782517744/%D0%A4%D0%BE%D1%82%D0%BE_BMW_M5_F90_hukdsx.jpg",
+  "https://res.cloudinary.com/dnadawobi/image/upload/v1782517718/HD_wallpaper__2014_au_spec_autobiography_awd_luxury_range_rover_sport_ei4ghs.jpg",
+  "https://res.cloudinary.com/dnadawobi/image/upload/v1782517766/The_Audi_R8__A_Blend_of_Luxury_and_Performance___2025_Audi_R8___Audi_R8_Review_tiv36v.jpg",
+  "https://res.cloudinary.com/dnadawobi/image/upload/v1782517838/248753579413903251_sc8dal.jpg",
 ];
 
-// Gentle perpetual float for the trust card
-function useFloat(amplitude = 6, period = 4000) {
-  const y = useMotionValue(0);
-  const reduced = usePrefersReducedMotion();
-  useAnimationFrame((t) => {
-    if (reduced) return;
-    y.set(Math.sin((t / period) * Math.PI * 2) * amplitude);
-  });
-  return y;
-}
-
-export default function AboutHero() {
+export default function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduced = usePrefersReducedMotion();
 
+  // ── Scroll parallax ──────────────────────────────────────────
   const {scrollY} = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
-
   const imgY = useTransform(scrollY, [0, 700], ["0%", "18%"]);
   const contentOpacity = useTransform(scrollY, [0, 350], [1, 0]);
   const contentSpring = useSpring(contentOpacity, {stiffness: 80, damping: 20});
 
-  const cardFloat = useFloat(5, 4200);
+  // ── Carousel state ────────────────────────────────────────────
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
+
+  const goNext = useCallback(() => {
+    setDirection(1);
+    setCurrent((p) => (p + 1) % CAROUSEL_IMAGES.length);
+  }, []);
+
+  const goPrev = useCallback(() => {
+    setDirection(-1);
+    setCurrent(
+      (p) => (p - 1 + CAROUSEL_IMAGES.length) % CAROUSEL_IMAGES.length,
+    );
+  }, []);
+
+  // Auto‑advance every 5 seconds
+  useEffect(() => {
+    if (reduced) return; // no auto‑play for reduced motion preference
+    const timer = setInterval(goNext, 5000);
+    return () => clearInterval(timer);
+  }, [goNext, reduced]);
+
+  // ── Slide variants ────────────────────────────────────────────
+  const slideVariants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? "100%" : "-100%",
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        x: {type: "spring", stiffness: 300, damping: 30},
+        opacity: {duration: 0.4},
+      },
+    },
+    exit: (dir: number) => ({
+      x: dir > 0 ? "-100%" : "100%",
+      opacity: 0,
+      transition: {
+        x: {type: "spring", stiffness: 300, damping: 30},
+        opacity: {duration: 0.4},
+      },
+    }),
+  };
 
   return (
     <section
       ref={ref}
       className="relative w-full overflow-hidden bg-black"
       style={{height: "92vh", minHeight: 640}}
-      aria-label="About Al Husnain Motors"
+      aria-label="Autocar – Buy and sell vehicles"
     >
-      {/* ── Background image ── */}
+      {/* ── Background carousel ── */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <motion.div
           className="absolute inset-0"
           style={reduced ? {} : {y: imgY}}
         >
-          <img
-            src="https://res.cloudinary.com/dnadawobi/image/upload/v1782261216/pexels-introspectivedsgn-5864155_czizzw.jpg"
-            alt=""
-            className="w-full h-full object-cover object-[40%_50%]"
-            fetchPriority="high"
-            style={{willChange: "transform"}}
-          />
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.img
+              key={current}
+              src={CAROUSEL_IMAGES[current]}
+              alt={`Slide ${current + 1}`}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              className="absolute inset-0 w-full h-full object-cover"
+              fetchPriority={current === 0 ? "high" : "auto"}
+              style={{willChange: "transform"}}
+            />
+          </AnimatePresence>
         </motion.div>
       </div>
 
-      {/* ── Cinematic overlay — softer than before, preserves image detail ── */}
+      {/* ── Cinematic overlay ── */}
       <div
         className="absolute inset-0 z-10 pointer-events-none"
         style={{
@@ -109,7 +148,6 @@ export default function AboutHero() {
         }}
         aria-hidden
       />
-      {/* Bottom edge fade into page */}
       <div
         className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none"
         style={{
@@ -122,155 +160,112 @@ export default function AboutHero() {
 
       {/* ── Main content ── */}
       <motion.div
-        className="absolute inset-0 z-20 flex items-center"
-        style={reduced ? {} : {opacity: contentSpring}}
+        className="absolute inset-x-0 z-20 flex items-center"
+        style={{
+          top: "72px",
+          bottom: 0,
+          opacity: reduced ? 1 : contentSpring,
+        }}
       >
         <div className="w-full px-8 md:px-16 lg:px-24 xl:px-32">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12 lg:gap-20">
-            {/* Left: editorial text block */}
-            <div className="flex-1 max-w-[520px]">
+            {/* Left: text block */}
+            <div className="flex-1 max-w-[560px]">
               <motion.div
                 variants={stagger}
                 initial="hidden"
                 animate="visible"
                 className="flex flex-col"
               >
-                {/* Eyebrow */}
                 <motion.p
                   variants={fadeUp}
-                  className="text-[10px] tracking-[0.28em] uppercase text-[#BCBEC0]/60 mb-8 font-medium"
+                  className="text-[11px] tracking-[0.3em] uppercase text-[#BCBEC0]/60 mb-6 font-medium"
                 >
-                  Since 2009 · Dubai, UAE
+                  Premium Automotive Marketplace
                 </motion.p>
 
-                {/* Single H1 with two typographic weights */}
-                <h1 className="mb-10 leading-none tracking-tight">
-                  <div className="overflow-hidden mb-1">
-                    <motion.span
-                      variants={clipReveal}
-                      className="block text-[clamp(2rem,4.5vw,4rem)] font-display font-light text-white/70 tracking-[0.04em]"
-                      style={{letterSpacing: "0.05em"}}
-                    >
-                      Built on
-                    </motion.span>
-                  </div>
-                  <div className="overflow-hidden">
-                    <motion.span
-                      variants={clipReveal}
-                      className="block text-[clamp(3.2rem,7.5vw,7rem)] font-display font-bold text-white leading-[0.88] tracking-[-0.02em]"
-                    >
-                      INTEGRITY.
-                    </motion.span>
-                  </div>
-                </h1>
+                <div className="overflow-hidden mb-4">
+                  <motion.h1
+                    variants={clipReveal}
+                    className="text-[clamp(2.4rem,5.5vw,5.5rem)] font-bold text-white leading-[1.05] tracking-[-0.02em]"
+                  >
+                    The Easiest Way To Buy And Sell Vehicles
+                  </motion.h1>
+                </div>
 
-                {/* Supporting paragraph */}
                 <motion.p
                   variants={fadeUp}
-                  className="text-sm md:text-[15px] text-[#BCBEC0]/70 leading-[1.75] mb-10 max-w-[460px]"
+                  className="text-base md:text-lg text-[#BCBEC0]/80 leading-relaxed mb-8 max-w-[440px]"
                 >
-                  For fifteen years, Al Husnain Motors has set the standard for
-                  pre-owned luxury in the UAE. Every vehicle we present is
-                  hand-selected, rigorously inspected, and sold with complete
-                  transparency — because our reputation is the only guarantee
-                  that matters.
+                  Find the right price and dealer.
                 </motion.p>
 
-                {/* CTAs */}
-                <motion.div
-                  variants={fadeUp}
-                  className="flex flex-col sm:flex-row gap-3 mb-8"
-                >
-                  <Button variant="secondary" size="lg">
-                    Our Story
-                  </Button>
-                  <Button variant="outline" size="lg">
-                    Meet the Team
+                <motion.div variants={fadeUp} className="mb-10">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="bg-black text-white border-0 rounded-none px-10 py-4 text-base font-medium hover:bg-gray-900 transition"
+                  >
+                    Learn More <span className="ml-2">→</span>
                   </Button>
                 </motion.div>
 
-                {/* Trust indicators */}
                 <motion.div
                   variants={fadeUp}
-                  className="flex flex-wrap gap-x-6 gap-y-2"
+                  className="flex flex-wrap gap-x-8 gap-y-2"
                 >
-                  {INDICATORS.map((item) => (
+                  {TRUST_BADGES.map((item) => (
                     <span
                       key={item}
-                      className="flex items-center gap-1.5 text-[11px] tracking-[0.1em] text-[#BCBEC0]/45"
+                      className="flex items-center gap-1.5 text-[12px] tracking-[0.08em] text-[#BCBEC0]/50"
                     >
-                      <span className="text-[#BCBEC0]/35">✓</span>
+                      <span className="text-[#BCBEC0]/30">✓</span>
                       {item}
                     </span>
                   ))}
                 </motion.div>
               </motion.div>
             </div>
-
-            {/* Right: floating trust card */}
-            <motion.div
-              className="flex-shrink-0 self-center lg:self-auto"
-              initial={{opacity: 0, x: 20}}
-              animate={{opacity: 1, x: 0}}
-              transition={{delay: 0.9, duration: 1.0, ease: OUT}}
-              style={reduced ? {} : {y: cardFloat}}
-            >
-              <div
-                style={{
-                  background: "rgba(255,255,255,0.05)",
-                  backdropFilter: "blur(18px)",
-                  WebkitBackdropFilter: "blur(18px)",
-                  border: "1px solid rgba(255,255,255,0.09)",
-                  borderRadius: 16,
-                  boxShadow:
-                    "0 24px 48px rgba(0,0,0,0.28), 0 1px 0 rgba(255,255,255,0.06) inset",
-                  minWidth: 220,
-                  maxWidth: 260,
-                }}
-              >
-                {/* Stats */}
-                {TRUST_ITEMS.map(({value, label}, i) => (
-                  <div
-                    key={label}
-                    className="px-7 py-5"
-                    style={
-                      i < TRUST_ITEMS.length - 1
-                        ? {borderBottom: "1px solid rgba(255,255,255,0.07)"}
-                        : {}
-                    }
-                  >
-                    <p className="font-display font-semibold text-white text-3xl leading-none mb-1 tracking-tight">
-                      {value}
-                    </p>
-                    <p className="text-[11px] text-[#BCBEC0]/50 tracking-[0.12em] uppercase">
-                      {label}
-                    </p>
-                  </div>
-                ))}
-
-                {/* Divider */}
-                <div
-                  className="mx-7"
-                  style={{height: 1, background: "rgba(255,255,255,0.07)"}}
-                />
-
-                {/* Badge list */}
-                <div className="px-7 py-5 flex flex-col gap-2.5">
-                  {TRUST_BADGES.map((badge) => (
-                    <p
-                      key={badge}
-                      className="flex items-center gap-2.5 text-[12px] text-[#BCBEC0]/60 tracking-wide"
-                    >
-                      <span className="text-[#BCBEC0]/35 text-[10px]">✓</span>
-                      {badge}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
       </motion.div>
+
+      {/* ── Carousel controls ── */}
+      <div className="absolute inset-y-0 left-0 z-30 flex items-center px-4">
+        <button
+          onClick={goPrev}
+          className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/40 hover:border-white/50 hover:text-white/70 transition pointer-events-auto"
+          aria-label="Previous slide"
+        >
+          ‹
+        </button>
+      </div>
+      <div className="absolute inset-y-0 right-0 z-30 flex items-center px-4">
+        <button
+          onClick={goNext}
+          className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/40 hover:border-white/50 hover:text-white/70 transition pointer-events-auto"
+          aria-label="Next slide"
+        >
+          ›
+        </button>
+      </div>
+
+      {/* ── Dot indicators ── */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+        {CAROUSEL_IMAGES.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => {
+              setDirection(i > current ? 1 : -1);
+              setCurrent(i);
+            }}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              i === current ? "bg-white" : "bg-white/30"
+            }`}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
     </section>
   );
 }

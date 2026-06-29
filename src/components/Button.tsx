@@ -1,17 +1,18 @@
 "use client";
 
 import React, {useRef} from "react";
-import {motion, useReducedMotion, AnimatePresence} from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  AnimatePresence,
+  type HTMLMotionProps,
+} from "framer-motion";
 
-// ─────────────────────────────────────────────────────────
-// Types
-// ─────────────────────────────────────────────────────────
-
-export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
+export type ButtonVariant = "primary" | "secondary";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps extends Omit<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLMotionProps<"button">,
   "children"
 > {
   children?: React.ReactNode;
@@ -20,10 +21,6 @@ export interface ButtonProps extends Omit<
   fullWidth?: boolean;
   loading?: boolean;
 }
-
-// ─────────────────────────────────────────────────────────
-// Constants
-// ─────────────────────────────────────────────────────────
 
 const EASING = [0.22, 1, 0.36, 1] as const;
 const DURATION = 0.55;
@@ -34,10 +31,6 @@ const SIZE_MAP: Record<ButtonSize, {height: string; px: string; text: string}> =
     md: {height: "48px", px: "28px", text: "0.875rem"},
     lg: {height: "56px", px: "36px", text: "0.9375rem"},
   };
-
-// ─────────────────────────────────────────────────────────
-// Spinner
-// ─────────────────────────────────────────────────────────
 
 const Spinner: React.FC<{color: string}> = ({color}) => (
   <motion.span
@@ -56,9 +49,46 @@ const Spinner: React.FC<{color: string}> = ({color}) => (
   />
 );
 
-// ─────────────────────────────────────────────────────────
-// Button
-// ─────────────────────────────────────────────────────────
+type TokenSet = {
+  bg: string;
+  fg: string;
+  border: string;
+  hoverBg: string;
+  hoverFg: string;
+  shadow: string;
+  focusRing: string;
+};
+
+const TOKENS: Record<string, TokenSet> = {
+  primary: {
+    bg: "#000000",
+    fg: "#FFFFFF",
+    border: "1px solid #000000",
+    hoverBg: "#FFFFFF",
+    hoverFg: "#000000",
+    shadow: "0 2px 12px rgba(0,0,0,0.18)",
+    focusRing: "0 0 0 2px #fff, 0 0 0 4px #000",
+  },
+  secondary: {
+    bg: "#FFFFFF",
+    fg: "#000000",
+    border: "1px solid #BCBEC0",
+    hoverBg: "#000000",
+    hoverFg: "#FFFFFF",
+    shadow: "0 2px 8px rgba(0,0,0,0.08)",
+    focusRing: "0 0 0 2px #000, 0 0 0 4px #BCBEC0",
+  },
+  // fallback – uses primary tokens
+  fallback: {
+    bg: "#000000",
+    fg: "#FFFFFF",
+    border: "1px solid #000000",
+    hoverBg: "#FFFFFF",
+    hoverFg: "#000000",
+    shadow: "0 2px 12px rgba(0,0,0,0.18)",
+    focusRing: "0 0 0 2px #fff, 0 0 0 4px #000",
+  },
+};
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
@@ -76,76 +106,28 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const prefersReduced = useReducedMotion();
     const isDisabled = disabled || loading;
-
     const {height, px, text} = SIZE_MAP[size];
 
-    // ── Per-variant design tokens ──────────────────────────
+    // fallback to primary if unknown variant
+    const tokenKey = TOKENS[variant] ? variant : "fallback";
+    const t = TOKENS[tokenKey];
 
-    type TokenSet = {
-      bg: string;
-      fg: string;
-      border: string;
-      hoverBg: string; // fill color that sweeps in
-      hoverFg: string; // text color after fill
-      shadow: string;
-      focusRing: string;
-    };
-
-    const tokens: Record<ButtonVariant, TokenSet> = {
-      primary: {
-        bg: "#000000",
-        fg: "#FFFFFF",
-        border: "1px solid #000000",
-        hoverBg: "#FFFFFF",
-        hoverFg: "#000000",
-        shadow: "0 2px 12px rgba(0,0,0,0.18)",
-        focusRing: "0 0 0 2px #fff, 0 0 0 4px #000",
-      },
-      secondary: {
-        bg: "#FFFFFF",
-        fg: "#000000",
-        border: "1px solid #BCBEC0",
-        hoverBg: "#000000",
-        hoverFg: "#FFFFFF",
-        shadow: "0 2px 8px rgba(0,0,0,0.08)",
-        focusRing: "0 0 0 2px #000, 0 0 0 4px #BCBEC0",
-      },
-      outline: {
-        bg: "transparent",
-        fg: "#000000",
-        border: "1px solid #000000",
-        hoverBg: "#000000",
-        hoverFg: "#FFFFFF",
-        shadow: "none",
-        focusRing: "0 0 0 2px #fff, 0 0 0 4px #000",
-      },
-      ghost: {
-        bg: "transparent",
-        fg: "#000000",
-        border: "1px solid transparent",
-        hoverBg: "#000000",
-        hoverFg: "#FFFFFF",
-        shadow: "none",
-        focusRing: "0 0 0 2px #fff, 0 0 0 4px #BCBEC0",
-      },
-    };
-
-    const t = tokens[variant];
-
-    // ── Shared container styles ────────────────────────────
+    const disabledBg = "#BCBEC0";
+    const disabledFg = "#666666";
+    const disabledBorder = "1px solid transparent";
 
     const containerStyle: React.CSSProperties = {
       position: "relative",
-      display: isDisabled ? "inline-flex" : "inline-flex",
+      display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
       height,
       width: fullWidth ? "100%" : undefined,
       padding: `0 ${px}`,
       borderRadius: 12,
-      border: isDisabled ? "1px solid transparent" : t.border,
-      background: isDisabled ? "#BCBEC0" : t.bg,
-      color: isDisabled ? "#666666" : t.fg,
+      border: isDisabled ? disabledBorder : t.border,
+      background: isDisabled ? disabledBg : t.bg,
+      color: isDisabled ? disabledFg : t.fg,
       fontSize: text,
       fontWeight: 500,
       letterSpacing: "0.02em",
@@ -158,9 +140,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       WebkitTapHighlightColor: "transparent",
       ...style,
     };
-
-    // ── Reduced-motion path ────────────────────────────────
-    // Simple color crossfade, no clip-path morph.
 
     if (prefersReduced) {
       return (
@@ -194,7 +173,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 transition={{duration: 0.15}}
                 style={{display: "flex"}}
               >
-                <Spinner color={t.fg} />
+                <Spinner color={isDisabled ? disabledFg : t.fg} />
               </motion.span>
             ) : (
               <motion.span
@@ -212,19 +191,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       );
     }
 
-    // ── Full animation path ────────────────────────────────
-    // Technique: A fill layer expands via scaleX from left.
-    // Two text layers are stacked — one clipped to the unexpanded
-    // region (original fg), one clipped to the expanded fill (hover fg).
-    // clip-path on the text mirrors the fill layer in real time via
-    // CSS custom property driven by a Framer Motion motion value,
-    // keeping both perfectly synchronised without JS-per-frame reads.
-    //
-    // We use CSS @keyframes injected once into the document for the
-    // clip-path mirror approach, driven by a data-attribute toggle.
-    // This is the most GPU-friendly path available in React without
-    // a canvas/WebGL solution.
-
     return (
       <motion.button
         ref={ref}
@@ -239,7 +205,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         whileHover={isDisabled ? undefined : "hovered"}
         {...rest}
       >
-        {/* ── Fill layer that morphs in from left ── */}
         {!isDisabled && (
           <motion.span
             aria-hidden
@@ -262,7 +227,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           />
         )}
 
-        {/* ── Label / spinner ── */}
         <AnimatePresence mode="wait" initial={false}>
           {loading ? (
             <motion.span
@@ -277,7 +241,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 zIndex: 1,
               }}
             >
-              <Spinner color={isDisabled ? "#666666" : t.fg} />
+              <Spinner color={isDisabled ? disabledFg : t.fg} />
             </motion.span>
           ) : (
             <motion.span
@@ -295,17 +259,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 whiteSpace: "nowrap",
               }}
             >
-              {/*
-               * Text color crossover:
-               * The base text sits above the fill layer (z:1) in the
-               * original fg color. As the white/black fill sweeps in
-               * underneath, we simultaneously fade the text toward the
-               * hover color. The fill layer's scaleX goes 0→1 over
-               * DURATION with the same easing, so both arrive together.
-               * This is the cleanest cross-browser approach that avoids
-               * clip-path on text (which has Safari quirks) while
-               * keeping a single React element tree.
-               */}
               <motion.span
                 variants={{
                   idle: {color: t.fg},
