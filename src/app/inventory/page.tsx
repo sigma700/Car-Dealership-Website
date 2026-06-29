@@ -1501,13 +1501,17 @@ function AutomotiveIcon({type, className}: {type: string; className?: string}) {
           {Array.from({length: 11}).map((_, i) => {
             const a = -210 + i * 24;
             const r = (Math.PI / 180) * a;
+            const x1 = +(100 + 60 * Math.cos(r)).toFixed(2);
+            const y1 = +(140 + 60 * Math.sin(r)).toFixed(2);
+            const x2 = +(100 + 52 * Math.cos(r)).toFixed(2);
+            const y2 = +(140 + 52 * Math.sin(r)).toFixed(2);
             return (
               <line
                 key={i}
-                x1={100 + 60 * Math.cos(r)}
-                y1={140 + 60 * Math.sin(r)}
-                x2={100 + 52 * Math.cos(r)}
-                y2={140 + 52 * Math.sin(r)}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
                 className="stroke-[#BCBEC0]/40 stroke-[0.8]"
               />
             );
