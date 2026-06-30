@@ -40,8 +40,8 @@ const TRUST_BADGES = [
   "Trusted Financing",
 ];
 
-// ─── Carousel images ──────────────────────────────────────────
-const CAROUSEL_IMAGES = [
+// ─── Hero background images ──────────────────────────────────
+const HERO_IMAGES = [
   "https://res.cloudinary.com/dnadawobi/image/upload/v1782517744/%D0%A4%D0%BE%D1%82%D0%BE_BMW_M5_F90_hukdsx.jpg",
   "https://res.cloudinary.com/dnadawobi/image/upload/v1782517718/HD_wallpaper__2014_au_spec_autobiography_awd_luxury_range_rover_sport_ei4ghs.jpg",
   "https://res.cloudinary.com/dnadawobi/image/upload/v1782517766/The_Audi_R8__A_Blend_of_Luxury_and_Performance___2025_Audi_R8___Audi_R8_Review_tiv36v.jpg",
@@ -61,79 +61,42 @@ export default function Hero() {
   const contentOpacity = useTransform(scrollY, [0, 350], [1, 0]);
   const contentSpring = useSpring(contentOpacity, {stiffness: 80, damping: 20});
 
-  // ── Carousel state ────────────────────────────────────────────
+  // ── Crossfade state ──────────────────────────────────────────
   const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
 
-  const goNext = useCallback(() => {
-    setDirection(1);
-    setCurrent((p) => (p + 1) % CAROUSEL_IMAGES.length);
-  }, []);
-
-  const goPrev = useCallback(() => {
-    setDirection(-1);
-    setCurrent(
-      (p) => (p - 1 + CAROUSEL_IMAGES.length) % CAROUSEL_IMAGES.length,
-    );
-  }, []);
-
-  // Auto‑advance every 5 seconds
   useEffect(() => {
-    if (reduced) return; // no auto‑play for reduced motion preference
-    const timer = setInterval(goNext, 5000);
+    if (reduced) return; // no animation for reduced motion
+    const timer = setInterval(() => {
+      setCurrent((p) => (p + 1) % HERO_IMAGES.length);
+    }, 6000); // longer display time for a more relaxed feel
     return () => clearInterval(timer);
-  }, [goNext, reduced]);
-
-  // ── Slide variants ────────────────────────────────────────────
-  const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? "100%" : "-100%",
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        x: {type: "spring", stiffness: 300, damping: 30},
-        opacity: {duration: 0.4},
-      },
-    },
-    exit: (dir: number) => ({
-      x: dir > 0 ? "-100%" : "100%",
-      opacity: 0,
-      transition: {
-        x: {type: "spring", stiffness: 300, damping: 30},
-        opacity: {duration: 0.4},
-      },
-    }),
-  };
+  }, [reduced]);
 
   return (
     <section
       ref={ref}
       className="relative w-full overflow-hidden bg-black"
       style={{height: "92vh", minHeight: 640}}
-      aria-label="Autocar – Buy and sell vehicles"
+      aria-label="Al Husnain Motors – Premium automotive experience"
     >
-      {/* ── Background carousel ── */}
+      {/* ── Background crossfade ── */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <motion.div
           className="absolute inset-0"
           style={reduced ? {} : {y: imgY}}
         >
-          <AnimatePresence initial={false} custom={direction}>
+          <AnimatePresence>
             <motion.img
               key={current}
-              src={CAROUSEL_IMAGES[current]}
+              src={HERO_IMAGES[current]}
               alt={`Slide ${current + 1}`}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
+              initial={{opacity: 0}}
+              animate={{opacity: 1}}
+              exit={{opacity: 0}}
+              transition={{duration: 1.8, ease: "easeInOut"}}
               className="absolute inset-0 w-full h-full object-cover"
               fetchPriority={current === 0 ? "high" : "auto"}
-              style={{willChange: "transform"}}
+              style={{willChange: "opacity"}}
             />
           </AnimatePresence>
         </motion.div>
@@ -189,7 +152,7 @@ export default function Hero() {
                     variants={clipReveal}
                     className="text-[clamp(2.4rem,5.5vw,5.5rem)] font-bold text-white leading-[1.05] tracking-[-0.02em]"
                   >
-                    The Easiest Way To Buy And Sell Vehicles
+                    The only place you need for your next car
                   </motion.h1>
                 </div>
 
@@ -230,42 +193,7 @@ export default function Hero() {
         </div>
       </motion.div>
 
-      {/* ── Carousel controls ── */}
-      <div className="absolute inset-y-0 left-0 z-30 flex items-center px-4">
-        <button
-          onClick={goPrev}
-          className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/40 hover:border-white/50 hover:text-white/70 transition pointer-events-auto"
-          aria-label="Previous slide"
-        >
-          ‹
-        </button>
-      </div>
-      <div className="absolute inset-y-0 right-0 z-30 flex items-center px-4">
-        <button
-          onClick={goNext}
-          className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/40 hover:border-white/50 hover:text-white/70 transition pointer-events-auto"
-          aria-label="Next slide"
-        >
-          ›
-        </button>
-      </div>
-
-      {/* ── Dot indicators ── */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex gap-2">
-        {CAROUSEL_IMAGES.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => {
-              setDirection(i > current ? 1 : -1);
-              setCurrent(i);
-            }}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              i === current ? "bg-white" : "bg-white/30"
-            }`}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
+      {/* No carousel controls – only subtle crossfade */}
     </section>
   );
 }

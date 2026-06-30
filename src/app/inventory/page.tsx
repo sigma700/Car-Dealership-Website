@@ -772,7 +772,7 @@ function AnimatedCounter({
     requestAnimationFrame(tick);
   }, [inView, target, duration, prefersReduced]);
   return (
-    <span ref={ref} className="font-mono">
+    <span ref={ref}>
       {count.toLocaleString()}
       {suffix}
     </span>
@@ -835,17 +835,17 @@ function BrandCard({
 
       <div className="relative z-10 flex flex-col items-center">
         <motion.span
-          className="font-mono text-2xl text-[#BCBEC0] mb-0.5 tabular-nums"
+          className="text-2xl text-[#BCBEC0] mb-0.5 tabular-nums"
           initial={{opacity: 0}}
           animate={inView ? {opacity: 1} : {}}
           transition={{delay: index * 0.06 + 0.28, duration: 0.5}}
         >
           {brand.count}
         </motion.span>
-        <h3 className="text-[15px] font-mono text-white mb-0.5 leading-tight">
+        <h3 className="text-[15px] font-display text-white mb-0.5 leading-tight">
           {brand.name}
         </h3>
-        <p className="text-[10px] text-[#BCBEC0]/50 tracking-wide font-mono">
+        <p className="text-[10px] text-[#BCBEC0]/50 tracking-wide">
           vehicles available
         </p>
       </div>
@@ -853,7 +853,7 @@ function BrandCard({
       <AnimatePresence>
         {isSelected && (
           <motion.div
-            className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#BCBEC0] flex items-center justify-center text-black text-[10px] font-bold font-mono"
+            className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#BCBEC0] flex items-center justify-center text-black text-[10px] font-bold"
             initial={{scale: 0, opacity: 0}}
             animate={{scale: 1, opacity: 1}}
             exit={{scale: 0, opacity: 0}}
@@ -888,7 +888,7 @@ function ModelSelector({
     >
       <button
         onClick={() => onSelectModel(null)}
-        className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-300 font-mono ${!selectedModel ? "bg-[#BCBEC0] text-black shadow-md" : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0] hover:bg-black/80"}`}
+        className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-300 ${!selectedModel ? "bg-[#BCBEC0] text-black shadow-md" : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0] hover:bg-black/80"}`}
       >
         All Models
       </button>
@@ -896,7 +896,7 @@ function ModelSelector({
         <button
           key={m}
           onClick={() => onSelectModel(m)}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-300 font-mono ${selectedModel === m ? "bg-[#BCBEC0] text-black shadow-md" : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0] hover:bg-black/80"}`}
+          className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-300 ${selectedModel === m ? "bg-[#BCBEC0] text-black shadow-md" : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0] hover:bg-black/80"}`}
         >
           {m}
         </button>
@@ -937,7 +937,7 @@ function FilterBar({
   const activeCount = Object.values(filters).filter(Boolean).length;
 
   return (
-    <div className="border-t border-b border-[#BCBEC0]/15 py-4 space-y-4 font-mono">
+    <div className="border-t border-b border-[#BCBEC0]/15 py-4 space-y-4">
       <div className="flex flex-wrap items-center gap-3 justify-between">
         <div className="flex flex-wrap gap-2">
           {["SUV", "Sedan", "Pickup", "Hatchback"].map((b) => (
@@ -949,29 +949,29 @@ function FilterBar({
                   bodyType: filters.bodyType === b ? "" : b,
                 })
               }
-              className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide transition-all duration-300 font-mono ${filters.bodyType === b ? "bg-[#BCBEC0] text-black" : "bg-transparent border border-[#BCBEC0]/25 text-[#BCBEC0]/70 hover:border-[#BCBEC0]/50 hover:text-[#BCBEC0]"}`}
+              className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide transition-all duration-300 ${filters.bodyType === b ? "bg-[#BCBEC0] text-black" : "bg-transparent border border-[#BCBEC0]/25 text-[#BCBEC0]/70 hover:border-[#BCBEC0]/50 hover:text-[#BCBEC0]"}`}
             >
               {b}
             </button>
           ))}
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide transition-all duration-300 border font-mono ${showAdvanced ? "border-[#BCBEC0]/50 text-[#BCBEC0]" : "border-[#BCBEC0]/25 text-[#BCBEC0]/50 hover:border-[#BCBEC0]/40"}`}
+            className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide transition-all duration-300 border ${showAdvanced ? "border-[#BCBEC0]/50 text-[#BCBEC0]" : "border-[#BCBEC0]/25 text-[#BCBEC0]/50 hover:border-[#BCBEC0]/40"}`}
           >
             {showAdvanced ? "Fewer Filters" : "More Filters"}
             {activeCount > 0 && !showAdvanced && (
-              <span className="ml-1.5 bg-[#BCBEC0] text-black rounded-full px-1.5 py-0 text-[9px] font-bold font-mono">
+              <span className="ml-1.5 bg-[#BCBEC0] text-black rounded-full px-1.5 py-0 text-[9px] font-bold">
                 {activeCount}
               </span>
             )}
           </button>
         </div>
 
-        <div className="flex items-center gap-4 font-mono">
+        <div className="flex items-center gap-4">
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="bg-transparent border border-[#BCBEC0]/20 rounded-lg px-3 py-1.5 text-[11px] text-[#BCBEC0]/70 focus:outline-none focus:border-[#BCBEC0]/40 cursor-pointer font-mono"
+            className="bg-transparent border border-[#BCBEC0]/20 rounded-lg px-3 py-1.5 text-[11px] text-[#BCBEC0]/70 focus:outline-none focus:border-[#BCBEC0]/40 cursor-pointer"
           >
             <option value="id-desc">Newest First</option>
             <option value="price-asc">Price: Low to High</option>
@@ -982,7 +982,7 @@ function FilterBar({
           {activeCount > 0 && (
             <button
               onClick={() => setFilters({})}
-              className="text-[11px] text-[#BCBEC0]/50 hover:text-[#BCBEC0] transition-colors underline underline-offset-2 font-mono"
+              className="text-[11px] text-[#BCBEC0]/50 hover:text-[#BCBEC0] transition-colors underline underline-offset-2"
             >
               Clear all
             </button>
@@ -997,7 +997,7 @@ function FilterBar({
             animate={{height: "auto", opacity: 1}}
             exit={{height: 0, opacity: 0}}
             transition={{duration: 0.3, ease: EASE_OUT}}
-            className="overflow-hidden font-mono"
+            className="overflow-hidden"
           >
             <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-3 pt-3 border-t border-[#BCBEC0]/10">
               <div className="col-span-2 flex gap-2 items-center">
@@ -1008,11 +1008,9 @@ function FilterBar({
                   onChange={(e) =>
                     setFilters({...filters, minPrice: e.target.value})
                   }
-                  className="w-full bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/40 font-mono"
+                  className="w-full bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/40"
                 />
-                <span className="text-[#BCBEC0]/30 text-xs shrink-0 font-mono">
-                  to
-                </span>
+                <span className="text-[#BCBEC0]/30 text-xs shrink-0">to</span>
                 <input
                   type="number"
                   placeholder="Max price (KSh)"
@@ -1020,7 +1018,7 @@ function FilterBar({
                   onChange={(e) =>
                     setFilters({...filters, maxPrice: e.target.value})
                   }
-                  className="w-full bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/40 font-mono"
+                  className="w-full bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/40"
                 />
               </div>
 
@@ -1029,7 +1027,7 @@ function FilterBar({
                 onChange={(e) =>
                   setFilters({...filters, bodyType: e.target.value})
                 }
-                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40 font-mono"
+                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40"
               >
                 <option value="">Body Type</option>
                 {bodyTypes.map((b) => (
@@ -1042,7 +1040,7 @@ function FilterBar({
               <select
                 value={filters.fuel || ""}
                 onChange={(e) => setFilters({...filters, fuel: e.target.value})}
-                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40 font-mono"
+                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40"
               >
                 <option value="">Fuel Type</option>
                 {fuels.map((f) => (
@@ -1057,7 +1055,7 @@ function FilterBar({
                 onChange={(e) =>
                   setFilters({...filters, transmission: e.target.value})
                 }
-                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40 font-mono"
+                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40"
               >
                 <option value="">Transmission</option>
                 {transmissions.map((t) => (
@@ -1072,7 +1070,7 @@ function FilterBar({
                 onChange={(e) =>
                   setFilters({...filters, availability: e.target.value})
                 }
-                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40 font-mono"
+                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40"
               >
                 <option value="">Availability</option>
                 <option value="In Stock">In Stock</option>
@@ -1087,7 +1085,7 @@ function FilterBar({
                 onChange={(e) =>
                   setFilters({...filters, minYear: e.target.value})
                 }
-                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/40 font-mono"
+                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/40"
               />
             </div>
           </motion.div>
@@ -1113,10 +1111,9 @@ function VehicleCard({
   const inView = useInView(cardRef, {once: true, amount: 0.08});
 
   const availabilityStyles: Record<string, string> = {
-    "In Stock": "bg-white/10 text-white border border-white/18 font-mono",
-    Reserved:
-      "bg-amber-500/15 text-amber-300 border border-amber-500/25 font-mono",
-    Sold: "bg-red-500/12 text-red-400 border border-red-500/20 font-mono",
+    "In Stock": "bg-white/10 text-white border border-white/18",
+    Reserved: "bg-amber-500/15 text-amber-300 border border-amber-500/25",
+    Sold: "bg-red-500/12 text-red-400 border border-red-500/20",
   };
 
   const whatsappUrl = `https://wa.me/254743155777?text=I'm interested in the ${vehicle.brand} ${vehicle.model}`;
@@ -1155,8 +1152,8 @@ function VehicleCard({
             transition={{duration: 0.65, ease: EASE_OUT}}
           />
         ) : (
-          <div className="w-full h-full bg-[#111] flex items-center justify-center font-mono">
-            <span className="text-[#BCBEC0]/20 text-xs tracking-widest uppercase font-mono">
+          <div className="w-full h-full bg-[#111] flex items-center justify-center">
+            <span className="text-[#BCBEC0]/20 text-xs tracking-widest uppercase">
               No Image
             </span>
           </div>
@@ -1166,35 +1163,35 @@ function VehicleCard({
 
         <button
           onClick={onSave}
-          className="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/55 backdrop-blur-sm flex items-center justify-center text-[13px] hover:bg-white/85 hover:text-black transition-all duration-300 font-mono"
+          className="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/55 backdrop-blur-sm flex items-center justify-center text-[13px] hover:bg-white/85 hover:text-black transition-all duration-300"
           aria-label={saved ? "Remove from saved" : "Save vehicle"}
         >
           {saved ? "♥" : "♡"}
         </button>
 
-        <span className="absolute bottom-3 left-4 font-mono text-[10px] text-[#BCBEC0]/45 tracking-widest">
+        <span className="absolute bottom-3 left-4 text-[10px] text-[#BCBEC0]/45 tracking-widest">
           {vehicle.year}
         </span>
       </div>
 
-      <div className="p-5 flex flex-col flex-1 font-mono">
+      <div className="p-5 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-3">
           <div className="min-w-0">
-            <p className="text-[10px] tracking-[0.2em] text-[#BCBEC0]/40 uppercase font-mono mb-0.5">
+            <p className="text-[10px] tracking-[0.2em] text-[#BCBEC0]/40 uppercase mb-0.5">
               {vehicle.brand}
             </p>
-            <h3 className="text-base font-mono text-white leading-tight truncate">
+            <h3 className="text-base font-display text-white leading-tight truncate">
               {vehicle.model}
             </h3>
           </div>
           <span
-            className={`text-[10px] px-2 py-0.5 rounded-full shrink-0 font-mono mt-0.5 ${availabilityStyles[vehicle.availability] ?? "bg-[#BCBEC0]/15 text-[#BCBEC0] border border-[#BCBEC0]/20 font-mono"}`}
+            className={`text-[10px] px-2 py-0.5 rounded-full shrink-0 mt-0.5 ${availabilityStyles[vehicle.availability] ?? "bg-[#BCBEC0]/15 text-[#BCBEC0] border border-[#BCBEC0]/20"}`}
           >
             {vehicle.availability}
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px] text-[#BCBEC0]/45 font-mono mb-5">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px] text-[#BCBEC0]/45 mb-5">
           <span className="flex items-center gap-1.5">
             <span className="w-1 h-1 rounded-full bg-[#BCBEC0]/35 shrink-0" />
             {vehicle.mileage === 0
@@ -1216,7 +1213,7 @@ function VehicleCard({
         </div>
 
         <div className="mt-auto pt-3.5 border-t border-[#BCBEC0]/12">
-          <p className="text-xl font-mono text-[#BCBEC0] mb-3.5 tabular-nums tracking-tight">
+          <p className="text-xl text-[#BCBEC0] mb-3.5 tabular-nums tracking-tight">
             KSh {vehicle.price.toLocaleString()}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -1272,7 +1269,7 @@ function FinanceCTA() {
           className="absolute inset-0 bg-cover bg-center opacity-18"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1583121274602-3e2820c69888?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80')",
+              "url('https://res.cloudinary.com/dnadawobi/image/upload/v1782397148/pexels-ehaan-deva-2149036462-35474224_g94xjh.jpg')",
           }}
         />
       </motion.div>
@@ -1290,19 +1287,19 @@ function FinanceCTA() {
           initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 24}}
           animate={inView ? {opacity: 1, y: 0} : {}}
           transition={{duration: 0.7, ease: EASE_OUT_EXPO}}
-          className="text-center mb-16 font-mono"
+          className="text-center mb-16"
         >
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-mono">
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4">
             Financing
           </p>
-          <h2 className="font-mono text-4xl md:text-6xl text-white leading-[0.9] mb-5">
+          <h2 className="font-display text-4xl md:text-6xl text-white leading-[0.9] mb-5">
             Own Your Dream Vehicle
           </h2>
-          <p className="text-sm text-[#BCBEC0]/55 max-w-md mx-auto mb-10 leading-relaxed font-mono">
+          <p className="text-sm text-[#BCBEC0]/55 max-w-md mx-auto mb-10 leading-relaxed">
             Tailored financing solutions for every budget. Get pre-approved in
             minutes, drive away within 48 hours.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 font-mono">
+          <div className="flex flex-wrap justify-center gap-4">
             <Button
               variant="secondary"
               size="lg"
@@ -1319,7 +1316,7 @@ function FinanceCTA() {
             </Button>
           </div>
         </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#BCBEC0]/20 rounded-2xl overflow-hidden max-w-3xl mx-auto font-mono">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#BCBEC0]/20 rounded-2xl overflow-hidden max-w-3xl mx-auto">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -1330,19 +1327,19 @@ function FinanceCTA() {
                 delay: 0.3 + i * 0.1,
                 ease: EASE_OUT_EXPO,
               }}
-              className="bg-black/80 backdrop-blur-sm px-8 py-8 text-center font-mono"
+              className="bg-black/80 backdrop-blur-sm px-8 py-8 text-center"
             >
-              <p className="text-3xl font-mono text-[#BCBEC0] mb-1 tabular-nums">
+              <p className="text-3xl font-display text-[#BCBEC0] mb-1 tabular-nums">
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-xs text-[#BCBEC0]/50 tracking-wide font-mono">
+              <p className="text-xs text-[#BCBEC0]/50 tracking-wide">
                 {stat.label}
               </p>
             </motion.div>
           ))}
         </div>
         <motion.p
-          className="text-center text-[11px] text-[#BCBEC0]/30 mt-8 font-mono"
+          className="text-center text-[11px] text-[#BCBEC0]/30 mt-8"
           initial={{opacity: 0}}
           animate={inView ? {opacity: 1} : {}}
           transition={{delay: 0.7}}
@@ -1355,7 +1352,7 @@ function FinanceCTA() {
   );
 }
 
-/* ─── TRUST SECTION (FULLY RESTORED) ─── */
+/* ─── TRUST SECTION (font updated) ─── */
 const SP_SLOW = {stiffness: 35, damping: 16, mass: 1};
 const SP_SMOOTH_TS = {stiffness: 55, damping: 20, mass: 1};
 const SP_PRECISE_TS = {stiffness: 90, damping: 24, mass: 1};
@@ -1765,10 +1762,10 @@ function BackgroundDepthLayer({progress}: {progress: MotionValue<number>}) {
         </svg>
       </motion.div>
       <motion.div className="absolute inset-0" style={{y: y2}}>
-        <div className="absolute top-[15%] left-[5%] font-mono text-[22vw] text-[#BCBEC0]/[0.025] leading-none select-none">
+        <div className="absolute top-[15%] left-[5%] text-[22vw] text-[#BCBEC0]/[0.025] leading-none select-none">
           TRUST
         </div>
-        <div className="absolute bottom-[10%] right-[3%] font-mono text-[18vw] text-[#BCBEC0]/[0.02] leading-none select-none">
+        <div className="absolute bottom-[10%] right-[3%] text-[18vw] text-[#BCBEC0]/[0.02] leading-none select-none">
           EARNED
         </div>
       </motion.div>
@@ -1814,7 +1811,7 @@ function VerticalNavRail({
   const op = useTransform(progress, [0.18, 0.22, 0.8, 0.85], [0, 1, 1, 0]);
   return (
     <motion.div
-      className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 flex flex-col items-end gap-3 z-30 font-mono"
+      className="absolute right-6 md:right-10 top-1/2 -translate-y-1/2 flex flex-col items-end gap-3 z-30"
       style={{opacity: op}}
       aria-hidden
     >
@@ -1829,7 +1826,7 @@ function VerticalNavRail({
         return (
           <div key={label} className="relative flex items-center gap-2">
             <span
-              className={`text-[9px] font-mono tracking-[0.15em] uppercase transition-all duration-500 ${isActive ? "text-black opacity-100" : isPast ? "text-[#BCBEC0]/60 opacity-70" : "text-[#BCBEC0]/30 opacity-50"}`}
+              className={`text-[9px] tracking-[0.15em] uppercase transition-all duration-500 ${isActive ? "text-black opacity-100" : isPast ? "text-[#BCBEC0]/60 opacity-70" : "text-[#BCBEC0]/30 opacity-50"}`}
             >
               {String(i + 1).padStart(2, "0")} {label}
             </span>
@@ -1865,7 +1862,7 @@ function TrustCardPanel({
     >
       <div className="w-full max-w-3xl">
         <div
-          className="relative bg-white/75 backdrop-blur-md rounded-3xl overflow-hidden font-mono"
+          className="relative bg-white/75 backdrop-blur-md rounded-3xl overflow-hidden"
           style={{
             boxShadow:
               "0 24px 80px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.08)",
@@ -1887,9 +1884,9 @@ function TrustCardPanel({
                 className="w-40 h-40 relative z-10"
               />
             </div>
-            <div className="flex-1 p-10 md:p-14 flex flex-col justify-center font-mono">
+            <div className="flex-1 p-10 md:p-14 flex flex-col justify-center">
               <div className="flex items-center gap-3 mb-8">
-                <span className="font-mono text-[10px] tracking-[0.3em] text-[#BCBEC0] uppercase">
+                <span className="text-[10px] tracking-[0.3em] text-[#BCBEC0] uppercase">
                   {String(index + 1).padStart(2, "0")} /{" "}
                   {String(total).padStart(2, "0")}
                 </span>
@@ -1900,10 +1897,10 @@ function TrustCardPanel({
                   />
                 </div>
               </div>
-              <h3 className="font-mono text-3xl md:text-4xl text-black leading-tight mb-5">
+              <h3 className="font-display text-3xl md:text-4xl text-black leading-tight mb-5">
                 {point.title}
               </h3>
-              <p className="text-base text-[#BCBEC0]/65 leading-relaxed max-w-sm font-mono">
+              <p className="text-base text-[#BCBEC0]/65 leading-relaxed max-w-sm">
                 {point.desc}
               </p>
               <div className="flex gap-2 mt-10">
@@ -1934,53 +1931,50 @@ function FinalMosaicTS({progress}: {progress: MotionValue<number>}) {
   const scale = useSpring(rawScale, SP_PRECISE_TS);
   return (
     <motion.div
-      className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 overflow-y-auto pointer-events-none font-mono"
+      className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 overflow-y-auto pointer-events-none"
       style={{opacity, scale}}
     >
-      <div className="w-full max-w-[1200px] mx-auto font-mono">
+      <div className="w-full max-w-[1200px] mx-auto">
         <div className="text-center mb-10">
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-mono">
-            Why Al Husnain
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4">
+            Why Al Ahsan
           </p>
-          <h2 className="font-mono text-5xl md:text-7xl text-black leading-[0.9] mb-4">
+          <h2 className="font-display text-5xl md:text-7xl text-black leading-[0.9] mb-4">
             Trusted By Thousands
             <br />
             <span className="text-[#BCBEC0]">Across Kenya</span>
           </h2>
           <div className="flex items-center justify-center gap-4 mt-6">
             <div className="w-16 h-px bg-[#BCBEC0]/40" />
-            <p className="text-sm text-[#BCBEC0]/60 font-mono">
+            <p className="text-sm text-[#BCBEC0]/60">
               Over a decade of serving Kenya's most discerning vehicle buyers.
             </p>
             <div className="w-16 h-px bg-[#BCBEC0]/40" />
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#BCBEC0]/30 rounded-2xl overflow-hidden mb-8 font-mono">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#BCBEC0]/30 rounded-2xl overflow-hidden mb-8">
           {[
             {value: 12, suffix: "+", label: "Years in Business"},
             {value: 3200, suffix: "+", label: "Vehicles Sold"},
             {value: 98, suffix: "%", label: "Customer Satisfaction"},
             {value: 6, suffix: "", label: "Financing Partners"},
           ].map((m) => (
-            <div
-              key={m.label}
-              className="bg-white/90 px-6 py-8 text-center font-mono"
-            >
-              <p className="text-3xl md:text-4xl font-mono text-black mb-1 tabular-nums leading-none">
+            <div key={m.label} className="bg-white/90 px-6 py-8 text-center">
+              <p className="text-3xl md:text-4xl font-display text-black mb-1 tabular-nums leading-none">
                 {m.value.toLocaleString()}
                 {m.suffix}
               </p>
-              <p className="text-[11px] text-[#BCBEC0]/55 tracking-wide uppercase font-mono mt-1">
+              <p className="text-[11px] text-[#BCBEC0]/55 tracking-wide uppercase mt-1">
                 {m.label}
               </p>
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 font-mono">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {TRUST_POINTS.map((item, i) => (
             <div
               key={i}
-              className="bg-white/70 backdrop-blur-sm rounded-xl px-5 py-5 border border-[#BCBEC0]/40 flex items-start gap-4 font-mono"
+              className="bg-white/70 backdrop-blur-sm rounded-xl px-5 py-5 border border-[#BCBEC0]/40 flex items-start gap-4"
               style={{boxShadow: "0 2px 12px rgba(0,0,0,0.06)"}}
             >
               <AutomotiveIcon
@@ -1988,10 +1982,10 @@ function FinalMosaicTS({progress}: {progress: MotionValue<number>}) {
                 className="w-12 h-12 flex-shrink-0 opacity-80"
               />
               <div>
-                <h4 className="text-sm font-mono text-black mb-1 leading-tight">
+                <h4 className="text-sm font-display text-black mb-1 leading-tight">
                   {item.title}
                 </h4>
-                <p className="text-xs text-[#BCBEC0]/60 leading-relaxed font-mono">
+                <p className="text-xs text-[#BCBEC0]/60 leading-relaxed">
                   {item.desc}
                 </p>
               </div>
@@ -2012,19 +2006,19 @@ function SectionHeader({progress}: {progress: MotionValue<number>}) {
   const y = useSpring(rawY, SP_PRECISE_TS);
   return (
     <motion.div
-      className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none px-6 font-mono"
+      className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none px-6"
       style={{opacity, scale, y, transformOrigin: "top center"}}
     >
-      <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-mono">
-        Why Al Husnain
+      <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4">
+        Why Al Ahsan
       </p>
       <h2
-        className="font-mono text-black leading-[0.9] mb-5"
+        className="font-display text-black leading-[0.9] mb-5"
         style={{fontSize: "clamp(3.5rem, 10vw, 8rem)"}}
       >
         Trust is earned
       </h2>
-      <p className="text-base text-[#BCBEC0]/60 max-w-md mx-auto leading-relaxed font-mono">
+      <p className="text-base text-[#BCBEC0]/60 max-w-md mx-auto leading-relaxed">
         Over a decade of serving Kenya's most discerning vehicle buyers.
       </p>
       <div className="mt-8 flex items-center justify-center gap-3">
@@ -2048,11 +2042,11 @@ function ScrollHintBar({progress}: {progress: MotionValue<number>}) {
         />
       </div>
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 font-mono"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         style={{opacity: hintOp}}
         aria-hidden
       >
-        <p className="text-[9px] tracking-[0.35em] text-[#BCBEC0]/40 uppercase font-mono">
+        <p className="text-[9px] tracking-[0.35em] text-[#BCBEC0]/40 uppercase">
           Scroll to explore
         </p>
         <motion.div
@@ -2128,16 +2122,16 @@ function StaticTrustSection() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, {once: true, amount: 0.15});
   return (
-    <section ref={ref} className="bg-white py-24 px-6 md:px-16 font-mono">
+    <section ref={ref} className="bg-white py-24 px-6 md:px-16">
       <div className="max-w-[1440px] mx-auto">
         <div className="text-center mb-16">
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-mono">
-            Why Al Husnain
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4">
+            Why Al Ahsan
           </p>
-          <h2 className="font-mono text-4xl md:text-6xl text-black leading-[0.9] mb-4">
+          <h2 className="font-display text-4xl md:text-6xl text-black leading-[0.9] mb-4">
             Trust is earned
           </h2>
-          <p className="text-sm text-[#BCBEC0]/70 max-w-md mx-auto font-mono">
+          <p className="text-sm text-[#BCBEC0]/70 max-w-md mx-auto">
             Over a decade of serving Kenya's most discerning vehicle buyers.
           </p>
         </div>
@@ -2145,17 +2139,17 @@ function StaticTrustSection() {
           {TRUST_POINTS.map((item, i) => (
             <div
               key={i}
-              className="bg-white/60 rounded-xl p-6 border border-[#BCBEC0]/40 flex items-start gap-4 font-mono"
+              className="bg-white/60 rounded-xl p-6 border border-[#BCBEC0]/40 flex items-start gap-4"
             >
               <AutomotiveIcon
                 type={item.icon}
                 className="w-12 h-12 flex-shrink-0"
               />
               <div>
-                <h4 className="text-sm font-mono text-black mb-1">
+                <h4 className="text-sm font-display text-black mb-1">
                   {item.title}
                 </h4>
-                <p className="text-xs text-[#BCBEC0]/65 leading-relaxed font-mono">
+                <p className="text-xs text-[#BCBEC0]/65 leading-relaxed">
                   {item.desc}
                 </p>
               </div>
@@ -2174,7 +2168,7 @@ function TestimonialsSection() {
   const testimonials = [
     {
       quote:
-        "The vehicle exceeded every expectation. The handover was seamless — from first inquiry to driving away took less than two days.",
+        "The vehicle exceeded every expectation. The handover was seamless , from first inquiry to driving away took less than two days.",
       author: "Khalid A.",
       role: "Business Owner",
       location: "Nairobi",
@@ -2182,7 +2176,7 @@ function TestimonialsSection() {
     },
     {
       quote:
-        "Al Husnain made financing straightforward. I was driving my dream car within the week. The team is transparent — no pressure, no hidden costs.",
+        "Al Ahsan made financing straightforward. I was driving my dream car within the week. The team is transparent , no pressure, no hidden costs.",
       author: "Layla M.",
       role: "Entrepreneur",
       location: "Mombasa",
@@ -2190,7 +2184,7 @@ function TestimonialsSection() {
     },
     {
       quote:
-        "Transparent pricing, thorough inspection reports. I have purchased three vehicles through Al Husnain and will continue to be a client.",
+        "Transparent pricing, thorough inspection reports. I have purchased three vehicles through Al Ahsan and will continue to be a client.",
       author: "Omar S.",
       role: "Collector",
       location: "Karen, Nairobi",
@@ -2199,17 +2193,17 @@ function TestimonialsSection() {
   ];
   return (
     <section ref={ref} className="bg-black py-24 px-6 md:px-16">
-      <div className="max-w-[1440px] mx-auto font-mono">
+      <div className="max-w-[1440px] mx-auto">
         <motion.div
           initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 20}}
           animate={inView ? {opacity: 1, y: 0} : {}}
           transition={{duration: 0.6, ease: EASE_OUT_EXPO}}
           className="text-center mb-16"
         >
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-mono">
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4">
             Client Stories
           </p>
-          <h2 className="font-mono text-4xl md:text-6xl text-white leading-[0.9]">
+          <h2 className="font-display text-4xl md:text-6xl text-white leading-[0.9]">
             What our clients say
           </h2>
         </motion.div>
@@ -2224,7 +2218,7 @@ function TestimonialsSection() {
                 duration: 0.6,
                 ease: EASE_OUT_EXPO,
               }}
-              className="group relative bg-black rounded-2xl p-8 border border-[#BCBEC0]/20 flex flex-col overflow-hidden font-mono"
+              className="group relative bg-black rounded-2xl p-8 border border-[#BCBEC0]/20 flex flex-col overflow-hidden"
               style={{boxShadow: "0 4px 32px rgba(0,0,0,0.4)"}}
               whileHover={
                 prefersReduced
@@ -2239,32 +2233,32 @@ function TestimonialsSection() {
                 className={`absolute inset-0 z-0 rounded-2xl bg-white transform translate-y-full group-hover:translate-y-0 ${prefersReduced ? "" : "transition-transform duration-500 ease-out"}`}
               />
               <span
-                className="absolute top-6 right-7 text-5xl font-mono leading-none select-none z-10 text-[#BCBEC0]/15 group-hover:text-[#BCBEC0]/25 transition-colors duration-500"
+                className="absolute top-6 right-7 text-5xl leading-none select-none z-10 text-[#BCBEC0]/15 group-hover:text-[#BCBEC0]/25 transition-colors duration-500"
                 aria-hidden
               >
                 "
               </span>
-              <p className="relative z-10 text-sm text-[#BCBEC0]/75 leading-relaxed mb-6 flex-1 group-hover:text-black/80 transition-colors duration-500 font-mono">
+              <p className="relative z-10 text-sm text-[#BCBEC0]/75 leading-relaxed mb-6 flex-1 group-hover:text-black/80 transition-colors duration-500">
                 {t.quote}
               </p>
               <div className="relative z-10 h-px bg-[#BCBEC0]/20 mb-5 group-hover:bg-black/10 transition-colors duration-500" />
-              <footer className="relative z-10 flex items-end justify-between font-mono">
+              <footer className="relative z-10 flex items-end justify-between">
                 <div>
-                  <p className="text-sm font-medium mb-0.5 text-white group-hover:text-black transition-colors duration-500 font-mono">
+                  <p className="text-sm font-medium mb-0.5 text-white group-hover:text-black transition-colors duration-500">
                     {t.author}
                   </p>
-                  <p className="text-xs text-[#BCBEC0]/45 group-hover:text-[#BCBEC0]/70 transition-colors duration-500 font-mono">
+                  <p className="text-xs text-[#BCBEC0]/45 group-hover:text-[#BCBEC0]/70 transition-colors duration-500">
                     {t.role}
                   </p>
-                  <p className="text-[10px] text-[#BCBEC0]/30 mt-0.5 font-mono group-hover:text-[#BCBEC0]/50 transition-colors duration-500">
+                  <p className="text-[10px] text-[#BCBEC0]/30 mt-0.5 group-hover:text-[#BCBEC0]/50 transition-colors duration-500">
                     {t.location}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] font-mono uppercase tracking-wide text-[#BCBEC0]/60 group-hover:text-black transition-colors duration-500">
+                  <p className="text-[10px] uppercase tracking-wide text-[#BCBEC0]/60 group-hover:text-black transition-colors duration-500">
                     Purchased
                   </p>
-                  <p className="text-xs text-[#BCBEC0]/50 mt-0.5 font-mono group-hover:text-[#BCBEC0]/70 transition-colors duration-500">
+                  <p className="text-xs text-[#BCBEC0]/50 mt-0.5 group-hover:text-[#BCBEC0]/70 transition-colors duration-500">
                     {t.vehicle}
                   </p>
                 </div>
@@ -2365,21 +2359,21 @@ export default function InventoryPage() {
   return (
     <div className="bg-black">
       <div className="h-[72px]" />
-      <section className="max-w-[1440px] mx-auto px-6 md:px-16 pt-16 pb-12 font-mono">
+      <section className="max-w-[1440px] mx-auto px-6 md:px-16 pt-16 pb-12">
         <motion.div
           initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 18}}
           animate={{opacity: 1, y: 0}}
           transition={{duration: 0.7, ease: EASE_OUT_EXPO}}
           className="mb-10"
         >
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0]/55 uppercase mb-3 font-mono">
-            Al Husnain Motors
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0]/55 uppercase mb-3">
+            Al Ahsan Motors
           </p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <h1 className="font-mono text-4xl md:text-5xl text-white leading-[0.92]">
+            <h1 className="font-display text-4xl md:text-5xl text-white leading-[0.92]">
               Our Collection
             </h1>
-            <p className="text-sm text-[#BCBEC0]/40 max-w-sm leading-relaxed font-mono">
+            <p className="text-sm text-[#BCBEC0]/40 max-w-sm leading-relaxed">
               Select a marque to explore our curated inventory, or search
               directly below.
             </p>
@@ -2400,7 +2394,7 @@ export default function InventoryPage() {
       <div className="max-w-[1440px] mx-auto px-6 md:px-16">
         <div className="h-px bg-gradient-to-r from-transparent via-[#BCBEC0]/18 to-transparent" />
       </div>
-      <section className="max-w-[1440px] mx-auto px-6 md:px-16 py-12 font-mono">
+      <section className="max-w-[1440px] mx-auto px-6 md:px-16 py-12">
         <div ref={inventoryRef} className="-mt-4 pt-4" />
         <motion.div
           initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 12}}
@@ -2434,12 +2428,12 @@ export default function InventoryPage() {
                   setSelectedModel(null);
                 }
               }}
-              className="w-full bg-black border border-[#BCBEC0]/22 rounded-xl py-3 pl-11 pr-10 text-sm text-white placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/45 transition-colors duration-300 font-mono"
+              className="w-full bg-black border border-[#BCBEC0]/22 rounded-xl py-3 pl-11 pr-10 text-sm text-white placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/45 transition-colors duration-300"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#BCBEC0]/35 hover:text-[#BCBEC0] transition-colors text-sm font-mono"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#BCBEC0]/35 hover:text-[#BCBEC0] transition-colors text-sm"
               >
                 ✕
               </button>
@@ -2470,20 +2464,20 @@ export default function InventoryPage() {
               animate={{opacity: 1, y: 0}}
               exit={{opacity: 0}}
               transition={{duration: 0.4, ease: EASE_OUT_EXPO}}
-              className="mb-5 font-mono"
+              className="mb-5"
             >
               <div className="flex items-baseline gap-3 flex-wrap">
-                <p className="text-[10px] tracking-[0.32em] text-[#BCBEC0]/45 uppercase font-mono">
+                <p className="text-[10px] tracking-[0.32em] text-[#BCBEC0]/45 uppercase">
                   Available Vehicles
                 </p>
-                <span className="text-[10px] font-mono text-[#BCBEC0]/30">
+                <span className="text-[10px] text-[#BCBEC0]/30">
                   — {filteredAndSortedVehicles.length}{" "}
                   {filteredAndSortedVehicles.length === 1
                     ? "result"
                     : "results"}
                 </span>
               </div>
-              <h2 className="font-mono text-3xl md:text-4xl text-white mt-1">
+              <h2 className="font-display text-3xl md:text-4xl text-white mt-1">
                 {selectedBrand
                   ? selectedModel
                     ? `${selectedBrand} ${selectedModel}`
@@ -2503,16 +2497,16 @@ export default function InventoryPage() {
           />
         )}
         {showInventory && (
-          <div className="flex items-center justify-between mt-5 mb-7 font-mono">
+          <div className="flex items-center justify-between mt-5 mb-7">
             <button
               onClick={clearAll}
-              className="text-[11px] text-[#BCBEC0]/45 hover:text-[#BCBEC0] transition-colors duration-300 flex items-center gap-1.5 font-mono"
+              className="text-[11px] text-[#BCBEC0]/45 hover:text-[#BCBEC0] transition-colors duration-300 flex items-center gap-1.5"
             >
               <span className="text-base leading-none">←</span>
               <span>All marques</span>
             </button>
             {savedVehicles.length > 0 && (
-              <span className="text-[11px] font-mono text-[#BCBEC0]/40">
+              <span className="text-[11px] text-[#BCBEC0]/40">
                 {savedVehicles.length} saved
               </span>
             )}
@@ -2540,14 +2534,14 @@ export default function InventoryPage() {
           <motion.div
             initial={{opacity: 0}}
             animate={{opacity: 1}}
-            className="text-center py-24 font-mono"
+            className="text-center py-24"
           >
-            <p className="text-[#BCBEC0]/35 text-sm mb-5 font-mono">
+            <p className="text-[#BCBEC0]/35 text-sm mb-5">
               No vehicles match your current selection.
             </p>
             <button
               onClick={clearAll}
-              className="text-xs text-[#BCBEC0]/60 hover:text-[#BCBEC0] transition-colors underline underline-offset-2 font-mono"
+              className="text-xs text-[#BCBEC0]/60 hover:text-[#BCBEC0] transition-colors underline underline-offset-2"
             >
               Clear all filters
             </button>
@@ -2557,11 +2551,11 @@ export default function InventoryPage() {
           <motion.div
             initial={{opacity: 0}}
             animate={{opacity: 1}}
-            className="text-center py-20 font-mono"
+            className="text-center py-20"
           >
             <div className="max-w-sm mx-auto">
               <div className="w-12 h-px bg-[#BCBEC0]/20 mx-auto mb-8" />
-              <p className="text-[#BCBEC0]/30 text-sm leading-relaxed font-mono">
+              <p className="text-[#BCBEC0]/30 text-sm leading-relaxed">
                 Select a marque from the showroom above, or type a brand or
                 model name to explore the full inventory.
               </p>

@@ -31,7 +31,7 @@ const benefits = [
   {
     title: "Fast & Convenient",
     description:
-      "Avoid the stress of selling privately — we handle the entire process.",
+      "Avoid the stress of selling privately , we handle the entire process.",
     icon: (
       <path
         d="M13 2 3 14h7l-1 8 11-12h-7z"
@@ -858,7 +858,7 @@ function WhyTradeWithUs() {
           className="relative rounded-2xl overflow-hidden aspect-[4/3] lg:aspect-[5/4]"
         >
           <motion.img
-            src="https://res.cloudinary.com/dnadawobi/image/upload/v1782523344/3377768468886339_oxtqkl.jpg"
+            src="https://res.cloudinary.com/dnadawobi/image/upload/v1782777583/ChatGPT_Image_Jun_30_2026_02_56_58_AM_mxuvoo.png"
             alt="Premium dealership experience"
             className="w-full h-[120%] object-cover"
             style={prefersReduced ? {} : {y: parallaxY}}

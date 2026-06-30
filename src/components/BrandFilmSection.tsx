@@ -56,7 +56,7 @@ export default function BrandFilmSection() {
       >
         <video
           ref={videoRef}
-          src="/13684277_3840_2160_24fps.mp4"
+          src="/1782779009140.publer.com.mp4"
           poster="https://res.cloudinary.com/dnadawobi/image/upload/v1782255389/devon-janse-van-rensburg-yoqHLUayUTg-unsplash_fdq60a.jpg"
           muted={muted}
           loop
