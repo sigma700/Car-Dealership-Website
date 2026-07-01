@@ -13,6 +13,7 @@ import {
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
 import {allVehicles, getRecommendations} from "@/lib/vehicles";
 import type {Vehicle} from "@/lib/vehicles";
+import Button from "@/components/Button"; // <-- new import
 
 /* ─── Easing ─────────────────────────────────── */
 const EXPO = [0.19, 1, 0.22, 1] as const;
@@ -380,6 +381,7 @@ function Features({features}: {features: string[]}) {
 
 /* ─── Purchase Card ───────────────────────────── */
 function PurchaseCard({vehicle}: {vehicle: Vehicle}) {
+  const router = useRouter(); // <-- needed for navigation
   const whatsappHref = `https://wa.me/254700000000?text=${encodeURIComponent(
     `Hi, I'm interested in the ${vehicle.year} ${vehicle.brand} ${vehicle.model} listed at KSh ${vehicle.price.toLocaleString()}.`,
   )}`;
@@ -422,10 +424,17 @@ function PurchaseCard({vehicle}: {vehicle: Vehicle}) {
       </div>
 
       <div className="px-6 py-5 flex flex-col gap-3">
-        <button className="w-full py-3 px-5 bg-black dark:bg-white text-white dark:text-black text-[12px] font-semibold tracking-[0.1em] uppercase rounded-lg hover:bg-[#1a1a1a] dark:hover:bg-[#e5e5e5] transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-white">
+        {/* ─── Schedule Test Drive ─── */}
+        <Button
+          variant="primary"
+          fullWidth
+          size="md"
+          onClick={() => router.push("/contact")}
+        >
           Schedule Test Drive
-        </button>
+        </Button>
 
+        {/* ─── WhatsApp Enquiry (link) ─── */}
         <a
           href={whatsappHref}
           target="_blank"
@@ -445,6 +454,7 @@ function PurchaseCard({vehicle}: {vehicle: Vehicle}) {
           WhatsApp Enquiry
         </a>
 
+        {/* ─── Call Dealer (phone link) ─── */}
         <a
           href="tel:+254700000000"
           className="w-full py-2.5 px-5 text-center text-[11px] tracking-[0.08em] uppercase text-[#777] dark:text-[#BCBEC0]/45 hover:text-black dark:hover:text-white transition-colors duration-200"
@@ -618,6 +628,7 @@ function VehicleNav({currentSlug}: {currentSlug: string}) {
 /* ─── Mobile Sticky CTA ──────────────────────── */
 function MobileStickyBar({vehicle}: {vehicle: Vehicle}) {
   const {scrollY} = useScroll();
+  const router = useRouter(); // <-- needed for navigation
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -653,6 +664,7 @@ function MobileStickyBar({vehicle}: {vehicle: Vehicle}) {
                 KSh {vehicle.price.toLocaleString()}
               </p>
             </div>
+            {/* ─── WhatsApp (link) ─── */}
             <a
               href={whatsappHref}
               target="_blank"
@@ -661,9 +673,15 @@ function MobileStickyBar({vehicle}: {vehicle: Vehicle}) {
             >
               WhatsApp
             </a>
-            <button className="flex-shrink-0 px-4 py-2.5 bg-black text-white text-[11px] font-semibold tracking-[0.08em] uppercase rounded-lg hover:bg-[#1a1a1a] transition-colors duration-200">
+            {/* ─── Book Drive (Button) ─── */}
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => router.push("/contact")}
+              className="flex-shrink-0" // added to prevent stretching
+            >
               Book Drive
-            </button>
+            </Button>
           </div>
         </motion.div>
       )}
