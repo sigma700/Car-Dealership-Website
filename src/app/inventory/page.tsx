@@ -14,519 +14,52 @@ import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
 import Button from "@/components/Button";
 import CTABand from "@/components/CTABand";
 import {paramsToInventoryState} from "@/lib/inventoryFilters";
+import {allVehicles, Vehicle} from "@/lib/vehicles";
 
 /* ─── EASING & CONSTANTS ─── */
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 const SPRING_SMOOTH = {stiffness: 60, damping: 20, mass: 1};
 
-/* ─── DATA ─── */
-const brands = [
-  {
-    name: "Toyota",
-    count: 142,
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782688129/Toyota_hkrxtu.jpg",
-  },
-  {
-    name: "Subaru",
-    count: 64,
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782688087/12033123999369195_sih5sn.jpg",
-  },
-  {
-    name: "Mercedes-Benz",
-    count: 38,
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782688147/106467978685115961_ql9qfj.jpg",
-  },
-  {
-    name: "BMW",
-    count: 29,
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782688165/333196072453985904_vgqdn0.jpg",
-  },
-  {
-    name: "Range Rover",
-    count: 18,
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782688181/Range_afknhs.jpg",
-  },
-  {
-    name: "Audi",
-    count: 15,
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782688196/Audi_logo_nvfsvk.jpg",
-  },
-  {
-    name: "Mazda",
-    count: 26,
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782696905/Mazda_t9xnua.jpg",
-  },
-  {
-    name: "Honda",
-    count: 21,
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782696948/651333164900295143_nantoh.jpg",
-  },
-  {
-    name: "Volvo",
-    count: 9,
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782696971/Volvo_Logo___iPhone___Wallpapers_Wallpaper___%D0%92%D0%BE%D0%BB%D1%8C%D0%B2%D0%BE_%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF___%D0%9E%D0%B1%D0%BE%D0%B8_%D0%BD%D0%B0_%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD___%D0%9E%D0%B1%D0%BE%D0%B8_%D0%B4%D0%BB%D1%8F_%D1%81%D0%BC%D0%B0%D1%80%D1%82%D1%84%D0%BE%D0%BD%D0%B0_drshdu.jpg",
-  },
-  {
-    name: "Mini",
-    count: 4,
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782688308/mini_logo.jpg",
-  },
-];
+/* ─── Brand data (images only, counts computed dynamically) ─── */
+const brandImageMap: Record<string, string> = {
+  Toyota:
+    "https://res.cloudinary.com/dnadawobi/image/upload/v1782688129/Toyota_hkrxtu.jpg",
+  Subaru:
+    "https://res.cloudinary.com/dnadawobi/image/upload/v1782688087/12033123999369195_sih5sn.jpg",
+  "Mercedes-Benz":
+    "https://res.cloudinary.com/dnadawobi/image/upload/v1782688147/106467978685115961_ql9qfj.jpg",
+  BMW: "https://res.cloudinary.com/dnadawobi/image/upload/v1782688165/333196072453985904_vgqdn0.jpg",
+  "Range Rover":
+    "https://res.cloudinary.com/dnadawobi/image/upload/v1782688181/Range_afknhs.jpg",
+  Audi: "https://res.cloudinary.com/dnadawobi/image/upload/v1782688196/Audi_logo_nvfsvk.jpg",
+  Mazda:
+    "https://res.cloudinary.com/dnadawobi/image/upload/v1782696905/Mazda_t9xnua.jpg",
+  Honda:
+    "https://res.cloudinary.com/dnadawobi/image/upload/v1782696948/651333164900295143_nantoh.jpg",
+  Volvo:
+    "https://res.cloudinary.com/dnadawobi/image/upload/v1782696971/Volvo_Logo___iPhone___Wallpapers_Wallpaper___%D0%92%D0%BE%D0%BB%D1%8C%D0%B2%D0%BE_%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF___%D0%9E%D0%B1%D0%BE%D0%B8_%D0%BD%D0%B0_%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD___%D0%9E%D0%B1%D0%BE%D0%B8_%D0%B4%D0%BB%D1%8F_%D1%81%D0%BC%D0%B0%D1%80%D1%82%D1%84%D0%BE%D0%BD%D0%B0_drshdu.jpg",
+  Mini: "https://res.cloudinary.com/dnadawobi/image/upload/v1782688308/mini_logo.jpg",
+};
 
-const allVehicles = [
-  {
-    id: 1,
-    brand: "Toyota",
-    model: "Land Cruiser 300",
-    year: 2023,
-    mileage: 16000,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 18000000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/537949421_18065065625464881_6680344420159837064_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=107&ig_cache_key=MzcwNDY2NjY5Mjc3NzEzNjg0Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=6943jGku8H4Q7kNvwF4VQId&_nc_oc=Adrs8BHyfsPukilj1YdJX8TATjV0JWDoSBZUPvVU5_it3CSP4wF1URNtd34NwJgoXGI&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=7COww0ZtXTT2g0UiAKKiVw&_nc_ss=7a22e&oh=00_Af_Tj_fKNE7cmCxFEdPla8TGijNXbyhoaypt4sN-sSCDVA&oe=6A4768BC",
-    chassis: "V35A-FTS",
-    engineSize: 3500,
-    exteriorColor: "Black",
-    interiorColor: "Black",
-    driveType: "4WD",
-    engine: "3.5L V6 Twin-Turbo",
-    hasSunroof: true,
-  },
-  {
-    id: 2,
-    brand: "Toyota",
-    model: "RAV4",
-    year: 2019,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 4600000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/731031359_18098884409464881_6329917146646210963_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=MzkyNzU1MzM3Mjg4NDkzMDY1Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMjczMC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=UWJeQo9OIFgQ7kNvwHucOFQ&_nc_oc=AdqA7zkp1x5BWDPuldgDQo7f7qIM98u6o7BB5-IUV4R_1R7d-JCohNkhZSLnOLlJwd0&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=irL0LFAS2EjhblZYajXBow&_nc_ss=7a22e&oh=00_Af-D_sIz5OXHFOyXggClqO7G4hu6q5l02EbRjy_VyrEZ0A&oe=6A47943F",
-    chassis: "MXAA52",
-    engineSize: 2000,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "FWD",
-    engine: "2.0L 4-Cylinder",
-    hasSunroof: false,
-  },
-  {
-    id: 3,
-    brand: "Mazda",
-    model: "CX-5",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Diesel",
-    price: 3800000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/730779657_18098934323464881_3501621813302169595_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ig_cache_key=MzkyNzg4MzE2NzA4MjU4NjU4NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMjczMC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=brLJBoCPqXIQ7kNvwGUHBdB&_nc_oc=AdqzXQop2kb6QVcaRddkf9vthb_Sw90yvjr1uVp0XmkdqYurz31dEgRCrgRSROvl2Bg&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=DASQm_93lBRfOAQk5XswQA&_nc_ss=7a22e&oh=00_Af_xZyoZQtAN8BaoEq_ThosXcnv49Ifm6py78Yno8yrxXg&oe=6A47960F",
-    chassis: "KF2P-326377",
-    engineSize: 2200,
-    exteriorColor: "Blue",
-    interiorColor: "Black",
-    driveType: "4WD",
-    engine: "2.2L SkyActiv-D Diesel",
-    hasSunroof: false,
-  },
-  {
-    id: 4,
-    brand: "Audi",
-    model: "Q5",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 4300000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/528668951_18063535880464881_3289669644728800362_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=MzY5Mzc4NDU3NzYyNDUzNzg3OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=xqeqR68PO9YQ7kNvwF6xuS6&_nc_oc=AdrTBtGBcQuCRpI3HRxdaSozUNlH_25bXN61VDh2m3d52sLGtf3se8CDEcJ7yx4pF0k&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=7xpQ-grbKypSx9ZplTeWxQ&_nc_ss=7a22e&oh=00_Af_zDbYL9angf5xSwIV_REXyDKaIH4_uCd1BzgIH3hOwiQ&oe=6A47847A",
-    chassis: "FYB",
-    engineSize: 2000,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "Quattro AWD",
-    engine: "2.0L TFSI Turbocharged",
-    hasSunroof: true,
-  },
-  {
-    id: 5,
-    brand: "Audi",
-    model: "Q7",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 11500000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/529002119_18063748313464881_4349924247781516819_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=MzY5NTI0ODk5NDI0NTc3NjA1Ng%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=HLvOUMGxC0oQ7kNvwElziXQ&_nc_oc=AdpOWCgQgPAPJw13JBUKqmbF54JqslcyBhz1vPR4L-v12tqGLtZq6aUxoE6W0zBKohs&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=A2jJTjNvKgnvC0cQ5ShoGA&_nc_ss=7a22e&oh=00_Af8mf_qYLvtb8CTWCOaVcSDKqycyvZ9EPXPU7RBUzYh_Sg&oe=6A479966",
-    chassis: "4M",
-    engineSize: 3000,
-    exteriorColor: "Pearl White",
-    interiorColor: "Black",
-    driveType: "Quattro AWD",
-    engine: "3.0L V6 TFSI",
-    hasSunroof: true,
-  },
-  {
-    id: 6,
-    brand: "Mercedes-Benz",
-    model: "GLC 220d",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Diesel",
-    price: 6300000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.75761-15/496063675_18054305387464881_2750500384869230761_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=MzYyNzEzMjYwODU1NDUxOTgwNg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=iiyi9WH3YYMQ7kNvwFMwiAe&_nc_oc=Adp4OQiy9r4wkz4iflQzxy7zR-tyshNj_IuUQk0-vLc8cAg6JHlhZP5Vq8xW0df9aas&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=WzN7eCxuXTDO_ONnoEpzOA&_nc_ss=7a22e&oh=00_Af94sKhtzqc3ZJwJ6pzfbv4gnWxXtMf7R2_NYVC4R9DDlQ&oe=6A479F00",
-    driveType: "4MATIC AWD",
-    chassis: "X253",
-    engineSize: 2000,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    engine: "2.0L OM654 Turbo Diesel",
-    hasSunroof: false,
-  },
-  {
-    id: 7,
-    brand: "Volkswagen",
-    model: "Arteon",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 3990000,
-    bodyType: "Fastback",
-    availability: "In Stock",
-    image: null,
-    driveType: "4Motion AWD",
-    chassis: "3H7",
-    engineSize: 2000,
-    exteriorColor: "Black",
-    interiorColor: "Black",
-    engine: "2.0L TSI Turbocharged",
-    hasSunroof: true,
-  },
-  {
-    id: 8,
-    brand: "Toyota",
-    model: "Hilux",
-    year: 2021,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Diesel",
-    price: 3100000,
-    bodyType: "Pickup",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/717025850_18096407294464881_2338474806698816026_n.jpg?stp=dst-jpg_e35_s1080x1080_tt6&_nc_cat=106&ig_cache_key=MzkxMjU5MzEyOTc4ODc3MjQyMQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMjczMC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=rTW4AEmwgXAQ7kNvwFPPsHe&_nc_oc=AdrdH4nOak0KKH-IeAyczsfDR--SX8NR_MX1B07haRyC7_pjWUOq3SaMtGCp1C8HIMM&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=MY_I_sjh8i1rK8hV8RpsrA&_nc_ss=7a22e&oh=00_Af8AQ-byqNddyotLgv8dIBBKQdjUKtIOVDIphobI8jFWEA&oe=6A47931B",
-    chassis: "GUN125",
-    engineSize: 2400,
-    exteriorColor: "Black",
-    interiorColor: "Black",
-    driveType: "4WD",
-    engine: "2.4L 2GD-FTV Turbo Diesel",
-    hasSunroof: false,
-  },
-  {
-    id: 9,
-    brand: "Toyota",
-    model: "RAV4",
-    year: 2019,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 4600000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/713443347_18096322910464881_7087498110974836316_n.jpg?stp=dst-jpg_e35_s480x480_tt6&_nc_cat=103&ig_cache_key=MzkxMjA0Nzg0MDczMjUzNDM4MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMjczMC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=RYeftCtd3WQQ7kNvwET84U6&_nc_oc=Ado4s9J4lfLn4uU1_Hfj7zdVP6lNmUtTOgYF-na8XgQePggvDKLaTEHMivfi-ImrXBg&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=MY_I_sjh8i1rK8hV8RpsrA&_nc_ss=7a22e&oh=00_Af-LxCe2Vn8t88ncBiD0mw9OQkWLJz_y7ES6LAhKaDAWtQ&oe=6A4797BF",
-    chassis: "MXAA52-005975",
-    engineSize: 1990,
-    exteriorColor: "Silver",
-    interiorColor: "Off White",
-    driveType: "FWD",
-    engine: "2.0L 4-Cylinder",
-    hasSunroof: false,
-  },
-  {
-    id: 10,
-    brand: "Mercedes-Benz",
-    model: "GLE 400d",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Diesel",
-    price: 10500000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/703157652_18094403564464881_8346467969122777831_n.jpg?stp=dst-jpg_e35_s320x320_tt6&_nc_cat=108&ig_cache_key=MzkwMDQ1MzAxNjIzMzM1NDUyOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMzA3Mi5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=wNdS1vJJ2uoQ7kNvwGzyO7n&_nc_oc=AdqgbllJRhxZuoX4xGOvcQvZNQYxd1pfwmU3TqtribxINy6wmKRdFdg4VDZ0YI1mAv4&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=MY_I_sjh8i1rK8hV8RpsrA&_nc_ss=7a22e&oh=00_Af8VnurgunSey9vrr6j388teLfrX7hc1ZJOZNbJRNNJdIQ&oe=6A4768A8",
-    engineSize: 3000,
-    driveType: "4MATIC AWD",
-    chassis: "W167",
-    exteriorColor: "Black",
-    interiorColor: "Black",
-    engine: "3.0L OM656 Diesel",
-    hasSunroof: true,
-  },
-  {
-    id: 11,
-    brand: "Subaru",
-    model: "Forester SKE Advance (e-BOXER)",
-    year: 2022,
-    mileage: 71800,
-    transmission: "CVT",
-    fuel: "Hybrid/Petrol",
-    price: 4110000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.75761-15/468184006_18037725590464881_1097275392505093260_n.jpg?stp=dst-jpg_e35_s1080x1080_tt6&_nc_cat=101&ig_cache_key=MzUxMDM3NzAxOTM0MzAxNzcwNg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=naf3KXFrqMMQ7kNvwHy1gDw&_nc_oc=AdoSL9Su0eZfFq6S7TewthrFdZ5l03iFCGff2ohG7HY0VeJILbs7LabR8bj7M-POGzo&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=RP0GV0JEGfdV5JgrZEpB-Q&_nc_ss=7a22e&oh=00_Af-s2aURikzTC0tZ5NT3JAl3lfw0Fo4HiYUDjEQL3EXRQA&oe=6A47A805",
-    chassis: "SKE",
-    engineSize: 1995,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "Symmetrical AWD",
-    engine: "2.0L e-BOXER Hybrid",
-    hasSunroof: true,
-  },
-  {
-    id: 33,
-    brand: "Subaru",
-    model: "Forester X-BREAK",
-    year: 2022,
-    mileage: 0,
-    transmission: "CVT",
-    fuel: "Petrol",
-    price: 4150000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.75761-15/465759405_18035702240464881_4101843576014520250_n.jpg?stp=dst-jpg_e35_s720x720_tt6&_nc_cat=106&ig_cache_key=MzQ5NjczODIzNTkzMDA0MDI0MA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=7cQVT81-8R0Q7kNvwHwQ-D-&_nc_oc=AdrKGQvxzb6FhwOYl8L1Vnv7ujPdLmhnqcQ1zvADZDH6ioMCbwiMyFCnV0Zf9YpG0VM&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=RP0GV0JEGfdV5JgrZEpB-Q&_nc_ss=7a22e&oh=00_Af8npIMXW6iCfAJtWAzaebwHDPhz0TuWmaSgaQuG92ddyQ&oe=6A477226",
-    chassis: "SKE",
-    engineSize: 1995,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "Symmetrical AWD",
-    engine: "2.0L 4-Cylinder Boxer",
-    hasSunroof: true,
-  },
-  {
-    id: 12,
-    brand: "Toyota",
-    model: "Land Cruiser Prado TX",
-    year: 2019,
-    mileage: 62000,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 6000000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.75761-15/491417500_18052761086464881_4854774698729746219_n.jpg?stp=dst-jpg_e35_s320x320_tt6&_nc_cat=111&ig_cache_key=MzYxNTUxMDc2Njc1NjgxNTU3MA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=elozsVeeRmMQ7kNvwEm7wNI&_nc_oc=Ado0BdrrB20THGHI5gwqIECKiE2nzhWkMBfmYSramlf_fYWvTifeIIrUwPkrHhkQNi8&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=SSRa83tUJkW-HX8-FjXS8Q&_nc_ss=7a22e&oh=00_Af_VfbRyKxDnmep6C0VrtzijUh1kxPOy_HRCsFY2WZrhaw&oe=6A476F0D",
-    chassis: "TRJ150W",
-    engineSize: 2700,
-    exteriorColor: "Metallic Black",
-    interiorColor: "Black and Beige",
-    driveType: "4WD",
-    engine: "2.7L 2TR-FE Petrol",
-    hasSunroof: true,
-  },
-  {
-    id: 13,
-    brand: "Toyota",
-    model: "Vitz",
-    year: 2019,
-    mileage: 65000,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 1350000,
-    bodyType: "Hatchback",
-    availability: "In Stock",
-    image:
-      "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-    chassis: "NCP131",
-    engineSize: 1300,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "FWD",
-    engine: "1.3L 4-Cylinder",
-    hasSunroof: false,
-  },
-  {
-    id: 14,
-    brand: "Mercedes-Benz",
-    model: "C200 Avantgarde",
-    year: 2019,
-    mileage: 48000,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 4350000,
-    bodyType: "Sedan",
-    availability: "In Stock",
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782695540/2015_MERCEDES_BENZ_C200_W205__Sunroof_vvqkkq.jpg",
-    chassis: "W205",
-    engineSize: 2000,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "RWD",
-    engine: "2.0L Turbocharged",
-    hasSunroof: true,
-  },
-  {
-    id: 27,
-    brand: "Toyota",
-    model: "Hiace",
-    year: 2018,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Diesel",
-    price: 3800000,
-    bodyType: "Van",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/581620102_18074607770464881_8001195159720769703_n.jpg?stp=dst-jpg_e35_s480x480_tt6&_nc_cat=104&ig_cache_key=Mzc2NDk4MTE2NDA3MjAxNTI5Mw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=OyeN1kCM3xAQ7kNvwFZpKrs&_nc_oc=AdqiklW00sKwWArdu8t-IDhta_AhvjdetuFmdl8ONfHSv13OxAbrBVU-w1W70R2RSE4&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=6S1olOZyyIvYjh3GXzpJYg&_nc_ss=7a22e&oh=00_Af8g4hiTbb_j1kMzTTzpdOyTUELz4t08HJ3pN2ryLAnVDw&oe=6A477AB8",
-    chassis: "TRH200",
-    engineSize: 2800,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "RWD",
-    engine: "2.8L 1GD-FTV Diesel",
-    hasSunroof: false,
-  },
-  {
-    id: 28,
-    brand: "Toyota",
-    model: "Sienta",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 1850000,
-    bodyType: "MPV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.75761-15/474564611_18043710590464881_506013724526650522_n.jpg?stp=dst-jpg_e35_s720x720_tt6&_nc_cat=107&ig_cache_key=MzU1MDI3NDE3MTUyNzI3OTA4Mw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=DfBecufDqCYQ7kNvwHWwRBA&_nc_oc=AdogB2M0fuSKUHNromDfftk3i4R27LklJHkP_jLcWFJaDQeljC7Bm7oflf2bAUh0Nko&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=Zk7BPZtQ4EgT8hz3FJKf_w&_nc_ss=7a22e&oh=00_Af88jeuFe8eh6pRZ0Kav44WFIFA2rqFf-rZuECHNgzVaYA&oe=6A478AF9",
-    chassis: "NHP170",
-    engineSize: 1500,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "FWD",
-    engine: "1.5L 4-Cylinder",
-    hasSunroof: false,
-  },
-  {
-    id: 29,
-    brand: "Mercedes-Benz",
-    model: "GLC 250 4MATIC",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 6080000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782695689/Mercedes-Benz_GLC_Coupe_makes_its_Malaysian_debut_-_single_GLC_250_4Matic_variant_RM428_888_rc7hzo.jpg",
-    driveType: "4MATIC AWD",
-    chassis: "X253",
-    engineSize: 2000,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    engine: "2.0L Turbocharged",
-    hasSunroof: true,
-  },
-  {
-    id: 30,
-    brand: "Mazda",
-    model: "Carol",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 740000,
-    bodyType: "Hatchback",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.75761-15/468666757_18038057813464881_4364955005024391563_n.jpg?stp=dst-jpg_e35_s640x640_sh2.08_tt6&_nc_cat=104&ig_cache_key=MzUxMjU4MDM2ODQ3MDc2ODMzNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=WkK7YDC7Le4Q7kNvwEuRpT1&_nc_oc=AdphQQrEoyPK0u-4qnCQNw9fsVMdwZLQ-DuG7YDl-Q54eRHAsab1m69DLcsgmQ_RE4c&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=Kmaok44wbes-XHGTA6ssIw&_nc_ss=7a22e&oh=00_Af_Dr7tPbZqUwp9GFP4-uukASUAdTe_VprMhwU48Jor3hg&oe=6A47A60E",
-    engineSize: 660,
-    chassis: "GF",
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "FWD",
-    engine: "660cc 3-Cylinder",
-    hasSunroof: false,
-  },
-  {
-    id: 31,
-    brand: "Honda",
-    model: "Grace",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 1850000,
-    bodyType: "Sedan",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t39.30808-6/469334567_18038583644464881_8569455123612778049_n.jpg",
-    chassis: "GM4",
-    engineSize: 1500,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "FWD",
-    engine: "1.5L 4-Cylinder",
-    hasSunroof: false,
-  },
-  {
-    id: 32,
-    brand: "Mercedes-Benz",
-    model: "E200",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 5650000,
-    bodyType: "Sedan",
-    availability: "In Stock",
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782695753/Mercedes-Benz_E-Class_E_200_LWB_2024-_78_5_lakh___Real-life_review_tzmtkv.jpg",
-    chassis: "W213",
-    engineSize: 2000,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "RWD",
-    engine: "2.0L M264 Turbocharged",
-    hasSunroof: true,
-  },
-];
+/* ─── Dynamically build brands from vehicles ─── */
+const brands = Object.entries(
+  allVehicles.reduce(
+    (acc, v) => {
+      acc[v.brand] = (acc[v.brand] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  ),
+)
+  .map(([name, count]) => ({
+    name,
+    count,
+    image: brandImageMap[name] || "",
+  }))
+  .sort((a, b) => b.count - a.count);
 
+/* ─── Helper functions using the imported allVehicles ─── */
 function getModelsForBrand(brand: string) {
   return [
     ...new Set(
@@ -535,7 +68,7 @@ function getModelsForBrand(brand: string) {
   ].sort();
 }
 
-function sortVehicles(vehicles: typeof allVehicles, order: string) {
+function sortVehicles(vehicles: Vehicle[], order: string) {
   const s = [...vehicles];
   switch (order) {
     case "price-asc":
@@ -696,7 +229,11 @@ function ModelSelector({
     >
       <button
         onClick={() => onSelectModel(null)}
-        className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 ${!selectedModel ? "bg-[#BCBEC0] text-black shadow-md" : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0]/80 hover:bg-black/80"}`}
+        className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 ${
+          !selectedModel
+            ? "bg-[#BCBEC0] text-black shadow-md"
+            : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0]/80 hover:bg-black/80"
+        }`}
       >
         All Models
       </button>
@@ -704,7 +241,11 @@ function ModelSelector({
         <button
           key={m}
           onClick={() => onSelectModel(m)}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 ${selectedModel === m ? "bg-[#BCBEC0] text-black shadow-md" : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0]/80 hover:bg-black/80"}`}
+          className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 ${
+            selectedModel === m
+              ? "bg-[#BCBEC0] text-black shadow-md"
+              : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0]/80 hover:bg-black/80"
+          }`}
         >
           {m}
         </button>
@@ -757,14 +298,22 @@ function FilterBar({
                   bodyType: filters.bodyType === b ? "" : b,
                 })
               }
-              className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide font-medium transition-all duration-200 ${filters.bodyType === b ? "bg-[#BCBEC0] text-black" : "bg-transparent border border-[#BCBEC0]/28 text-[#BCBEC0]/75 hover:border-[#BCBEC0]/55 hover:text-[#BCBEC0]"}`}
+              className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide font-medium transition-all duration-200 ${
+                filters.bodyType === b
+                  ? "bg-[#BCBEC0] text-black"
+                  : "bg-transparent border border-[#BCBEC0]/28 text-[#BCBEC0]/75 hover:border-[#BCBEC0]/55 hover:text-[#BCBEC0]"
+              }`}
             >
               {b}
             </button>
           ))}
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide font-medium transition-all duration-200 border ${showAdvanced ? "border-[#BCBEC0]/55 text-[#BCBEC0]" : "border-[#BCBEC0]/28 text-[#BCBEC0]/60 hover:border-[#BCBEC0]/45"}`}
+            className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide font-medium transition-all duration-200 border ${
+              showAdvanced
+                ? "border-[#BCBEC0]/55 text-[#BCBEC0]"
+                : "border-[#BCBEC0]/28 text-[#BCBEC0]/60 hover:border-[#BCBEC0]/45"
+            }`}
           >
             {showAdvanced ? "Fewer Filters" : "More Filters"}
             {activeCount > 0 && !showAdvanced && (
@@ -890,7 +439,7 @@ function VehicleCard({
   saved,
   index = 0,
 }: {
-  vehicle: (typeof allVehicles)[0];
+  vehicle: Vehicle;
   onSave: () => void;
   saved: boolean;
   index?: number;
@@ -971,7 +520,10 @@ function VehicleCard({
             </h3>
           </div>
           <span
-            className={`text-[10px] px-2 py-0.5 rounded-full shrink-0 mt-0.5 ${availabilityStyles[vehicle.availability] ?? "bg-[#BCBEC0]/15 text-[#BCBEC0]/80 border border-[#BCBEC0]/20 font-medium"}`}
+            className={`text-[10px] px-2 py-0.5 rounded-full shrink-0 mt-0.5 ${
+              availabilityStyles[vehicle.availability] ??
+              "bg-[#BCBEC0]/15 text-[#BCBEC0]/80 border border-[#BCBEC0]/20 font-medium"
+            }`}
           >
             {vehicle.availability}
           </span>
@@ -1002,7 +554,7 @@ function VehicleCard({
               variant="secondary"
               size="sm"
               onClick={() =>
-                (window.location.href = `/inventory/${vehicle.id}`)
+                (window.location.href = `/inventory/${vehicle.slug}`)
               }
             >
               View Details
@@ -1134,7 +686,7 @@ function FinanceCTA() {
   );
 }
 
-/* ─── TrustSection — unchanged visual logic, improved text contrast ─── */
+/* ─── TrustSection – (unchanged) ─── */
 const SP_SLOW = {stiffness: 35, damping: 16, mass: 1};
 const SP_SMOOTH_TS = {stiffness: 55, damping: 20, mass: 1};
 const SP_PRECISE_TS = {stiffness: 90, damping: 24, mass: 1};
@@ -1482,12 +1034,24 @@ function VerticalNavRail({
         return (
           <div key={label} className="relative flex items-center gap-2">
             <span
-              className={`text-[9px] tracking-[0.15em] uppercase transition-all duration-400 ${isActive ? "text-black opacity-100 font-semibold" : isPast ? "text-[#BCBEC0]/65 opacity-75 font-medium" : "text-[#BCBEC0]/35 opacity-50"}`}
+              className={`text-[9px] tracking-[0.15em] uppercase transition-all duration-400 ${
+                isActive
+                  ? "text-black opacity-100 font-semibold"
+                  : isPast
+                    ? "text-[#BCBEC0]/65 opacity-75 font-medium"
+                    : "text-[#BCBEC0]/35 opacity-50"
+              }`}
             >
               {String(i + 1).padStart(2, "0")} {label}
             </span>
             <div
-              className={`w-1.5 h-1.5 rounded-full transition-all duration-400 ${isActive ? "bg-[#BCBEC0] scale-150" : isPast ? "bg-[#BCBEC0]/55" : "bg-[#BCBEC0]/28"}`}
+              className={`w-1.5 h-1.5 rounded-full transition-all duration-400 ${
+                isActive
+                  ? "bg-[#BCBEC0] scale-150"
+                  : isPast
+                    ? "bg-[#BCBEC0]/55"
+                    : "bg-[#BCBEC0]/28"
+              }`}
             />
           </div>
         );
@@ -1563,7 +1127,9 @@ function TrustCardPanel({
                 {Array.from({length: total}).map((_, j) => (
                   <div
                     key={j}
-                    className={`h-0.5 flex-1 rounded-full transition-colors duration-600 ${j <= index ? "bg-[#BCBEC0]" : "bg-[#BCBEC0]/30"}`}
+                    className={`h-0.5 flex-1 rounded-full transition-colors duration-600 ${
+                      j <= index ? "bg-[#BCBEC0]" : "bg-[#BCBEC0]/30"
+                    }`}
                   />
                 ))}
               </div>
@@ -1883,7 +1449,11 @@ function TestimonialsSection() {
               }
             >
               <div
-                className={`absolute inset-0 z-0 rounded-2xl bg-white transform translate-y-full group-hover:translate-y-0 ${prefersReduced ? "" : "transition-transform duration-500 ease-out"}`}
+                className={`absolute inset-0 z-0 rounded-2xl bg-white transform translate-y-full group-hover:translate-y-0 ${
+                  prefersReduced
+                    ? ""
+                    : "transition-transform duration-500 ease-out"
+                }`}
               />
               <span
                 className="absolute top-6 right-7 text-5xl leading-none select-none z-10 text-[#BCBEC0]/15 group-hover:text-[#BCBEC0]/25 transition-colors duration-500"
@@ -1930,9 +1500,7 @@ export default function InventoryPage() {
   const prefersReduced = usePrefersReducedMotion();
   const inventoryRef = useRef<HTMLDivElement>(null);
 
-  // ── Initialise state from URL params (set by ModelsPreviewSection) ──────────
-  // On first render we read URL params once. If any are present we treat that as
-  // an incoming search from the homepage and immediately show the inventory grid.
+  // ── Initialise state from URL params ──
   const initState = useMemo(() => {
     if (typeof window === "undefined")
       return {brand: null, model: null, filters: {}};
@@ -1952,7 +1520,7 @@ export default function InventoryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("id-desc");
 
-  // ── Auto-scroll to inventory when arriving via search params ─────────────────
+  // ── Auto-scroll when arriving via search params ──
   const didAutoScroll = useRef(false);
   useEffect(() => {
     const hasIncoming = !!(
@@ -1960,7 +1528,6 @@ export default function InventoryPage() {
     );
     if (hasIncoming && !didAutoScroll.current) {
       didAutoScroll.current = true;
-      // Slight delay to allow layout paint
       const t = setTimeout(() => {
         inventoryRef.current?.scrollIntoView({
           behavior: "smooth",
@@ -2003,7 +1570,6 @@ export default function InventoryPage() {
     return sortVehicles(list, sortOrder);
   }, [selectedBrand, selectedModel, filters, searchQuery, sortOrder]);
 
-  // Show grid when a brand is selected, search is active, or filters came in via URL
   const showInventory =
     selectedBrand !== null ||
     searchQuery.trim().length > 0 ||
@@ -2033,7 +1599,6 @@ export default function InventoryPage() {
     setSortOrder("id-desc");
   };
 
-  /* ── Active filter summary pill (shown when URL params seeded filters) ── */
   const incomingFilterCount =
     Object.keys(initState.filters).length +
     (initState.brand ? 1 : 0) +
@@ -2064,7 +1629,6 @@ export default function InventoryPage() {
             </p>
           </div>
 
-          {/* Incoming filter badge — shown when user navigated from homepage search */}
           {incomingFilterCount > 0 && (
             <motion.div
               initial={{opacity: 0, y: 8}}

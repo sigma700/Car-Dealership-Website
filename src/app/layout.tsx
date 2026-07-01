@@ -5,7 +5,6 @@ import "./globals.css";
 import {UIProvider} from "@/context/UIContext";
 import {TransitionProvider} from "@/context/TransitionContext";
 
-import PreloaderWrapper from "@/components/PreloaderWrapper"; // we'll create this
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
@@ -48,7 +47,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
               className="fixed inset-0 z-[200] bg-obsidian scale-y-0 origin-bottom hidden pointer-events-none"
             />
 
-            <PreloaderWrapper />
+            {/* PreloaderWrapper removed */}
             <CustomCursor />
             <Navigation />
             <main id="main-content" className="min-h-screen">

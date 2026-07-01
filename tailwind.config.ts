@@ -2,6 +2,7 @@ import type {Config} from "tailwindcss";
 
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
@@ -62,6 +63,20 @@ const config: Config = {
         slow: "600ms",
         xslow: "1000ms",
         hero: "2400ms",
+      },
+      // ─── NEW SKELETON ANIMATION ──────────────────────
+      keyframes: {
+        skeleton: {
+          "0%": {
+            transform: "translateX(-100%)",
+          },
+          "100%": {
+            transform: "translateX(100%)",
+          },
+        },
+      },
+      animation: {
+        skeleton: "skeleton 1.5s ease-in-out infinite",
       },
     },
   },
