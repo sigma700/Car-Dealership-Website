@@ -382,7 +382,7 @@ function DealerLocator() {
           className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl"
         >
           <img
-            src="https://res.cloudinary.com/dnadawobi/image/upload/v1782396327/pexels-nikola-kolev-2438142-17888840_1_iyaeqj.jpg"
+            src="https://res.cloudinary.com/dnadawobi/image/upload/v1782925945/Showroom_ambiance_featuring_a_modern_car_dealership_with_sleek_vehicles_gyht5e.jpg"
             alt="Showroom"
             className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
           />

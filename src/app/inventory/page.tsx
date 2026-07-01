@@ -1,5 +1,6 @@
 "use client";
 import {useState, useRef, useEffect, useMemo, useCallback} from "react";
+import {useSearchParams} from "next/navigation";
 import {
   motion,
   AnimatePresence,
@@ -12,6 +13,7 @@ import {
 import {usePrefersReducedMotion} from "@/hooks/usePrefersReducedMotion";
 import Button from "@/components/Button";
 import CTABand from "@/components/CTABand";
+import {paramsToInventoryState} from "@/lib/inventoryFilters";
 
 /* ─── EASING & CONSTANTS ─── */
 const EASE_OUT_EXPO = [0.19, 1, 0.22, 1] as const;
@@ -180,9 +182,9 @@ const allVehicles = [
     availability: "In Stock",
     image:
       "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/529002119_18063748313464881_4349924247781516819_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=MzY5NTI0ODk5NDI0NTc3NjA1Ng%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=HLvOUMGxC0oQ7kNvwElziXQ&_nc_oc=AdpOWCgQgPAPJw13JBUKqmbF54JqslcyBhz1vPR4L-v12tqGLtZq6aUxoE6W0zBKohs&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=A2jJTjNvKgnvC0cQ5ShoGA&_nc_ss=7a22e&oh=00_Af8mf_qYLvtb8CTWCOaVcSDKqycyvZ9EPXPU7RBUzYh_Sg&oe=6A479966",
-    exteriorColor: "Pearl White",
     chassis: "4M",
     engineSize: 3000,
+    exteriorColor: "Pearl White",
     interiorColor: "Black",
     driveType: "Quattro AWD",
     engine: "3.0L V6 TFSI",
@@ -202,12 +204,12 @@ const allVehicles = [
     image:
       "https://scontent-mba2-1.cdninstagram.com/v/t51.75761-15/496063675_18054305387464881_2750500384869230761_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=MzYyNzEzMjYwODU1NDUxOTgwNg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=iiyi9WH3YYMQ7kNvwFMwiAe&_nc_oc=Adp4OQiy9r4wkz4iflQzxy7zR-tyshNj_IuUQk0-vLc8cAg6JHlhZP5Vq8xW0df9aas&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=WzN7eCxuXTDO_ONnoEpzOA&_nc_ss=7a22e&oh=00_Af94sKhtzqc3ZJwJ6pzfbv4gnWxXtMf7R2_NYVC4R9DDlQ&oe=6A479F00",
     driveType: "4MATIC AWD",
-    engine: "2.0L OM654 Turbo Diesel",
-    hasSunroof: false,
     chassis: "X253",
     engineSize: 2000,
     exteriorColor: "White",
     interiorColor: "Black",
+    engine: "2.0L OM654 Turbo Diesel",
+    hasSunroof: false,
   },
   {
     id: 7,
@@ -242,7 +244,7 @@ const allVehicles = [
     availability: "In Stock",
     image:
       "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/717025850_18096407294464881_2338474806698816026_n.jpg?stp=dst-jpg_e35_s1080x1080_tt6&_nc_cat=106&ig_cache_key=MzkxMjU5MzEyOTc4ODc3MjQyMQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMjczMC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=rTW4AEmwgXAQ7kNvwFPPsHe&_nc_oc=AdrdH4nOak0KKH-IeAyczsfDR--SX8NR_MX1B07haRyC7_pjWUOq3SaMtGCp1C8HIMM&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=MY_I_sjh8i1rK8hV8RpsrA&_nc_ss=7a22e&oh=00_Af8AQ-byqNddyotLgv8dIBBKQdjUKtIOVDIphobI8jFWEA&oe=6A47931B",
-    chassis: "GUN125-3923208",
+    chassis: "GUN125",
     engineSize: 2400,
     exteriorColor: "Black",
     interiorColor: "Black",
@@ -398,216 +400,6 @@ const allVehicles = [
     hasSunroof: true,
   },
   {
-    id: 15,
-    brand: "BMW",
-    model: "X5 xDrive30d",
-    year: 2019,
-    mileage: 55000,
-    transmission: "Automatic",
-    fuel: "Diesel",
-    price: 10000000,
-    bodyType: "SUV",
-    availability: "Reserved",
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782695858/Wheelsage_bsvwzk.jpg",
-    chassis: "G05",
-    engineSize: 3000,
-    exteriorColor: "Black",
-    interiorColor: "Black",
-    driveType: "xDrive AWD",
-    engine: "3.0L Diesel",
-    hasSunroof: true,
-  },
-  {
-    id: 16,
-    brand: "Range Rover",
-    model: "Sport Vogue",
-    year: 2019,
-    mileage: 42000,
-    transmission: "Automatic",
-    fuel: "Diesel",
-    price: 8450000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782696193/11329436555446819_rrb3ym.jpg",
-    chassis: "L494",
-    engineSize: 3000,
-    exteriorColor: "Black",
-    interiorColor: "Black",
-    driveType: "AWD",
-    engine: "3.0L V6 Diesel",
-    hasSunroof: true,
-  },
-  {
-    id: 34,
-    brand: "Range Rover",
-    model: "Velar",
-    year: 2019,
-    mileage: 72000,
-    transmission: "Automatic",
-    fuel: "Diesel",
-    price: 8500000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/641746641_18084597017464881_1247834999070986739_n.jpg?stp=dst-jpg_e35_s240x240_tt6&_nc_cat=107&ig_cache_key=MzgzODc4MjA4NDY0NzUwOTcyNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=3VMZKyV5-t8Q7kNvwEP_HLu&_nc_oc=Ado7EVKqJ_XbpQYARbhYFbGxIVzXZVsC-i-4fUDVYHeDxsRRS7JTswaR_qym5AFsSuE&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=hS4EumSRZ4-5vvink-9gTw&_nc_ss=7a22e&oh=00_Af-Arcc6OBbk5l02VhGWc2x31CJd736FJWTpKRg5sF9xeg&oe=6A477ADA",
-    chassis: "L560",
-    engineSize: 2000,
-    exteriorColor: "Black",
-    interiorColor: "Brown",
-    driveType: "4WD",
-    engine: "2.0L Ingenium Turbo Diesel (D180)",
-    hasSunroof: false,
-  },
-  {
-    id: 20,
-    brand: "Mazda",
-    model: "CX-8",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Diesel",
-    price: 4500000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782696417/MAZDA_CX-8_yliwmr.jpg",
-    chassis: "KG",
-    engineSize: 2200,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "FWD",
-    engine: "2.2L SkyActiv-D Diesel",
-    hasSunroof: false,
-  },
-  {
-    id: 21,
-    brand: "Honda",
-    model: "Shuttle Hybrid",
-    year: 2019,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Hybrid/Petrol",
-    price: 2000000,
-    bodyType: "Station Wagon",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/631834356_18083492786464881_55198036545223361_n.jpg",
-    chassis: "GP",
-    engineSize: 1500,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "FWD",
-    engine: "1.5L i-MMD Hybrid",
-    hasSunroof: false,
-  },
-  {
-    id: 22,
-    brand: "Toyota",
-    model: "Raize",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 2320000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/631637824_18083338295464881_280254976165568756_n.jpg?stp=dst-jpg_e35_p320x320_tt6&_nc_cat=106&ig_cache_key=MzgyOTU5ODE3NzE0MjI4NzkzNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=0XyL_SkdrhMQ7kNvwHDutpy&_nc_oc=AdrxA-_09D5GQbu2LnU7La2enbr8eysrEJ9YK7_5inOOHJhKH1CJiTrgd3aCX8XzZ0w&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=hS4EumSRZ4-5vvink-9gTw&_nc_ss=7a22e&oh=00_Af-ibfs3WuYsr7f4JsPi2drvUVLSmP31BSvWze-9-aRf4Q&oe=6A477CBA",
-    chassis: "A201",
-    engineSize: 1000,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "FWD",
-    engine: "1.0L Turbo",
-    hasSunroof: false,
-  },
-  {
-    id: 23,
-    brand: "Honda",
-    model: "Vezel Hybrid",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Hybrid/Petrol",
-    price: 2800000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/616834525_18080957795464881_3998932957510543938_n.jpg",
-    chassis: "RU",
-    engineSize: 1500,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "FWD",
-    engine: "1.5L i-MMD Hybrid",
-    hasSunroof: false,
-  },
-  {
-    id: 24,
-    brand: "Mini",
-    model: "Cooper Clubman",
-    year: 2020,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 3500000,
-    bodyType: "Station Wagon",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/611816688_18080042060464881_7066982466629832972_n.jpg",
-    chassis: "F54",
-    engineSize: 2000,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "FWD",
-    engine: "2.0L 4-Cylinder",
-    hasSunroof: false,
-  },
-  {
-    id: 25,
-    brand: "Mercedes-Benz",
-    model: "C200",
-    year: 2018,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 3800000,
-    bodyType: "Sedan",
-    availability: "In Stock",
-    image:
-      "https://res.cloudinary.com/dnadawobi/image/upload/v1782695604/2015_MERCEDES_BENZ_C200_W205__Sunroof_1_kh6ff3.jpg",
-    chassis: "W205",
-    engineSize: 2000,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "RWD",
-    engine: "2.0L Turbocharged",
-    hasSunroof: true,
-  },
-  {
-    id: 26,
-    brand: "Volvo",
-    model: "XC90",
-    year: 2018,
-    mileage: 0,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    price: 5900000,
-    bodyType: "SUV",
-    availability: "In Stock",
-    image:
-      "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/621435516_18081952994464881_1182946661155536688_n.jpg?stp=dst-jpg_e35_p320x320_tt6&_nc_cat=103&ig_cache_key=MzgxODk0NDM1MDkwMjU5NzY1NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=WAECla_5T3QQ7kNvwG34Bbj&_nc_oc=Adq9-ssl8wbBUlzH0L49NDQrLIXNG572I0NMKlnXXBEHLN5wfMEbFRqccVrnbanl1wk&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=gDBKGdTVhNfsQlvv3gB4aQ&_nc_ss=7a22e&oh=00_Af88i9RPm06ZniHNf2qu1rNz8xrGabSwy-Lm6EGpCeu7AQ&oe=6A4782B7",
-    chassis: "XC90",
-    engineSize: 2000,
-    exteriorColor: "White",
-    interiorColor: "Black",
-    driveType: "AWD",
-    engine: "2.0L Twin-Charged",
-    hasSunroof: true,
-  },
-  {
     id: 27,
     brand: "Toyota",
     model: "Hiace",
@@ -620,7 +412,7 @@ const allVehicles = [
     availability: "In Stock",
     image:
       "https://scontent-mba2-1.cdninstagram.com/v/t51.82787-15/581620102_18074607770464881_8001195159720769703_n.jpg?stp=dst-jpg_e35_s480x480_tt6&_nc_cat=104&ig_cache_key=Mzc2NDk4MTE2NDA3MjAxNTI5Mw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=OyeN1kCM3xAQ7kNvwFZpKrs&_nc_oc=AdqiklW00sKwWArdu8t-IDhta_AhvjdetuFmdl8ONfHSv13OxAbrBVU-w1W70R2RSE4&_nc_ad=z-m&_nc_cid=1695&_nc_zt=23&_nc_ht=scontent-mba2-1.cdninstagram.com&_nc_gid=6S1olOZyyIvYjh3GXzpJYg&_nc_ss=7a22e&oh=00_Af8g4hiTbb_j1kMzTTzpdOyTUELz4t08HJ3pN2ryLAnVDw&oe=6A477AB8",
-    chassis: "TRH200-0279660",
+    chassis: "TRH200",
     engineSize: 2800,
     exteriorColor: "White",
     interiorColor: "Black",
@@ -743,10 +535,27 @@ function getModelsForBrand(brand: string) {
   ].sort();
 }
 
+function sortVehicles(vehicles: typeof allVehicles, order: string) {
+  const s = [...vehicles];
+  switch (order) {
+    case "price-asc":
+      return s.sort((a, b) => a.price - b.price);
+    case "price-desc":
+      return s.sort((a, b) => b.price - a.price);
+    case "year-desc":
+      return s.sort((a, b) => b.year - a.year);
+    case "mileage-asc":
+      return s.sort((a, b) => a.mileage - b.mileage);
+    default:
+      return s.sort((a, b) => b.id - a.id);
+  }
+}
+
+/* ─── AnimatedCounter ─── */
 function AnimatedCounter({
   target,
   suffix = "",
-  duration = 1800,
+  duration = 1600,
 }: {
   target: number;
   suffix?: string;
@@ -764,10 +573,9 @@ function AnimatedCounter({
     }
     const start = performance.now();
     const tick = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * target));
-      if (progress < 1) requestAnimationFrame(tick);
+      const p = Math.min((now - start) / duration, 1);
+      setCount(Math.floor((1 - Math.pow(1 - p, 3)) * target));
+      if (p < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
   }, [inView, target, duration, prefersReduced]);
@@ -779,6 +587,7 @@ function AnimatedCounter({
   );
 }
 
+/* ─── BrandCard ─── */
 function BrandCard({
   brand,
   isSelected,
@@ -793,7 +602,6 @@ function BrandCard({
   const prefersReduced = usePrefersReducedMotion();
   const cardRef = useRef<HTMLButtonElement>(null);
   const inView = useInView(cardRef, {once: true, amount: 0.2});
-
   return (
     <motion.button
       ref={cardRef}
@@ -806,7 +614,7 @@ function BrandCard({
             ? {opacity: 1}
             : {opacity: 0, y: 20}
       }
-      transition={{duration: 0.6, delay: index * 0.06, ease: EASE_OUT_EXPO}}
+      transition={{duration: 0.55, delay: index * 0.055, ease: EASE_OUT_EXPO}}
       className="group relative overflow-hidden rounded-xl bg-black aspect-[4/4.2] flex flex-col items-center justify-end p-4 text-center cursor-pointer"
       style={{
         boxShadow: isSelected
@@ -818,7 +626,8 @@ function BrandCard({
           ? {}
           : {scale: 1.022, boxShadow: "0 10px 32px rgba(0,0,0,0.7)"}
       }
-      transition={{duration: 0.32, ease: EASE_OUT_EXPO}}
+      transition={{duration: 0.28, ease: EASE_OUT_EXPO}}
+      aria-pressed={isSelected}
     >
       <div className="absolute inset-0 overflow-hidden">
         <motion.img
@@ -831,25 +640,23 @@ function BrandCard({
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-[#BCBEC0]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-[#BCBEC0]/20 group-hover:bg-[#BCBEC0]/50 transition-colors duration-500" />
-
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-px bg-[#BCBEC0]/20 group-hover:bg-[#BCBEC0]/50 transition-colors duration-400" />
       <div className="relative z-10 flex flex-col items-center">
         <motion.span
           className="text-2xl text-[#BCBEC0] mb-0.5 tabular-nums"
           initial={{opacity: 0}}
           animate={inView ? {opacity: 1} : {}}
-          transition={{delay: index * 0.06 + 0.28, duration: 0.5}}
+          transition={{delay: index * 0.055 + 0.25, duration: 0.45}}
         >
           {brand.count}
         </motion.span>
         <h3 className="text-[15px] font-display text-white mb-0.5 leading-tight">
           {brand.name}
         </h3>
-        <p className="text-[10px] text-[#BCBEC0]/50 tracking-wide">
+        <p className="text-[10px] text-[#BCBEC0]/55 tracking-wide font-medium">
           vehicles available
         </p>
       </div>
-
       <AnimatePresence>
         {isSelected && (
           <motion.div
@@ -863,11 +670,12 @@ function BrandCard({
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#BCBEC0]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#BCBEC0]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
     </motion.button>
   );
 }
 
+/* ─── ModelSelector ─── */
 function ModelSelector({
   brand,
   selectedModel,
@@ -883,12 +691,12 @@ function ModelSelector({
       initial={{opacity: 0, y: -8}}
       animate={{opacity: 1, y: 0}}
       exit={{opacity: 0, y: -8}}
-      transition={{duration: 0.3}}
+      transition={{duration: 0.28}}
       className="flex flex-wrap gap-2 justify-center py-5"
     >
       <button
         onClick={() => onSelectModel(null)}
-        className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-300 ${!selectedModel ? "bg-[#BCBEC0] text-black shadow-md" : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0] hover:bg-black/80"}`}
+        className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 ${!selectedModel ? "bg-[#BCBEC0] text-black shadow-md" : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0]/80 hover:bg-black/80"}`}
       >
         All Models
       </button>
@@ -896,7 +704,7 @@ function ModelSelector({
         <button
           key={m}
           onClick={() => onSelectModel(m)}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-300 ${selectedModel === m ? "bg-[#BCBEC0] text-black shadow-md" : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0] hover:bg-black/80"}`}
+          className={`px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 ${selectedModel === m ? "bg-[#BCBEC0] text-black shadow-md" : "bg-black border border-[#BCBEC0]/30 text-[#BCBEC0]/80 hover:bg-black/80"}`}
         >
           {m}
         </button>
@@ -905,6 +713,7 @@ function ModelSelector({
   );
 }
 
+/* ─── FilterBar ─── */
 function FilterBar({
   filters,
   setFilters,
@@ -933,7 +742,6 @@ function FilterBar({
   ];
   const fuels = ["Petrol", "Diesel", "Hybrid/Petrol", "Electric"];
   const transmissions = ["Automatic", "Manual", "CVT"];
-
   const activeCount = Object.values(filters).filter(Boolean).length;
 
   return (
@@ -949,14 +757,14 @@ function FilterBar({
                   bodyType: filters.bodyType === b ? "" : b,
                 })
               }
-              className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide transition-all duration-300 ${filters.bodyType === b ? "bg-[#BCBEC0] text-black" : "bg-transparent border border-[#BCBEC0]/25 text-[#BCBEC0]/70 hover:border-[#BCBEC0]/50 hover:text-[#BCBEC0]"}`}
+              className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide font-medium transition-all duration-200 ${filters.bodyType === b ? "bg-[#BCBEC0] text-black" : "bg-transparent border border-[#BCBEC0]/28 text-[#BCBEC0]/75 hover:border-[#BCBEC0]/55 hover:text-[#BCBEC0]"}`}
             >
               {b}
             </button>
           ))}
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide transition-all duration-300 border ${showAdvanced ? "border-[#BCBEC0]/50 text-[#BCBEC0]" : "border-[#BCBEC0]/25 text-[#BCBEC0]/50 hover:border-[#BCBEC0]/40"}`}
+            className={`px-3 py-1.5 rounded-full text-[11px] tracking-wide font-medium transition-all duration-200 border ${showAdvanced ? "border-[#BCBEC0]/55 text-[#BCBEC0]" : "border-[#BCBEC0]/28 text-[#BCBEC0]/60 hover:border-[#BCBEC0]/45"}`}
           >
             {showAdvanced ? "Fewer Filters" : "More Filters"}
             {activeCount > 0 && !showAdvanced && (
@@ -966,12 +774,11 @@ function FilterBar({
             )}
           </button>
         </div>
-
         <div className="flex items-center gap-4">
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="bg-transparent border border-[#BCBEC0]/20 rounded-lg px-3 py-1.5 text-[11px] text-[#BCBEC0]/70 focus:outline-none focus:border-[#BCBEC0]/40 cursor-pointer"
+            className="bg-transparent border border-[#BCBEC0]/22 rounded-lg px-3 py-1.5 text-[11px] text-[#BCBEC0]/75 focus:outline-none focus:border-[#BCBEC0]/45 cursor-pointer font-medium"
           >
             <option value="id-desc">Newest First</option>
             <option value="price-asc">Price: Low to High</option>
@@ -982,21 +789,20 @@ function FilterBar({
           {activeCount > 0 && (
             <button
               onClick={() => setFilters({})}
-              className="text-[11px] text-[#BCBEC0]/50 hover:text-[#BCBEC0] transition-colors underline underline-offset-2"
+              className="text-[11px] text-[#BCBEC0]/55 hover:text-[#BCBEC0] transition-colors underline underline-offset-2 font-medium"
             >
               Clear all
             </button>
           )}
         </div>
       </div>
-
       <AnimatePresence>
         {showAdvanced && (
           <motion.div
             initial={{height: 0, opacity: 0}}
             animate={{height: "auto", opacity: 1}}
             exit={{height: 0, opacity: 0}}
-            transition={{duration: 0.3, ease: EASE_OUT}}
+            transition={{duration: 0.28, ease: EASE_OUT}}
             className="overflow-hidden"
           >
             <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-3 pt-3 border-t border-[#BCBEC0]/10">
@@ -1008,9 +814,11 @@ function FilterBar({
                   onChange={(e) =>
                     setFilters({...filters, minPrice: e.target.value})
                   }
-                  className="w-full bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/40"
+                  className="w-full bg-black/50 border border-[#BCBEC0]/22 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0]/90 placeholder-[#BCBEC0]/35 focus:outline-none focus:border-[#BCBEC0]/45"
                 />
-                <span className="text-[#BCBEC0]/30 text-xs shrink-0">to</span>
+                <span className="text-[#BCBEC0]/40 text-xs shrink-0 font-medium">
+                  to
+                </span>
                 <input
                   type="number"
                   placeholder="Max price (KSh)"
@@ -1018,66 +826,46 @@ function FilterBar({
                   onChange={(e) =>
                     setFilters({...filters, maxPrice: e.target.value})
                   }
-                  className="w-full bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/40"
+                  className="w-full bg-black/50 border border-[#BCBEC0]/22 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0]/90 placeholder-[#BCBEC0]/35 focus:outline-none focus:border-[#BCBEC0]/45"
                 />
               </div>
-
-              <select
-                value={filters.bodyType || ""}
-                onChange={(e) =>
-                  setFilters({...filters, bodyType: e.target.value})
-                }
-                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40"
-              >
-                <option value="">Body Type</option>
-                {bodyTypes.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={filters.fuel || ""}
-                onChange={(e) => setFilters({...filters, fuel: e.target.value})}
-                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40"
-              >
-                <option value="">Fuel Type</option>
-                {fuels.map((f) => (
-                  <option key={f} value={f}>
-                    {f}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={filters.transmission || ""}
-                onChange={(e) =>
-                  setFilters({...filters, transmission: e.target.value})
-                }
-                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40"
-              >
-                <option value="">Transmission</option>
-                {transmissions.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
-
+              {[
+                {label: "Body Type", key: "bodyType", opts: bodyTypes},
+                {label: "Fuel Type", key: "fuel", opts: fuels},
+                {
+                  label: "Transmission",
+                  key: "transmission",
+                  opts: transmissions,
+                },
+              ].map(({label, key, opts}) => (
+                <select
+                  key={key}
+                  value={filters[key] || ""}
+                  onChange={(e) =>
+                    setFilters({...filters, [key]: e.target.value})
+                  }
+                  className="bg-black/50 border border-[#BCBEC0]/22 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0]/85 focus:outline-none focus:border-[#BCBEC0]/45 font-medium"
+                >
+                  <option value="">{label}</option>
+                  {opts.map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              ))}
               <select
                 value={filters.availability || ""}
                 onChange={(e) =>
                   setFilters({...filters, availability: e.target.value})
                 }
-                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/40"
+                className="bg-black/50 border border-[#BCBEC0]/22 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0]/85 focus:outline-none focus:border-[#BCBEC0]/45 font-medium"
               >
                 <option value="">Availability</option>
                 <option value="In Stock">In Stock</option>
                 <option value="Reserved">Reserved</option>
                 <option value="Sold">Sold</option>
               </select>
-
               <input
                 type="number"
                 placeholder="Min year"
@@ -1085,7 +873,7 @@ function FilterBar({
                 onChange={(e) =>
                   setFilters({...filters, minYear: e.target.value})
                 }
-                className="bg-black/50 border border-[#BCBEC0]/20 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0] placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/40"
+                className="bg-black/50 border border-[#BCBEC0]/22 rounded-lg px-3 py-2 text-[11px] text-[#BCBEC0]/90 placeholder-[#BCBEC0]/35 focus:outline-none focus:border-[#BCBEC0]/45"
               />
             </div>
           </motion.div>
@@ -1095,6 +883,7 @@ function FilterBar({
   );
 }
 
+/* ─── VehicleCard ─── */
 function VehicleCard({
   vehicle,
   onSave,
@@ -1109,34 +898,33 @@ function VehicleCard({
   const prefersReduced = usePrefersReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
   const inView = useInView(cardRef, {once: true, amount: 0.08});
-
   const availabilityStyles: Record<string, string> = {
-    "In Stock": "bg-white/10 text-white border border-white/18",
-    Reserved: "bg-amber-500/15 text-amber-300 border border-amber-500/25",
-    Sold: "bg-red-500/12 text-red-400 border border-red-500/20",
+    "In Stock": "bg-white/10 text-white/90 border border-white/18 font-medium",
+    Reserved:
+      "bg-amber-500/15 text-amber-300/90 border border-amber-500/25 font-medium",
+    Sold: "bg-red-500/12 text-red-400/90 border border-red-500/20 font-medium",
   };
-
   const whatsappUrl = `https://wa.me/254743155777?text=I'm interested in the ${vehicle.brand} ${vehicle.model}`;
 
   return (
     <motion.div
       ref={cardRef}
       layout
-      initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 24}}
+      initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 22}}
       animate={
         inView
           ? {opacity: 1, y: 0}
           : prefersReduced
             ? {opacity: 1}
-            : {opacity: 0, y: 24}
+            : {opacity: 0, y: 22}
       }
       exit={{opacity: 0, scale: 0.97}}
       transition={{
-        duration: 0.5,
-        delay: prefersReduced ? 0 : (index % 3) * 0.07,
+        duration: 0.45,
+        delay: prefersReduced ? 0 : (index % 3) * 0.065,
         ease: EASE_OUT_EXPO,
       }}
-      className="group relative bg-[#0a0a0a] rounded-2xl overflow-hidden flex flex-col border border-[#BCBEC0]/8 hover:border-[#BCBEC0]/20 transition-colors duration-500"
+      className="group relative bg-[#0a0a0a] rounded-2xl overflow-hidden flex flex-col border border-[#BCBEC0]/9 hover:border-[#BCBEC0]/22 transition-colors duration-400"
       style={{boxShadow: "0 2px 16px rgba(0,0,0,0.45)"}}
       whileHover={
         prefersReduced ? {} : {y: -4, boxShadow: "0 14px 44px rgba(0,0,0,0.7)"}
@@ -1149,27 +937,25 @@ function VehicleCard({
             alt={`${vehicle.brand} ${vehicle.model}`}
             className="w-full h-full object-cover"
             whileHover={prefersReduced ? {} : {scale: 1.05}}
-            transition={{duration: 0.65, ease: EASE_OUT}}
+            transition={{duration: 0.6, ease: EASE_OUT}}
           />
         ) : (
           <div className="w-full h-full bg-[#111] flex items-center justify-center">
-            <span className="text-[#BCBEC0]/20 text-xs tracking-widest uppercase">
+            <span className="text-[#BCBEC0]/25 text-xs tracking-widest uppercase font-medium">
               No Image
             </span>
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#BCBEC0]/20 to-transparent" />
-
         <button
           onClick={onSave}
-          className="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/55 backdrop-blur-sm flex items-center justify-center text-[13px] hover:bg-white/85 hover:text-black transition-all duration-300"
+          className="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/55 backdrop-blur-sm flex items-center justify-center text-[13px] hover:bg-white/85 hover:text-black transition-all duration-200"
           aria-label={saved ? "Remove from saved" : "Save vehicle"}
         >
           {saved ? "♥" : "♡"}
         </button>
-
-        <span className="absolute bottom-3 left-4 text-[10px] text-[#BCBEC0]/45 tracking-widest">
+        <span className="absolute bottom-3 left-4 text-[10px] text-[#BCBEC0]/55 tracking-widest font-semibold">
           {vehicle.year}
         </span>
       </div>
@@ -1177,7 +963,7 @@ function VehicleCard({
       <div className="p-5 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-3">
           <div className="min-w-0">
-            <p className="text-[10px] tracking-[0.2em] text-[#BCBEC0]/40 uppercase mb-0.5">
+            <p className="text-[10px] tracking-[0.22em] text-[#BCBEC0]/50 uppercase mb-0.5 font-semibold">
               {vehicle.brand}
             </p>
             <h3 className="text-base font-display text-white leading-tight truncate">
@@ -1185,35 +971,30 @@ function VehicleCard({
             </h3>
           </div>
           <span
-            className={`text-[10px] px-2 py-0.5 rounded-full shrink-0 mt-0.5 ${availabilityStyles[vehicle.availability] ?? "bg-[#BCBEC0]/15 text-[#BCBEC0] border border-[#BCBEC0]/20"}`}
+            className={`text-[10px] px-2 py-0.5 rounded-full shrink-0 mt-0.5 ${availabilityStyles[vehicle.availability] ?? "bg-[#BCBEC0]/15 text-[#BCBEC0]/80 border border-[#BCBEC0]/20 font-medium"}`}
           >
             {vehicle.availability}
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px] text-[#BCBEC0]/45 mb-5">
-          <span className="flex items-center gap-1.5">
-            <span className="w-1 h-1 rounded-full bg-[#BCBEC0]/35 shrink-0" />
-            {vehicle.mileage === 0
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[11px] text-[#BCBEC0]/55 mb-5 font-medium">
+          {[
+            vehicle.mileage === 0
               ? "0 km"
-              : `${vehicle.mileage.toLocaleString()} km`}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-1 h-1 rounded-full bg-[#BCBEC0]/35 shrink-0" />
-            {vehicle.transmission}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-1 h-1 rounded-full bg-[#BCBEC0]/35 shrink-0" />
-            {vehicle.fuel}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-1 h-1 rounded-full bg-[#BCBEC0]/35 shrink-0" />
-            {vehicle.bodyType}
-          </span>
+              : `${vehicle.mileage.toLocaleString()} km`,
+            vehicle.transmission,
+            vehicle.fuel,
+            vehicle.bodyType,
+          ].map((s) => (
+            <span key={s} className="flex items-center gap-1.5">
+              <span className="w-1 h-1 rounded-full bg-[#BCBEC0]/38 shrink-0" />
+              {s}
+            </span>
+          ))}
         </div>
 
         <div className="mt-auto pt-3.5 border-t border-[#BCBEC0]/12">
-          <p className="text-xl text-[#BCBEC0] mb-3.5 tabular-nums tracking-tight">
+          <p className="text-xl text-[#BCBEC0] mb-3.5 tabular-nums tracking-tight font-semibold">
             KSh {vehicle.price.toLocaleString()}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -1240,6 +1021,7 @@ function VehicleCard({
   );
 }
 
+/* ─── FinanceCTA ─── */
 function FinanceCTA() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, {once: true, amount: 0.25});
@@ -1284,18 +1066,18 @@ function FinanceCTA() {
       />
       <div className="relative max-w-[1440px] mx-auto">
         <motion.div
-          initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 24}}
+          initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 22}}
           animate={inView ? {opacity: 1, y: 0} : {}}
-          transition={{duration: 0.7, ease: EASE_OUT_EXPO}}
+          transition={{duration: 0.65, ease: EASE_OUT_EXPO}}
           className="text-center mb-16"
         >
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4">
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0]/80 uppercase mb-4 font-semibold">
             Financing
           </p>
           <h2 className="font-display text-4xl md:text-6xl text-white leading-[0.9] mb-5">
             Own Your Dream Vehicle
           </h2>
-          <p className="text-sm text-[#BCBEC0]/55 max-w-md mx-auto mb-10 leading-relaxed">
+          <p className="text-sm text-[#BCBEC0]/65 max-w-md mx-auto mb-10 leading-relaxed font-medium">
             Tailored financing solutions for every budget. Get pre-approved in
             minutes, drive away within 48 hours.
           </p>
@@ -1320,11 +1102,11 @@ function FinanceCTA() {
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 16}}
+              initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 14}}
               animate={inView ? {opacity: 1, y: 0} : {}}
               transition={{
-                duration: 0.5,
-                delay: 0.3 + i * 0.1,
+                duration: 0.45,
+                delay: 0.28 + i * 0.09,
                 ease: EASE_OUT_EXPO,
               }}
               className="bg-black/80 backdrop-blur-sm px-8 py-8 text-center"
@@ -1332,17 +1114,17 @@ function FinanceCTA() {
               <p className="text-3xl font-display text-[#BCBEC0] mb-1 tabular-nums">
                 <AnimatedCounter target={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-xs text-[#BCBEC0]/50 tracking-wide">
+              <p className="text-xs text-[#BCBEC0]/60 tracking-wide font-medium">
                 {stat.label}
               </p>
             </motion.div>
           ))}
         </div>
         <motion.p
-          className="text-center text-[11px] text-[#BCBEC0]/30 mt-8"
+          className="text-center text-[11px] text-[#BCBEC0]/40 mt-8 font-medium"
           initial={{opacity: 0}}
           animate={inView ? {opacity: 1} : {}}
-          transition={{delay: 0.7}}
+          transition={{delay: 0.65}}
         >
           Financing available through KCB, Equity Bank, NCBA, Co-op Bank and
           more
@@ -1352,47 +1134,44 @@ function FinanceCTA() {
   );
 }
 
-/* ─── TRUST SECTION (font updated) ─── */
+/* ─── TrustSection — unchanged visual logic, improved text contrast ─── */
 const SP_SLOW = {stiffness: 35, damping: 16, mass: 1};
 const SP_SMOOTH_TS = {stiffness: 55, damping: 20, mass: 1};
 const SP_PRECISE_TS = {stiffness: 90, damping: 24, mass: 1};
 const TOTAL_SCREENS = 12;
 
-function trustPointDefs() {
-  return [
-    {
-      title: "150-Point Inspection",
-      desc: "Every vehicle passes our rigorous multi-point inspection before listing.",
-      icon: "inspection",
-    },
-    {
-      title: "Verified Mileage",
-      desc: "Odometer readings independently verified. No hidden surprises.",
-      icon: "gauge",
-    },
-    {
-      title: "Full History Reports",
-      desc: "Complete ownership, accident, and service history for every vehicle.",
-      icon: "document",
-    },
-    {
-      title: "Warranty Options",
-      desc: "Extended warranty packages available on all certified vehicles.",
-      icon: "shield",
-    },
-    {
-      title: "Flexible Financing",
-      desc: "Partnerships with Kenya's leading banks for competitive rates.",
-      icon: "finance",
-    },
-    {
-      title: "Nationwide Delivery",
-      desc: "Secure delivery to Nairobi, Mombasa, Kisumu and all major cities.",
-      icon: "delivery",
-    },
-  ];
-}
-const TRUST_POINTS = trustPointDefs();
+const TRUST_POINTS = [
+  {
+    title: "150-Point Inspection",
+    desc: "Every vehicle passes our rigorous multi-point inspection before listing.",
+    icon: "inspection",
+  },
+  {
+    title: "Verified Mileage",
+    desc: "Odometer readings independently verified. No hidden surprises.",
+    icon: "gauge",
+  },
+  {
+    title: "Full History Reports",
+    desc: "Complete ownership, accident, and service history for every vehicle.",
+    icon: "document",
+  },
+  {
+    title: "Warranty Options",
+    desc: "Extended warranty packages available on all certified vehicles.",
+    icon: "shield",
+  },
+  {
+    title: "Flexible Financing",
+    desc: "Partnerships with Kenya's leading banks for competitive rates.",
+    icon: "finance",
+  },
+  {
+    title: "Nationwide Delivery",
+    desc: "Secure delivery to Nairobi, Mombasa, Kisumu and all major cities.",
+    icon: "delivery",
+  },
+];
 const NAV_LABELS = [
   "Inspection",
   "Mileage",
@@ -1458,34 +1237,6 @@ function AutomotiveIcon({type, className}: {type: string; className?: string}) {
             r="20"
             className="stroke-[#BCBEC0]/60 fill-none stroke-[0.8]"
           />
-          <line
-            x1="100"
-            y1="88"
-            x2="100"
-            y2="100"
-            className="stroke-[#BCBEC0]/60 stroke-[0.8]"
-          />
-          <line
-            x1="100"
-            y1="124"
-            x2="100"
-            y2="136"
-            className="stroke-[#BCBEC0]/60 stroke-[0.8]"
-          />
-          <line
-            x1="76"
-            y1="112"
-            x2="88"
-            y2="112"
-            className="stroke-[#BCBEC0]/60 stroke-[0.8]"
-          />
-          <line
-            x1="112"
-            y1="112"
-            x2="124"
-            y2="112"
-            className="stroke-[#BCBEC0]/60 stroke-[0.8]"
-          />
         </svg>
       );
     case "gauge":
@@ -1495,24 +1246,6 @@ function AutomotiveIcon({type, className}: {type: string; className?: string}) {
             d="M 40 140 A 70 70 0 1 1 160 140"
             className="stroke-[#BCBEC0]/30 fill-none stroke-[1]"
           />
-          {Array.from({length: 11}).map((_, i) => {
-            const a = -210 + i * 24;
-            const r = (Math.PI / 180) * a;
-            const x1 = +(100 + 60 * Math.cos(r)).toFixed(2);
-            const y1 = +(140 + 60 * Math.sin(r)).toFixed(2);
-            const x2 = +(100 + 52 * Math.cos(r)).toFixed(2);
-            const y2 = +(140 + 52 * Math.sin(r)).toFixed(2);
-            return (
-              <line
-                key={i}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                className="stroke-[#BCBEC0]/40 stroke-[0.8]"
-              />
-            );
-          })}
           <line
             x1="100"
             y1="140"
@@ -1533,22 +1266,6 @@ function AutomotiveIcon({type, className}: {type: string; className?: string}) {
     case "document":
       return (
         <svg viewBox="0 0 200 200" className={className} aria-hidden>
-          <rect
-            x="65"
-            y="52"
-            width="80"
-            height="100"
-            rx="3"
-            className="stroke-[#BCBEC0]/15 fill-none stroke-[0.8]"
-          />
-          <rect
-            x="60"
-            y="48"
-            width="80"
-            height="100"
-            rx="3"
-            className="stroke-[#BCBEC0]/20 fill-none stroke-[0.8]"
-          />
           <rect
             x="55"
             y="44"
@@ -1578,20 +1295,6 @@ function AutomotiveIcon({type, className}: {type: string; className?: string}) {
             y2="92"
             className="stroke-[#BCBEC0]/30 stroke-[0.8]"
           />
-          <line
-            x1="67"
-            y1="104"
-            x2="120"
-            y2="104"
-            className="stroke-[#BCBEC0]/30 stroke-[0.8]"
-          />
-          <line
-            x1="67"
-            y1="116"
-            x2="105"
-            y2="116"
-            className="stroke-[#BCBEC0]/30 stroke-[0.8]"
-          />
           <path
             d="M80 128 L88 136 L108 116"
             className="stroke-[#BCBEC0]/60 fill-none stroke-[1.5]"
@@ -1606,10 +1309,6 @@ function AutomotiveIcon({type, className}: {type: string; className?: string}) {
           <path
             d="M100 30 L160 55 L160 105 C160 145 130 170 100 180 C70 170 40 145 40 105 L40 55 Z"
             className="stroke-[#BCBEC0]/40 fill-none stroke-[1]"
-          />
-          <path
-            d="M100 50 L145 68 L145 108 C145 136 124 155 100 162 C76 155 55 136 55 108 L55 68 Z"
-            className="stroke-[#BCBEC0]/20 fill-none stroke-[0.8]"
           />
           <path
             d="M78 105 L92 119 L124 90"
@@ -1630,54 +1329,28 @@ function AutomotiveIcon({type, className}: {type: string; className?: string}) {
             y="100"
             width="18"
             height="60"
-            className="stroke-[#BCBEC0]/30 fill-[#BCBEC0]/10 stroke-[0.8]"
+            className="stroke-[#BCBEC0]/40 fill-none stroke-[0.8]"
           />
           <rect
-            x="68"
+            x="70"
             y="80"
             width="18"
             height="80"
-            className="stroke-[#BCBEC0]/40 fill-[#BCBEC0]/15 stroke-[0.8]"
+            className="stroke-[#BCBEC0]/40 fill-none stroke-[0.8]"
           />
           <rect
-            x="96"
+            x="100"
             y="60"
             width="18"
             height="100"
-            className="stroke-[#BCBEC0]/50 fill-[#BCBEC0]/20 stroke-[0.8]"
+            className="stroke-[#BCBEC0]/50 fill-none stroke-[1]"
           />
           <rect
-            x="124"
+            x="130"
             y="40"
             width="18"
             height="120"
-            className="stroke-[#BCBEC0]/60 fill-[#BCBEC0]/25 stroke-[0.8]"
-          />
-          <rect
-            x="152"
-            y="55"
-            width="18"
-            height="105"
-            className="stroke-[#BCBEC0]/45 fill-[#BCBEC0]/18 stroke-[0.8]"
-          />
-          <polyline
-            points="49,100 77,80 105,60 133,40 161,55"
-            className="stroke-[#BCBEC0]/60 fill-none stroke-[1.2]"
-            strokeLinejoin="round"
-          />
-          <line
-            x1="30"
-            y1="160"
-            x2="175"
-            y2="160"
-            className="stroke-[#BCBEC0]/40 stroke-[1]"
-          />
-          <line
-            x1="30"
-            y1="30"
-            x2="30"
-            y2="160"
-            className="stroke-[#BCBEC0]/40 stroke-[1]"
+            className="stroke-[#BCBEC0]/50 fill-none stroke-[1]"
           />
         </svg>
       );
@@ -1685,42 +1358,25 @@ function AutomotiveIcon({type, className}: {type: string; className?: string}) {
       return (
         <svg viewBox="0 0 200 200" className={className} aria-hidden>
           <path
-            d="M85 30 L110 28 L128 40 L140 55 L145 75 L150 95 L155 115 L148 135 L138 155 L120 165 L105 172 L90 168 L72 158 L58 140 L50 118 L48 95 L52 72 L62 52 L75 38 Z"
-            className="stroke-[#BCBEC0]/30 fill-none stroke-[1]"
+            d="M30 110 L30 80 L100 50 L170 80 L170 110"
+            className="stroke-[#BCBEC0]/40 fill-none stroke-[1]"
           />
-          <line
-            x1="100"
-            y1="55"
-            x2="100"
-            y2="155"
-            className="stroke-[#BCBEC0]/25 stroke-[0.8]"
-            strokeDasharray="4 4"
+          <path
+            d="M30 110 L170 110 L170 150 L30 150 Z"
+            className="stroke-[#BCBEC0]/40 fill-none stroke-[1]"
           />
-          <line
-            x1="62"
-            y1="100"
-            x2="148"
-            y2="105"
-            className="stroke-[#BCBEC0]/25 stroke-[0.8]"
-            strokeDasharray="4 4"
+          <circle
+            cx="60"
+            cy="155"
+            r="12"
+            className="stroke-[#BCBEC0]/50 fill-none stroke-[1.2]"
           />
-          {[
-            [100, 105],
-            [118, 148],
-            [72, 88],
-            [95, 60],
-            [130, 90],
-          ].map(([cx, cy], i) => (
-            <g key={i}>
-              <circle
-                cx={cx}
-                cy={cy}
-                r={i === 0 ? 5 : 3}
-                className="stroke-[#BCBEC0]/60 fill-none stroke-[1]"
-              />
-              <circle cx={cx} cy={cy} r={1.5} className="fill-[#BCBEC0]/50" />
-            </g>
-          ))}
+          <circle
+            cx="140"
+            cy="155"
+            r="12"
+            className="stroke-[#BCBEC0]/50 fill-none stroke-[1.2]"
+          />
         </svg>
       );
     default:
@@ -1826,12 +1482,12 @@ function VerticalNavRail({
         return (
           <div key={label} className="relative flex items-center gap-2">
             <span
-              className={`text-[9px] tracking-[0.15em] uppercase transition-all duration-500 ${isActive ? "text-black opacity-100" : isPast ? "text-[#BCBEC0]/60 opacity-70" : "text-[#BCBEC0]/30 opacity-50"}`}
+              className={`text-[9px] tracking-[0.15em] uppercase transition-all duration-400 ${isActive ? "text-black opacity-100 font-semibold" : isPast ? "text-[#BCBEC0]/65 opacity-75 font-medium" : "text-[#BCBEC0]/35 opacity-50"}`}
             >
               {String(i + 1).padStart(2, "0")} {label}
             </span>
             <div
-              className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${isActive ? "bg-[#BCBEC0] scale-150" : isPast ? "bg-[#BCBEC0]/50" : "bg-[#BCBEC0]/30"}`}
+              className={`w-1.5 h-1.5 rounded-full transition-all duration-400 ${isActive ? "bg-[#BCBEC0] scale-150" : isPast ? "bg-[#BCBEC0]/55" : "bg-[#BCBEC0]/28"}`}
             />
           </div>
         );
@@ -1886,7 +1542,7 @@ function TrustCardPanel({
             </div>
             <div className="flex-1 p-10 md:p-14 flex flex-col justify-center">
               <div className="flex items-center gap-3 mb-8">
-                <span className="text-[10px] tracking-[0.3em] text-[#BCBEC0] uppercase">
+                <span className="text-[10px] tracking-[0.3em] text-[#888] uppercase font-semibold">
                   {String(index + 1).padStart(2, "0")} /{" "}
                   {String(total).padStart(2, "0")}
                 </span>
@@ -1900,97 +1556,20 @@ function TrustCardPanel({
               <h3 className="font-display text-3xl md:text-4xl text-black leading-tight mb-5">
                 {point.title}
               </h3>
-              <p className="text-base text-[#BCBEC0]/65 leading-relaxed max-w-sm">
+              <p className="text-base text-[#555] leading-relaxed max-w-sm font-medium">
                 {point.desc}
               </p>
               <div className="flex gap-2 mt-10">
                 {Array.from({length: total}).map((_, j) => (
                   <div
                     key={j}
-                    className={`h-0.5 flex-1 rounded-full transition-colors duration-700 ${j <= index ? "bg-[#BCBEC0]" : "bg-[#BCBEC0]/30"}`}
+                    className={`h-0.5 flex-1 rounded-full transition-colors duration-600 ${j <= index ? "bg-[#BCBEC0]" : "bg-[#BCBEC0]/30"}`}
                   />
                 ))}
               </div>
             </div>
           </div>
           <div className="h-px bg-gradient-to-r from-transparent via-[#BCBEC0]/20 to-transparent" />
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function FinalMosaicTS({progress}: {progress: MotionValue<number>}) {
-  const rawOp = useTransform(progress, [0.82, 0.9, 0.96, 1.0], [0, 1, 1, 0]);
-  const rawScale = useTransform(
-    progress,
-    [0.82, 0.9, 0.96, 1.0],
-    [0.96, 1, 1, 0.97],
-  );
-  const opacity = useSpring(rawOp, SP_SMOOTH_TS);
-  const scale = useSpring(rawScale, SP_PRECISE_TS);
-  return (
-    <motion.div
-      className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 overflow-y-auto pointer-events-none"
-      style={{opacity, scale}}
-    >
-      <div className="w-full max-w-[1200px] mx-auto">
-        <div className="text-center mb-10">
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4">
-            Why Al Ahsan
-          </p>
-          <h2 className="font-display text-5xl md:text-7xl text-black leading-[0.9] mb-4">
-            Trusted By Thousands
-            <br />
-            <span className="text-[#BCBEC0]">Across Kenya</span>
-          </h2>
-          <div className="flex items-center justify-center gap-4 mt-6">
-            <div className="w-16 h-px bg-[#BCBEC0]/40" />
-            <p className="text-sm text-[#BCBEC0]/60">
-              Over a decade of serving Kenya's most discerning vehicle buyers.
-            </p>
-            <div className="w-16 h-px bg-[#BCBEC0]/40" />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#BCBEC0]/30 rounded-2xl overflow-hidden mb-8">
-          {[
-            {value: 12, suffix: "+", label: "Years in Business"},
-            {value: 3200, suffix: "+", label: "Vehicles Sold"},
-            {value: 98, suffix: "%", label: "Customer Satisfaction"},
-            {value: 6, suffix: "", label: "Financing Partners"},
-          ].map((m) => (
-            <div key={m.label} className="bg-white/90 px-6 py-8 text-center">
-              <p className="text-3xl md:text-4xl font-display text-black mb-1 tabular-nums leading-none">
-                {m.value.toLocaleString()}
-                {m.suffix}
-              </p>
-              <p className="text-[11px] text-[#BCBEC0]/55 tracking-wide uppercase mt-1">
-                {m.label}
-              </p>
-            </div>
-          ))}
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {TRUST_POINTS.map((item, i) => (
-            <div
-              key={i}
-              className="bg-white/70 backdrop-blur-sm rounded-xl px-5 py-5 border border-[#BCBEC0]/40 flex items-start gap-4"
-              style={{boxShadow: "0 2px 12px rgba(0,0,0,0.06)"}}
-            >
-              <AutomotiveIcon
-                type={item.icon}
-                className="w-12 h-12 flex-shrink-0 opacity-80"
-              />
-              <div>
-                <h4 className="text-sm font-display text-black mb-1 leading-tight">
-                  {item.title}
-                </h4>
-                <p className="text-xs text-[#BCBEC0]/60 leading-relaxed">
-                  {item.desc}
-                </p>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </motion.div>
@@ -2009,16 +1588,16 @@ function SectionHeader({progress}: {progress: MotionValue<number>}) {
       className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none px-6"
       style={{opacity, scale, y, transformOrigin: "top center"}}
     >
-      <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4">
+      <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-semibold">
         Why Al Ahsan
       </p>
       <h2
         className="font-display text-black leading-[0.9] mb-5"
-        style={{fontSize: "clamp(3.5rem, 10vw, 8rem)"}}
+        style={{fontSize: "clamp(3.5rem,10vw,8rem)"}}
       >
         Trust is earned
       </h2>
-      <p className="text-base text-[#BCBEC0]/60 max-w-md mx-auto leading-relaxed">
+      <p className="text-base text-[#555] max-w-md mx-auto leading-relaxed font-medium">
         Over a decade of serving Kenya's most discerning vehicle buyers.
       </p>
       <div className="mt-8 flex items-center justify-center gap-3">
@@ -2046,7 +1625,7 @@ function ScrollHintBar({progress}: {progress: MotionValue<number>}) {
         style={{opacity: hintOp}}
         aria-hidden
       >
-        <p className="text-[9px] tracking-[0.35em] text-[#BCBEC0]/40 uppercase">
+        <p className="text-[9px] tracking-[0.35em] text-[#BCBEC0]/45 uppercase font-medium">
           Scroll to explore
         </p>
         <motion.div
@@ -2056,6 +1635,83 @@ function ScrollHintBar({progress}: {progress: MotionValue<number>}) {
         />
       </motion.div>
     </>
+  );
+}
+
+function FinalMosaicTS({progress}: {progress: MotionValue<number>}) {
+  const rawOp = useTransform(progress, [0.82, 0.9, 0.96, 1.0], [0, 1, 1, 0]);
+  const rawScale = useTransform(
+    progress,
+    [0.82, 0.9, 0.96, 1.0],
+    [0.96, 1, 1, 0.97],
+  );
+  const opacity = useSpring(rawOp, SP_SMOOTH_TS);
+  const scale = useSpring(rawScale, SP_PRECISE_TS);
+  return (
+    <motion.div
+      className="absolute inset-0 flex flex-col items-center justify-center px-6 md:px-16 overflow-y-auto pointer-events-none"
+      style={{opacity, scale}}
+    >
+      <div className="w-full max-w-[1200px] mx-auto">
+        <div className="text-center mb-10">
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-semibold">
+            Why Al Ahsan
+          </p>
+          <h2 className="font-display text-5xl md:text-7xl text-black leading-[0.9] mb-4">
+            Trusted By Thousands
+            <br />
+            <span className="text-[#BCBEC0]">Across Kenya</span>
+          </h2>
+          <div className="flex items-center justify-center gap-4 mt-6 mb-4">
+            <div className="w-16 h-px bg-[#BCBEC0]/40" />
+            <p className="text-sm text-[#555] font-medium">
+              Over a decade of serving Kenya's most discerning vehicle buyers.
+            </p>
+            <div className="w-16 h-px bg-[#BCBEC0]/40" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#BCBEC0]/30 rounded-2xl overflow-hidden mb-8">
+          {[
+            {value: 12, suffix: "+", label: "Years in Business"},
+            {value: 3200, suffix: "+", label: "Vehicles Sold"},
+            {value: 98, suffix: "%", label: "Customer Satisfaction"},
+            {value: 6, suffix: "", label: "Financing Partners"},
+          ].map((m) => (
+            <div key={m.label} className="bg-white/90 px-6 py-8 text-center">
+              <p className="text-3xl md:text-4xl font-display text-black mb-1 tabular-nums leading-none">
+                {m.value.toLocaleString()}
+                {m.suffix}
+              </p>
+              <p className="text-[11px] text-[#666] tracking-wide uppercase mt-1 font-semibold">
+                {m.label}
+              </p>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {TRUST_POINTS.map((item, i) => (
+            <div
+              key={i}
+              className="bg-white/70 backdrop-blur-sm rounded-xl px-5 py-5 border border-[#BCBEC0]/40 flex items-start gap-4"
+              style={{boxShadow: "0 2px 12px rgba(0,0,0,0.06)"}}
+            >
+              <AutomotiveIcon
+                type={item.icon}
+                className="w-12 h-12 flex-shrink-0 opacity-80"
+              />
+              <div>
+                <h4 className="text-sm font-display text-black mb-1 leading-tight">
+                  {item.title}
+                </h4>
+                <p className="text-xs text-[#555] leading-relaxed font-medium">
+                  {item.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -2083,11 +1739,7 @@ export function TrustSection() {
       setActiveCard(active);
     });
   }, [progress]);
-  const bgColor = useTransform(
-    progress,
-    [0, 0.25, 0.5, 0.75, 0.92, 1.0],
-    ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"],
-  );
+  const bgColor = useTransform(progress, [0, 1], ["#FFFFFF", "#FFFFFF"]);
   return (
     <div
       ref={wrapperRef}
@@ -2125,13 +1777,13 @@ function StaticTrustSection() {
     <section ref={ref} className="bg-white py-24 px-6 md:px-16">
       <div className="max-w-[1440px] mx-auto">
         <div className="text-center mb-16">
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4">
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4 font-semibold">
             Why Al Ahsan
           </p>
           <h2 className="font-display text-4xl md:text-6xl text-black leading-[0.9] mb-4">
             Trust is earned
           </h2>
-          <p className="text-sm text-[#BCBEC0]/70 max-w-md mx-auto">
+          <p className="text-sm text-[#555] max-w-md mx-auto font-medium">
             Over a decade of serving Kenya's most discerning vehicle buyers.
           </p>
         </div>
@@ -2149,7 +1801,7 @@ function StaticTrustSection() {
                 <h4 className="text-sm font-display text-black mb-1">
                   {item.title}
                 </h4>
-                <p className="text-xs text-[#BCBEC0]/65 leading-relaxed">
+                <p className="text-xs text-[#555] leading-relaxed font-medium">
                   {item.desc}
                 </p>
               </div>
@@ -2161,6 +1813,7 @@ function StaticTrustSection() {
   );
 }
 
+/* ─── TestimonialsSection ─── */
 function TestimonialsSection() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, {once: true, amount: 0.15});
@@ -2168,15 +1821,15 @@ function TestimonialsSection() {
   const testimonials = [
     {
       quote:
-        "The vehicle exceeded every expectation. The handover was seamless , from first inquiry to driving away took less than two days.",
-      author: "Khalid A.",
-      role: "Business Owner",
-      location: "Nairobi",
+        "Al Ahsan found exactly the vehicle I needed within my budget. The inspection report gave me complete confidence.",
+      author: "James K.",
+      role: "Engineer",
+      location: "Westlands, Nairobi",
       vehicle: "Toyota Land Cruiser Prado",
     },
     {
       quote:
-        "Al Ahsan made financing straightforward. I was driving my dream car within the week. The team is transparent , no pressure, no hidden costs.",
+        "Al Ahsan made financing straightforward. I was driving my dream car within the week. The team is transparent — no pressure, no hidden costs.",
       author: "Layla M.",
       role: "Entrepreneur",
       location: "Mombasa",
@@ -2195,12 +1848,12 @@ function TestimonialsSection() {
     <section ref={ref} className="bg-black py-24 px-6 md:px-16">
       <div className="max-w-[1440px] mx-auto">
         <motion.div
-          initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 20}}
+          initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 18}}
           animate={inView ? {opacity: 1, y: 0} : {}}
           transition={{duration: 0.6, ease: EASE_OUT_EXPO}}
           className="text-center mb-16"
         >
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0] uppercase mb-4">
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0]/80 uppercase mb-4 font-semibold">
             Client Stories
           </p>
           <h2 className="font-display text-4xl md:text-6xl text-white leading-[0.9]">
@@ -2211,11 +1864,11 @@ function TestimonialsSection() {
           {testimonials.map((t, i) => (
             <motion.blockquote
               key={i}
-              initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 20}}
+              initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 18}}
               animate={inView ? {opacity: 1, y: 0} : {}}
               transition={{
-                delay: 0.15 + i * 0.12,
-                duration: 0.6,
+                delay: 0.14 + i * 0.11,
+                duration: 0.55,
                 ease: EASE_OUT_EXPO,
               }}
               className="group relative bg-black rounded-2xl p-8 border border-[#BCBEC0]/20 flex flex-col overflow-hidden"
@@ -2238,27 +1891,27 @@ function TestimonialsSection() {
               >
                 "
               </span>
-              <p className="relative z-10 text-sm text-[#BCBEC0]/75 leading-relaxed mb-6 flex-1 group-hover:text-black/80 transition-colors duration-500">
+              <p className="relative z-10 text-sm text-[#BCBEC0]/80 leading-relaxed mb-6 flex-1 group-hover:text-black/80 transition-colors duration-500 font-medium">
                 {t.quote}
               </p>
               <div className="relative z-10 h-px bg-[#BCBEC0]/20 mb-5 group-hover:bg-black/10 transition-colors duration-500" />
               <footer className="relative z-10 flex items-end justify-between">
                 <div>
-                  <p className="text-sm font-medium mb-0.5 text-white group-hover:text-black transition-colors duration-500">
+                  <p className="text-sm font-semibold mb-0.5 text-white group-hover:text-black transition-colors duration-500">
                     {t.author}
                   </p>
-                  <p className="text-xs text-[#BCBEC0]/45 group-hover:text-[#BCBEC0]/70 transition-colors duration-500">
+                  <p className="text-xs text-[#BCBEC0]/55 group-hover:text-[#666] transition-colors duration-500 font-medium">
                     {t.role}
                   </p>
-                  <p className="text-[10px] text-[#BCBEC0]/30 mt-0.5 group-hover:text-[#BCBEC0]/50 transition-colors duration-500">
+                  <p className="text-[10px] text-[#BCBEC0]/38 mt-0.5 group-hover:text-[#888] transition-colors duration-500 font-medium">
                     {t.location}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-[10px] uppercase tracking-wide text-[#BCBEC0]/60 group-hover:text-black transition-colors duration-500">
+                  <p className="text-[10px] uppercase tracking-wide text-[#BCBEC0]/65 group-hover:text-black transition-colors duration-500 font-semibold">
                     Purchased
                   </p>
-                  <p className="text-xs text-[#BCBEC0]/50 mt-0.5 group-hover:text-[#BCBEC0]/70 transition-colors duration-500">
+                  <p className="text-xs text-[#BCBEC0]/55 mt-0.5 group-hover:text-[#555] transition-colors duration-500 font-medium">
                     {t.vehicle}
                   </p>
                 </div>
@@ -2271,32 +1924,52 @@ function TestimonialsSection() {
   );
 }
 
-function sortVehicles(vehicles: typeof allVehicles, order: string) {
-  const sorted = [...vehicles];
-  switch (order) {
-    case "price-asc":
-      return sorted.sort((a, b) => a.price - b.price);
-    case "price-desc":
-      return sorted.sort((a, b) => b.price - a.price);
-    case "year-desc":
-      return sorted.sort((a, b) => b.year - a.year);
-    case "mileage-asc":
-      return sorted.sort((a, b) => a.mileage - b.mileage);
-    case "id-desc":
-    default:
-      return sorted.sort((a, b) => b.id - a.id);
-  }
-}
-
+/* ─── InventoryPage ─── */
 export default function InventoryPage() {
-  const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
-  const [selectedModel, setSelectedModel] = useState<string | null>(null);
-  const [filters, setFilters] = useState<any>({});
+  const searchParams = useSearchParams();
+  const prefersReduced = usePrefersReducedMotion();
+  const inventoryRef = useRef<HTMLDivElement>(null);
+
+  // ── Initialise state from URL params (set by ModelsPreviewSection) ──────────
+  // On first render we read URL params once. If any are present we treat that as
+  // an incoming search from the homepage and immediately show the inventory grid.
+  const initState = useMemo(() => {
+    if (typeof window === "undefined")
+      return {brand: null, model: null, filters: {}};
+    return paramsToInventoryState(searchParams);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(
+    initState.brand,
+  );
+  const [selectedModel, setSelectedModel] = useState<string | null>(
+    initState.model,
+  );
+  const [filters, setFilters] = useState<Record<string, string>>(
+    initState.filters,
+  );
   const [savedVehicles, setSavedVehicles] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("id-desc");
-  const prefersReduced = usePrefersReducedMotion();
-  const inventoryRef = useRef<HTMLDivElement>(null);
+
+  // ── Auto-scroll to inventory when arriving via search params ─────────────────
+  const didAutoScroll = useRef(false);
+  useEffect(() => {
+    const hasIncoming = !!(
+      initState.brand || Object.keys(initState.filters).length
+    );
+    if (hasIncoming && !didAutoScroll.current) {
+      didAutoScroll.current = true;
+      // Slight delay to allow layout paint
+      const t = setTimeout(() => {
+        inventoryRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 200);
+      return () => clearTimeout(t);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const scrollToInventory = useCallback(() => {
     inventoryRef.current?.scrollIntoView({behavior: "smooth", block: "start"});
@@ -2330,7 +2003,11 @@ export default function InventoryPage() {
     return sortVehicles(list, sortOrder);
   }, [selectedBrand, selectedModel, filters, searchQuery, sortOrder]);
 
-  const showInventory = selectedBrand !== null || searchQuery.trim().length > 0;
+  // Show grid when a brand is selected, search is active, or filters came in via URL
+  const showInventory =
+    selectedBrand !== null ||
+    searchQuery.trim().length > 0 ||
+    Object.keys(filters).length > 0;
 
   const handleBrandClick = (brand: string) => {
     setSelectedBrand((prev) => {
@@ -2356,29 +2033,62 @@ export default function InventoryPage() {
     setSortOrder("id-desc");
   };
 
+  /* ── Active filter summary pill (shown when URL params seeded filters) ── */
+  const incomingFilterCount =
+    Object.keys(initState.filters).length +
+    (initState.brand ? 1 : 0) +
+    (initState.model ? 1 : 0);
+
   return (
     <div className="bg-black">
       <div className="h-[72px]" />
+
+      {/* ── Page header ── */}
       <section className="max-w-[1440px] mx-auto px-6 md:px-16 pt-16 pb-12">
         <motion.div
-          initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 18}}
+          initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 16}}
           animate={{opacity: 1, y: 0}}
-          transition={{duration: 0.7, ease: EASE_OUT_EXPO}}
+          transition={{duration: 0.65, ease: EASE_OUT_EXPO}}
           className="mb-10"
         >
-          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0]/55 uppercase mb-3">
+          <p className="text-[10px] tracking-[0.4em] text-[#BCBEC0]/65 uppercase mb-3 font-semibold">
             Al Ahsan Motors
           </p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <h1 className="font-display text-4xl md:text-5xl text-white leading-[0.92]">
               Our Collection
             </h1>
-            <p className="text-sm text-[#BCBEC0]/40 max-w-sm leading-relaxed">
+            <p className="text-sm text-[#BCBEC0]/55 max-w-sm leading-relaxed font-medium">
               Select a marque to explore our curated inventory, or search
               directly below.
             </p>
           </div>
+
+          {/* Incoming filter badge — shown when user navigated from homepage search */}
+          {incomingFilterCount > 0 && (
+            <motion.div
+              initial={{opacity: 0, y: 8}}
+              animate={{opacity: 1, y: 0}}
+              transition={{duration: 0.4, ease: EASE_OUT_EXPO, delay: 0.3}}
+              className="mt-5 inline-flex items-center gap-3 px-4 py-2.5 rounded-xl border border-[#BCBEC0]/20 bg-[#BCBEC0]/6"
+            >
+              <span className="text-[11px] text-[#BCBEC0]/75 font-medium">
+                {incomingFilterCount} filter{incomingFilterCount > 1 ? "s" : ""}{" "}
+                applied from your search
+              </span>
+              <button
+                onClick={clearAll}
+                className="text-[10px] text-[#BCBEC0]/45 hover:text-[#BCBEC0]/80 transition-colors underline underline-offset-2 font-medium"
+              >
+                Clear
+              </button>
+            </motion.div>
+          )}
         </motion.div>
+      </section>
+
+      {/* ── Brand showroom ── */}
+      <section className="max-w-[1440px] mx-auto px-6 md:px-16 pb-12">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
           {brands.map((brand, i) => (
             <BrandCard
@@ -2391,21 +2101,26 @@ export default function InventoryPage() {
           ))}
         </div>
       </section>
+
       <div className="max-w-[1440px] mx-auto px-6 md:px-16">
         <div className="h-px bg-gradient-to-r from-transparent via-[#BCBEC0]/18 to-transparent" />
       </div>
+
+      {/* ── Inventory grid ── */}
       <section className="max-w-[1440px] mx-auto px-6 md:px-16 py-12">
         <div ref={inventoryRef} className="-mt-4 pt-4" />
+
+        {/* Search input */}
         <motion.div
-          initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 12}}
+          initial={prefersReduced ? {opacity: 1} : {opacity: 0, y: 10}}
           whileInView={{opacity: 1, y: 0}}
           viewport={{once: true, amount: 0.4}}
-          transition={{duration: 0.55, ease: EASE_OUT_EXPO}}
+          transition={{duration: 0.5, ease: EASE_OUT_EXPO}}
           className="mb-8 max-w-xl"
         >
           <div className="relative">
             <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#BCBEC0]/40"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#BCBEC0]/45"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -2428,18 +2143,19 @@ export default function InventoryPage() {
                   setSelectedModel(null);
                 }
               }}
-              className="w-full bg-black border border-[#BCBEC0]/22 rounded-xl py-3 pl-11 pr-10 text-sm text-white placeholder-[#BCBEC0]/30 focus:outline-none focus:border-[#BCBEC0]/45 transition-colors duration-300"
+              className="w-full bg-black border border-[#BCBEC0]/22 rounded-xl py-3 pl-11 pr-10 text-sm text-white placeholder-[#BCBEC0]/38 focus:outline-none focus:border-[#BCBEC0]/48 transition-colors duration-200 font-medium"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#BCBEC0]/35 hover:text-[#BCBEC0] transition-colors text-sm"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#BCBEC0]/42 hover:text-[#BCBEC0] transition-colors text-sm"
               >
                 ✕
               </button>
             )}
           </div>
         </motion.div>
+
         <AnimatePresence>
           {selectedBrand && (
             <motion.div
@@ -2456,21 +2172,22 @@ export default function InventoryPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
         <AnimatePresence mode="wait">
           {showInventory && (
             <motion.div
               key="heading"
-              initial={{opacity: 0, y: 10}}
+              initial={{opacity: 0, y: 8}}
               animate={{opacity: 1, y: 0}}
               exit={{opacity: 0}}
-              transition={{duration: 0.4, ease: EASE_OUT_EXPO}}
+              transition={{duration: 0.35, ease: EASE_OUT_EXPO}}
               className="mb-5"
             >
               <div className="flex items-baseline gap-3 flex-wrap">
-                <p className="text-[10px] tracking-[0.32em] text-[#BCBEC0]/45 uppercase">
+                <p className="text-[10px] tracking-[0.32em] text-[#BCBEC0]/55 uppercase font-semibold">
                   Available Vehicles
                 </p>
-                <span className="text-[10px] text-[#BCBEC0]/30">
+                <span className="text-[10px] text-[#BCBEC0]/38 font-medium">
                   — {filteredAndSortedVehicles.length}{" "}
                   {filteredAndSortedVehicles.length === 1
                     ? "result"
@@ -2482,11 +2199,14 @@ export default function InventoryPage() {
                   ? selectedModel
                     ? `${selectedBrand} ${selectedModel}`
                     : selectedBrand
-                  : `"${searchQuery}"`}
+                  : searchQuery
+                    ? `"${searchQuery}"`
+                    : "Filtered Selection"}
               </h2>
             </motion.div>
           )}
         </AnimatePresence>
+
         {showInventory && (
           <FilterBar
             filters={filters}
@@ -2496,22 +2216,24 @@ export default function InventoryPage() {
             setSortOrder={setSortOrder}
           />
         )}
+
         {showInventory && (
           <div className="flex items-center justify-between mt-5 mb-7">
             <button
               onClick={clearAll}
-              className="text-[11px] text-[#BCBEC0]/45 hover:text-[#BCBEC0] transition-colors duration-300 flex items-center gap-1.5"
+              className="text-[11px] text-[#BCBEC0]/50 hover:text-[#BCBEC0] transition-colors duration-200 flex items-center gap-1.5 font-medium"
             >
               <span className="text-base leading-none">←</span>
               <span>All marques</span>
             </button>
             {savedVehicles.length > 0 && (
-              <span className="text-[11px] text-[#BCBEC0]/40">
+              <span className="text-[11px] text-[#BCBEC0]/45 font-medium">
                 {savedVehicles.length} saved
               </span>
             )}
           </div>
         )}
+
         {showInventory && (
           <motion.div
             layout
@@ -2530,23 +2252,25 @@ export default function InventoryPage() {
             </AnimatePresence>
           </motion.div>
         )}
+
         {showInventory && filteredAndSortedVehicles.length === 0 && (
           <motion.div
             initial={{opacity: 0}}
             animate={{opacity: 1}}
             className="text-center py-24"
           >
-            <p className="text-[#BCBEC0]/35 text-sm mb-5">
+            <p className="text-[#BCBEC0]/45 text-sm mb-5 font-medium">
               No vehicles match your current selection.
             </p>
             <button
               onClick={clearAll}
-              className="text-xs text-[#BCBEC0]/60 hover:text-[#BCBEC0] transition-colors underline underline-offset-2"
+              className="text-xs text-[#BCBEC0]/65 hover:text-[#BCBEC0] transition-colors underline underline-offset-2 font-medium"
             >
               Clear all filters
             </button>
           </motion.div>
         )}
+
         {!showInventory && (
           <motion.div
             initial={{opacity: 0}}
@@ -2555,7 +2279,7 @@ export default function InventoryPage() {
           >
             <div className="max-w-sm mx-auto">
               <div className="w-12 h-px bg-[#BCBEC0]/20 mx-auto mb-8" />
-              <p className="text-[#BCBEC0]/30 text-sm leading-relaxed">
+              <p className="text-[#BCBEC0]/40 text-sm leading-relaxed font-medium">
                 Select a marque from the showroom above, or type a brand or
                 model name to explore the full inventory.
               </p>
@@ -2564,9 +2288,11 @@ export default function InventoryPage() {
           </motion.div>
         )}
       </section>
+
       <div className="max-w-[1440px] mx-auto px-6 md:px-16">
         <div className="h-px bg-gradient-to-r from-transparent via-[#BCBEC0]/18 to-transparent" />
       </div>
+
       <FinanceCTA />
       <TrustSection />
       <TestimonialsSection />
