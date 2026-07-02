@@ -41,6 +41,7 @@ const allVehicles = [
     engine: "3.5L V6 Twin-Turbo",
     hasSunroof: true,
     trust: ["Inspection Passed", "Finance Available"],
+    slug: "toyota-land-cruiser-300",
   },
   {
     id: 3,
@@ -67,6 +68,7 @@ const allVehicles = [
     engine: "2.2L SkyActiv-D Diesel",
     hasSunroof: false,
     trust: ["Verified Mileage", "Import Certified"],
+    slug: "mazda-cx-5",
   },
   {
     id: 5,
@@ -93,6 +95,7 @@ const allVehicles = [
     engine: "3.0L V6 TFSI",
     hasSunroof: true,
     trust: ["Inspection Passed", "Finance Available"],
+    slug: "audi-q7",
   },
   {
     id: 8,
@@ -119,6 +122,7 @@ const allVehicles = [
     engine: "2.4L 2GD-FTV Turbo Diesel",
     hasSunroof: false,
     trust: ["Verified Mileage", "Accident Free"],
+    slug: "toyota-hilux",
   },
 ];
 
@@ -235,6 +239,7 @@ function FeaturedVehicleCard({
   const whatsappHref = `https://wa.me/254700000000?text=${encodeURIComponent(
     `Hi, I'm interested in the ${vehicle.year} ${vehicle.brand} ${vehicle.model} listed at KSh ${vehicle.price.toLocaleString()}.`,
   )}`;
+  const router = useRouter();
 
   return (
     <motion.article
@@ -348,7 +353,7 @@ function FeaturedVehicleCard({
             <Button
               variant="secondary"
               size="sm"
-              href={`/inventory/${vehicle.id}`}
+              onClick={() => router.push(`/inventory/${vehicle.slug}`)}
               className="flex-1 justify-center"
             >
               View Details

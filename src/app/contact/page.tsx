@@ -255,8 +255,11 @@ export default function ContactPage() {
                 placeholder="Email Address"
                 className="w-full bg-black border border-[#BCBEC0]/20 rounded-xl px-4 py-3 text-sm text-white placeholder-[#BCBEC0]/40 focus:outline-none focus:border-[#BCBEC0]/50 transition-colors"
               />
-              <select className="w-full bg-black border border-[#BCBEC0]/20 rounded-xl px-4 py-3 text-sm text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/50 transition-colors appearance-none">
-                <option value="" disabled selected>
+              <select
+                defaultValue=""
+                className="w-full bg-black border border-[#BCBEC0]/20 rounded-xl px-4 py-3 text-sm text-[#BCBEC0] focus:outline-none focus:border-[#BCBEC0]/50 transition-colors appearance-none"
+              >
+                <option value="" disabled>
                   Select Service / Query
                 </option>
                 <option value="sales">Sales Enquiry</option>
